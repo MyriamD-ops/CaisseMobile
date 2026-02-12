@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../store/slices/authSlice';
+import authService from '../services/authService';
 import { 
     Home, 
     Package, 
@@ -8,12 +11,16 @@ import {
     Settings, 
     LogOut, 
     Menu, 
-    X 
+    X,
+    User
 } from 'lucide-react';
 
 export default function Layout() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.auth);
 
     const navigation = [
         { name: 'Dashboard', href: '/dashboard', icon: Home },
@@ -24,6 +31,17 @@ export default function Layout() {
     ];
 
     const isActive = (path) => location.pathname === path;
+
+    const handleLogout = async () => {
+        try {
+            await authService.logout();
+        } catch (error) {
+            console.error('Erreur lors de la déconnexion:', error);
+        } finally {
+            dispatch(logout());
+            navigate('/login');
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -37,6 +55,22 @@ export default function Layout() {
                             <X className="w-6 h-6" />
                         </button>
                     </div>
+                    
+                    {/* User info mobile */}
+                    {user && (
+                        <div className="px-4 py-3 border-b bg-gray-50">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-gradient-to-br from-rose-400 to-amber-400 rounded-full flex items-center justify-center">
+                                    <User className="w-5 h-5 text-white" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium text-gray-900">{user.username}</p>
+                                    <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    
                     <div className="flex-1 px-2 py-4 overflow-y-auto">
                         {navigation.map((item) => {
                             const Icon = item.icon;
@@ -57,6 +91,16 @@ export default function Layout() {
                             );
                         })}
                     </div>
+                    
+                    <div className="px-2 py-4 border-t">
+                        <button 
+                            onClick={handleLogout}
+                            className="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                            <LogOut className="w-5 h-5 mr-3" />
+                            Déconnexion
+                        </button>
+                    </div>
                 </nav>
             </div>
 
@@ -66,6 +110,22 @@ export default function Layout() {
                     <div className="flex items-center h-16 px-4 border-b">
                         <h1 className="text-xl font-bold text-rose-600">Atelier Doré</h1>
                     </div>
+                    
+                    {/* User info desktop */}
+                    {user && (
+                        <div className="px-4 py-4 border-b bg-gray-50">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-gradient-to-br from-rose-400 to-amber-400 rounded-full flex items-center justify-center">
+                                    <User className="w-5 h-5 text-white" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium text-gray-900">{user.username}</p>
+                                    <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    
                     <div className="flex-1 px-2 py-4 overflow-y-auto">
                         {navigation.map((item) => {
                             const Icon = item.icon;
@@ -86,7 +146,10 @@ export default function Layout() {
                         })}
                     </div>
                     <div className="px-2 py-4 border-t">
-                        <button className="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50">
+                        <button 
+                            onClick={handleLogout}
+                            className="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
                             <LogOut className="w-5 h-5 mr-3" />
                             Déconnexion
                         </button>
@@ -96,7 +159,7 @@ export default function Layout() {
 
             {/* Contenu principal */}
             <div className="lg:pl-64">
-                {/* Header */}
+                {/* Header mobile */}
                 <div className="sticky top-0 z-10 flex h-16 bg-white border-b border-gray-200 lg:hidden">
                     <button
                         onClick={() => setSidebarOpen(true)}
