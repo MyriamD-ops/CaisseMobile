@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Inertia\ResponseFactory;
 
-// Toutes les routes renvoient vers app.blade.php pour React Router
-Route::get('/{any}', function () {
-    return view('app');
-})->where('any', '.*');
+Route::get('/', function (ResponseFactory $inertia) {
+    return $inertia->render('Welcome');
+});
