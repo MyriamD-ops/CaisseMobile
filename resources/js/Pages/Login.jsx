@@ -1,7 +1,8 @@
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function Login() {
+    const { flash } = usePage().props;
     const [showPin, setShowPin] = useState(false);
     const { data, setData, post, processing, errors } = useForm({
         username: '',
@@ -67,6 +68,20 @@ export default function Login() {
                     }}>
                         Espace Administrateur
                     </h2>
+
+                    {flash?.success && (
+                        <div style={{
+                            marginBottom: '16px',
+                            padding: '16px',
+                            backgroundColor: '#f0fdf4',
+                            border: '1px solid #bbf7d0',
+                            borderRadius: '8px',
+                            color: '#166534',
+                            fontSize: '14px'
+                        }}>
+                            ✓ {flash.success}
+                        </div>
+                    )}
 
                     {errors.username && (
                         <div style={{

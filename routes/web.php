@@ -14,7 +14,7 @@ Route::get('/login', function (ResponseFactory $inertia) {
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 
 // Routes protégées
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth')->group(function () {
     // Dashboard
     Route::get('/', function (ResponseFactory $inertia) {
         return $inertia->render('Dashboard');
@@ -24,5 +24,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('products', ProductController::class);
     
     // Logout
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
