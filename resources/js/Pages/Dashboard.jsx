@@ -99,32 +99,71 @@ export default function Dashboard({ auth }) {
                             Actions rapides
                         </h3>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-                            {[
-                                { label: 'Nouvelle vente', icon: '🛒', gradient: 'linear-gradient(to right, #f43f5e, #fbbf24)' },
-                                { label: 'Ajouter produit', icon: '📦', bg: 'white' },
-                                { label: 'Alertes stock', icon: '⚠️', bg: 'white' },
-                            ].map((action, index) => (
-                                <button
-                                    key={index}
-                                    style={{
-                                        padding: '20px',
-                                        background: action.gradient || action.bg,
-                                        border: action.bg === 'white' ? '2px solid #e5e7eb' : 'none',
-                                        borderRadius: '12px',
-                                        cursor: 'pointer',
-                                        fontSize: '16px',
-                                        fontWeight: '600',
-                                        color: action.gradient ? 'white' : '#374151',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        gap: '8px'
-                                    }}
-                                >
-                                    <span style={{ fontSize: '28px' }}>{action.icon}</span>
-                                    {action.label}
-                                </button>
-                            ))}
+                            <Link
+                                href="/sales/create"
+                                style={{
+                                    padding: '20px',
+                                    background: 'linear-gradient(to right, #f43f5e, #fbbf24)',
+                                    border: 'none',
+                                    borderRadius: '12px',
+                                    cursor: 'pointer',
+                                    fontSize: '16px',
+                                    fontWeight: '600',
+                                    color: 'white',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    textDecoration: 'none'
+                                }}
+                            >
+                                <span style={{ fontSize: '28px' }}>🛒</span>
+                                Nouvelle vente
+                            </Link>
+                            
+                            <Link
+                                href="/products/create"
+                                style={{
+                                    padding: '20px',
+                                    background: 'white',
+                                    border: '2px solid #e5e7eb',
+                                    borderRadius: '12px',
+                                    cursor: 'pointer',
+                                    fontSize: '16px',
+                                    fontWeight: '600',
+                                    color: '#374151',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    textDecoration: 'none'
+                                }}
+                            >
+                                <span style={{ fontSize: '28px' }}>📦</span>
+                                Ajouter produit
+                            </Link>
+                            
+                            <Link
+                                href="/products?filter=low_stock"
+                                style={{
+                                    padding: '20px',
+                                    background: 'white',
+                                    border: '2px solid #e5e7eb',
+                                    borderRadius: '12px',
+                                    cursor: 'pointer',
+                                    fontSize: '16px',
+                                    fontWeight: '600',
+                                    color: '#374151',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    textDecoration: 'none'
+                                }}
+                            >
+                                <span style={{ fontSize: '28px' }}>⚠️</span>
+                                Alertes stock
+                            </Link>
                         </div>
                     </div>
                 </div>

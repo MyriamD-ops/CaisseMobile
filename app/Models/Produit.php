@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Produit extends Model
 {
@@ -15,7 +14,10 @@ class Produit extends Model
         'nom',
         'description',
         'categorie',
+        'matiere',
         'prix_base',
+        'stock_actuel',
+        'stock_minimum',
         'code_barres',
         'qr_code',
         'actif',
@@ -23,6 +25,8 @@ class Produit extends Model
 
     protected $casts = [
         'prix_base' => 'decimal:2',
+        'stock_actuel' => 'integer',
+        'stock_minimum' => 'integer',
         'actif' => 'boolean',
     ];
 
@@ -36,12 +40,6 @@ class Produit extends Model
         return $this->hasMany(ImageProduit::class, 'id_produit', 'id_produit');
     }
 
-    public function imagePrincipale()
-    {
-        return $this->hasOne(ImageProduit::class, 'id_produit', 'id_produit')
-            ->where('est_principale', true);
-    }
-
     public function mouvementsStock(): HasMany
     {
         return $this->hasMany(MouvementStock::class, 'id_produit', 'id_produit');
@@ -50,11 +48,5 @@ class Produit extends Model
     public function alertesStock(): HasMany
     {
         return $this->hasMany(AlerteStock::class, 'id_produit', 'id_produit');
-    }
-
-    // Calcul du stock total
-    public function getStockTotalAttribute()
-    {
-        return $this->variantes->sum('stock_quantite');
     }
 }
