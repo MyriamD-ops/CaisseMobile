@@ -1,10 +1,9 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Dashboard from './pages/Dashboard';
+import LoginSimple from './pages/LoginSimple';
 import Products from './pages/Products';
 import Sales from './pages/Sales';
-import Login from './pages/Login';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -13,13 +12,11 @@ function App() {
 
     return (
         <Routes>
-            {/* Route publique de login */}
             <Route 
                 path="/login" 
-                element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} 
+                element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginSimple />} 
             />
             
-            {/* Routes protégées */}
             <Route 
                 path="/" 
                 element={
@@ -29,12 +26,11 @@ function App() {
                 }
             >
                 <Route index element={<Navigate to="/dashboard" replace />} />
-                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="dashboard" element={<div className="text-2xl">Dashboard temporaire - en cours de développement</div>} />
                 <Route path="products" element={<Products />} />
                 <Route path="sales" element={<Sales />} />
             </Route>
 
-            {/* Redirection pour toutes les autres routes */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
     );
