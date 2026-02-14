@@ -91,4 +91,21 @@ class ProductController extends Controller
         return redirect()->route('products.index')
             ->with('success', 'Produit supprimé avec succès !');
     }
+
+    public function show(ResponseFactory $inertia, Produit $product)
+    {
+        return $inertia->render('Products/Show', [
+            'product' => [
+                'id_produit' => $product->id_produit,
+                'nom' => $product->nom,
+                'description' => $product->description,
+                'prix_base' => $product->prix_base,
+                'stock_actuel' => $product->stock_actuel,
+                'stock_minimum' => $product->stock_minimum,
+                'categorie' => $product->categorie,
+                'matiere' => $product->matiere,
+                'code_barres' => $product->code_barres,
+            ]
+        ]);
+    }
 }

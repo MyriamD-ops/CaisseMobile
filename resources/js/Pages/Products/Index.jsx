@@ -57,6 +57,7 @@ export default function Index({ products, auth }) {
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', gap: '8px' }}>
+                                        <Link href={'/products/' + product.id_produit} style={{ padding: '8px 16px', backgroundColor: '#eff6ff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', color: '#1e40af', textDecoration: 'none' }}>📱 QR Code</Link>
                                         <Link href={'/products/' + product.id_produit + '/edit'} style={{ padding: '8px 16px', backgroundColor: '#f3f4f6', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', color: '#374151', textDecoration: 'none' }}>✏️ Modifier</Link>
                                         <Link 
                                             href={'/products/' + product.id_produit} 
