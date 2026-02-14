@@ -9,6 +9,12 @@ class Produit extends Model
 {
     protected $table = 'produits';
     protected $primaryKey = 'id_produit';
+    
+    // Pour que les routes /products/{product} utilisent id_produit
+    public function getRouteKeyName()
+    {
+        return 'id_produit';
+    }
 
     protected $fillable = [
         'nom',

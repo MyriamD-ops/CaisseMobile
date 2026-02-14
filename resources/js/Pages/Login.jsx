@@ -24,88 +24,135 @@ export default function Login() {
     return (
         <div style={{
             minHeight: '100vh',
-            background: 'linear-gradient(to bottom right, #fef2f2, #fef3c7)',
+            background: 'linear-gradient(160deg, #f8f9fa 0%, #e9ecef 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '16px',
-            fontFamily: 'system-ui, -apple-system, sans-serif'
+            padding: '24px',
+            fontFamily: "'Nunito', system-ui, -apple-system, sans-serif"
         }}>
-            <div style={{ width: '100%', maxWidth: '448px' }}>
+            <div style={{ width: '100%', maxWidth: '420px' }}>
                 {/* Logo et titre */}
-                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '40px' }}>
                     <div style={{
-                        display: 'inline-flex',
+                        width: '72px',
+                        height: '72px',
+                        margin: '0 auto 20px',
+                        background: 'linear-gradient(135deg, #6c757d, #495057)',
+                        borderRadius: '50% 0 50% 50%',
+                        transform: 'rotate(-45deg)',
+                        display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        width: '80px',
-                        height: '80px',
-                        background: 'linear-gradient(to bottom right, #fb7185, #fbbf24)',
-                        borderRadius: '50%',
-                        marginBottom: '16px'
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.15)'
                     }}>
-                        <span style={{ fontSize: '40px' }}>🔒</span>
+                        <div style={{
+                            width: '36px',
+                            height: '36px',
+                            background: 'white',
+                            borderRadius: '50% 0 50% 50%',
+                            transform: 'rotate(45deg)'
+                        }}></div>
                     </div>
-                    <h1 style={{ fontSize: '30px', fontWeight: 'bold', color: '#1f2937', marginBottom: '8px' }}>
-                        Atelier Doré
+                    <h1 style={{
+                        fontSize: '28px',
+                        fontWeight: '600',
+                        color: '#212529',
+                        marginBottom: '8px',
+                        fontFamily: "'Cormorant Garamond', Georgia, serif"
+                    }}>
+                        3D Ami
                     </h1>
-                    <p style={{ color: '#6b7280' }}>Caisse mobile artisanale</p>
+                    <p style={{ 
+                        color: '#6c757d', 
+                        fontSize: '14px', 
+                        fontStyle: 'italic',
+                        fontFamily: "'Cormorant Garamond', Georgia, serif"
+                    }}>
+                        Caisse mobile pour artisan
+                    </p>
                 </div>
 
                 {/* Formulaire */}
                 <div style={{
                     backgroundColor: 'white',
-                    borderRadius: '16px',
-                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-                    padding: '32px'
+                    borderRadius: '20px',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                    padding: '36px'
                 }}>
                     <h2 style={{
-                        fontSize: '20px',
+                        fontSize: '22px',
                         fontWeight: '600',
-                        color: '#1f2937',
-                        marginBottom: '24px',
-                        textAlign: 'center'
+                        color: '#212529',
+                        marginBottom: '8px',
+                        textAlign: 'center',
+                        fontFamily: "'Cormorant Garamond', Georgia, serif"
                     }}>
                         Espace Administrateur
                     </h2>
+                    <p style={{
+                        fontSize: '13px',
+                        color: '#6c757d',
+                        marginBottom: '28px',
+                        textAlign: 'center'
+                    }}>
+                        Connectez-vous pour accéder à la caisse
+                    </p>
 
                     {flash?.success && (
                         <div style={{
-                            marginBottom: '16px',
-                            padding: '16px',
-                            backgroundColor: '#f0fdf4',
-                            border: '1px solid #bbf7d0',
-                            borderRadius: '8px',
-                            color: '#166534',
-                            fontSize: '14px'
+                            marginBottom: '20px',
+                            padding: '14px 16px',
+                            backgroundColor: '#d1e7dd',
+                            border: '1px solid #badbcc',
+                            borderRadius: '12px',
+                            color: '#0f5132',
+                            fontSize: '13px',
+                            fontWeight: '500',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px'
                         }}>
-                            ✓ {flash.success}
+                            <span style={{ fontSize: '16px' }}>✓</span>
+                            {flash.success}
                         </div>
                     )}
 
                     {errors.username && (
                         <div style={{
-                            marginBottom: '16px',
-                            padding: '16px',
-                            backgroundColor: '#fef2f2',
-                            border: '1px solid #fecaca',
-                            borderRadius: '8px',
-                            color: '#991b1b',
-                            fontSize: '14px'
+                            marginBottom: '20px',
+                            padding: '14px 16px',
+                            backgroundColor: '#f8d7da',
+                            border: '1px solid #f5c2c7',
+                            borderRadius: '12px',
+                            color: '#842029',
+                            fontSize: '13px',
+                            fontWeight: '500',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px'
                         }}>
-                            ⚠️ {errors.username}
+                            <span style={{ fontSize: '16px' }}>⚠️</span>
+                            {errors.username}
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <form onSubmit={handleSubmit} style={{ 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '20px',
+                        alignItems: 'center'
+                    }}>
                         {/* Champ Username */}
-                        <div>
+                        <div style={{ width: '100%', maxWidth: '320px' }}>
                             <label htmlFor="username" style={{
                                 display: 'block',
-                                fontSize: '14px',
-                                fontWeight: '500',
-                                color: '#374151',
-                                marginBottom: '8px'
+                                fontSize: '12px',
+                                fontWeight: '600',
+                                color: '#495057',
+                                marginBottom: '8px',
+                                letterSpacing: '0.5px',
+                                textAlign: 'left'
                             }}>
                                 Nom d'utilisateur
                             </label>
@@ -117,11 +164,23 @@ export default function Login() {
                                 style={{
                                     display: 'block',
                                     width: '100%',
-                                    padding: '12px',
-                                    border: '1px solid #d1d5db',
-                                    borderRadius: '8px',
-                                    fontSize: '16px',
-                                    outline: 'none'
+                                    padding: '14px 16px',
+                                    border: '1.5px solid #dee2e6',
+                                    borderRadius: '12px',
+                                    fontSize: '15px',
+                                    outline: 'none',
+                                    backgroundColor: 'white',
+                                    color: '#212529',
+                                    transition: 'all 0.3s ease',
+                                    fontFamily: "'Nunito', sans-serif"
+                                }}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = '#495057';
+                                    e.target.style.boxShadow = '0 0 0 4px rgba(73,80,87,0.1)';
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = '#dee2e6';
+                                    e.target.style.boxShadow = 'none';
                                 }}
                                 placeholder="sophie"
                                 required
@@ -129,13 +188,15 @@ export default function Login() {
                         </div>
 
                         {/* Champ PIN */}
-                        <div>
+                        <div style={{ width: '100%', maxWidth: '320px' }}>
                             <label htmlFor="pin" style={{
                                 display: 'block',
-                                fontSize: '14px',
-                                fontWeight: '500',
-                                color: '#374151',
-                                marginBottom: '8px'
+                                fontSize: '12px',
+                                fontWeight: '600',
+                                color: '#495057',
+                                marginBottom: '8px',
+                                letterSpacing: '0.5px',
+                                textAlign: 'left'
                             }}>
                                 Code PIN
                             </label>
@@ -147,25 +208,49 @@ export default function Login() {
                                 style={{
                                     display: 'block',
                                     width: '100%',
-                                    padding: '12px',
-                                    border: '1px solid #d1d5db',
-                                    borderRadius: '8px',
-                                    fontSize: '18px',
-                                    fontFamily: 'monospace',
-                                    letterSpacing: '0.2em',
-                                    outline: 'none'
+                                    padding: '14px 16px',
+                                    border: '1.5px solid #dee2e6',
+                                    borderRadius: '12px',
+                                    fontSize: '20px',
+                                    fontFamily: "'Nunito', monospace",
+                                    letterSpacing: '0.3em',
+                                    outline: 'none',
+                                    backgroundColor: 'white',
+                                    color: '#212529',
+                                    transition: 'all 0.3s ease'
+                                }}
+                                onFocus={(e) => {
+                                    e.target.style.borderColor = '#495057';
+                                    e.target.style.boxShadow = '0 0 0 4px rgba(73,80,87,0.1)';
+                                }}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = '#dee2e6';
+                                    e.target.style.boxShadow = 'none';
                                 }}
                                 placeholder="••••"
                                 maxLength="6"
                                 required
                             />
-                            <div style={{ marginTop: '8px' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px', color: '#6b7280' }}>
+                            <div style={{ marginTop: '10px', textAlign: 'left' }}>
+                                <label style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    fontSize: '13px',
+                                    color: '#6c757d',
+                                    cursor: 'pointer',
+                                    userSelect: 'none'
+                                }}>
                                     <input
                                         type="checkbox"
                                         checked={showPin}
                                         onChange={(e) => setShowPin(e.target.checked)}
-                                        style={{ marginRight: '8px' }}
+                                        style={{
+                                            marginRight: '8px',
+                                            width: '16px',
+                                            height: '16px',
+                                            cursor: 'pointer',
+                                            accentColor: '#495057'
+                                        }}
                                     />
                                     Afficher le code PIN
                                 </label>
@@ -178,25 +263,65 @@ export default function Login() {
                             disabled={processing}
                             style={{
                                 width: '100%',
-                                background: 'linear-gradient(to right, #f43f5e, #fbbf24)',
+                                maxWidth: '320px',
+                                background: processing 
+                                    ? '#adb5bd' 
+                                    : '#495057',
                                 color: 'white',
-                                fontWeight: '600',
-                                padding: '12px 16px',
-                                borderRadius: '8px',
+                                fontWeight: '700',
+                                padding: '16px 20px',
+                                borderRadius: '12px',
                                 border: 'none',
                                 cursor: processing ? 'not-allowed' : 'pointer',
-                                opacity: processing ? 0.5 : 1,
-                                fontSize: '16px'
+                                fontSize: '14px',
+                                letterSpacing: '0.5px',
+                                boxShadow: processing 
+                                    ? 'none' 
+                                    : '0 4px 12px rgba(0,0,0,0.15)',
+                                transition: 'all 0.3s ease',
+                                fontFamily: "'Nunito', sans-serif"
+                            }}
+                            onMouseEnter={(e) => {
+                                if (!processing) {
+                                    e.target.style.background = '#343a40';
+                                    e.target.style.transform = 'translateY(-2px)';
+                                    e.target.style.boxShadow = '0 6px 20px rgba(0,0,0,0.2)';
+                                }
+                            }}
+                            onMouseLeave={(e) => {
+                                if (!processing) {
+                                    e.target.style.background = '#495057';
+                                }
+                                e.target.style.transform = 'translateY(0)';
+                                e.target.style.boxShadow = processing 
+                                    ? 'none' 
+                                    : '0 4px 12px rgba(0,0,0,0.15)';
                             }}
                         >
                             {processing ? 'Connexion en cours...' : 'Se connecter'}
                         </button>
                     </form>
 
-                    <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '12px', color: '#9ca3af' }}>
+                    <p style={{
+                        marginTop: '24px',
+                        textAlign: 'center',
+                        fontSize: '11px',
+                        color: '#adb5bd',
+                        letterSpacing: '0.5px'
+                    }}>
                         Saisissez votre code PIN à 4-6 chiffres
                     </p>
                 </div>
+
+                {/* Footer */}
+                <p style={{
+                    marginTop: '24px',
+                    textAlign: 'center',
+                    fontSize: '12px',
+                    color: '#6c757d'
+                }}>
+                    Caisse Enregistreuse Mobile
+                </p>
             </div>
         </div>
     );

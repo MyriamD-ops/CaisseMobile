@@ -49,10 +49,17 @@ class ProductController extends Controller
 
     public function edit(ResponseFactory $inertia, Produit $product)
     {
-        $product->load('variantes', 'images');
-
         return $inertia->render('Products/Edit', [
-            'product' => $product
+            'product' => [
+                'id_produit' => $product->id_produit,
+                'nom' => $product->nom,
+                'description' => $product->description,
+                'prix_base' => $product->prix_base,
+                'stock_actuel' => $product->stock_actuel,
+                'stock_minimum' => $product->stock_minimum,
+                'categorie' => $product->categorie,
+                'matiere' => $product->matiere,
+            ]
         ]);
     }
 
@@ -67,6 +74,9 @@ class ProductController extends Controller
             'categorie' => 'required|string|max:100',
             'matiere' => 'nullable|string|max:100',
         ]);
+
+        $validated['prix_base'] = $validated['prix'];
+        unset($validated['prix']);
 
         $product->update($validated);
 
