@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
     
     // Produits
+    Route::get('/products/low-stock', [ProductController::class, 'lowStock'])->name('products.lowStock');
     Route::resource('products', ProductController::class);
     
     // Ventes

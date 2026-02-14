@@ -144,7 +144,7 @@ export default function Dashboard({ auth }) {
                             </Link>
                             
                             <Link
-                                href="/products?filter=low_stock"
+                                href="/products/low-stock"
                                 style={{
                                     padding: '20px',
                                     background: 'white',

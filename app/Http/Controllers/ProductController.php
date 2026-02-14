@@ -108,4 +108,15 @@ class ProductController extends Controller
             ]
         ]);
     }
+    
+    public function lowStock(ResponseFactory $inertia)
+    {
+        $products = Produit::whereColumn('stock_actuel', '<=', 'stock_minimum')
+            ->orderBy('stock_actuel', 'asc')
+            ->get();
+
+        return $inertia->render('Products/LowStock', [
+            'products' => $products
+        ]);
+    }
 }
