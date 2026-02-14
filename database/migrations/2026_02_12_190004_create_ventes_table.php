@@ -14,8 +14,9 @@ return new class extends Migration
             $table->foreignId('id_utilisateur')->constrained('users', 'id')->onDelete('cascade');
             $table->foreignId('id_evenement')->nullable()->constrained('evenements', 'id_evenement')->onDelete('set null');
             $table->decimal('montant_total', 10, 2);
-            $table->enum('mode_paiement', ['especes', 'carte', 'mobile', 'autre'])->default('especes');
-            $table->timestamp('date_vente');
+            $table->string('moyen_paiement')->default('Espèces');
+            $table->string('statut')->default('Terminée');
+            $table->timestamp('date_vente')->nullable();
             $table->boolean('synchronisee')->default(false);
             $table->text('notes')->nullable();
             $table->timestamps();

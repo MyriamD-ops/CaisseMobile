@@ -17,10 +17,23 @@ class Vente extends Model
         'id_evenement',
         'montant_total',
         'mode_paiement',
+        'moyen_paiement',
+        'statut',
         'date_vente',
         'synchronisee',
         'notes',
     ];
+    
+    public function getRouteKeyName()
+    {
+        return 'id_vente';
+    }
+    
+    // Alias pour lignes() au lieu de lignesVente()
+    public function lignes()
+    {
+        return $this->hasMany(LigneVente::class, 'id_vente', 'id_vente');
+    }
 
     protected $casts = [
         'montant_total' => 'decimal:2',
