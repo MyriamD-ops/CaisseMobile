@@ -1,8 +1,8 @@
-import { Link, useForm } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
+import { useState } from 'react';
 
 export default function Edit({ product }) {
-    const { data, setData, put, processing, errors } = useForm({
-        id: product?.id_produit || null,
+    const [formData, setFormData] = useState({
         nom: product?.nom || '',
         description: product?.description || '',
         prix: product?.prix_base || '',
@@ -11,14 +11,28 @@ export default function Edit({ product }) {
         categorie: product?.categorie || '',
         matiere: product?.matiere || '',
     });
+    
+    const [processing, setProcessing] = useState(false);
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (field, value) => {
+        setFormData({ ...formData, [field]: value });
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!data.id) {
-            alert('Erreur: ID produit manquant');
-            return;
-        }
-        put('/products/' + data.id);
+        setProcessing(true);
+        
+        router.post(`/products/${product.id_produit}`, {
+            _method: 'PUT',
+            ...formData
+        }, {
+            onSuccess: () => setProcessing(false),
+            onError: (errors) => {
+                setErrors(errors);
+                setProcessing(false);
+            }
+        });
     };
 
     const categories = ['Bijou', 'Décoration', 'Accessoire', 'Figurine', 'Utilitaire', 'Autre'];
@@ -28,7 +42,20 @@ export default function Edit({ product }) {
         <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
             <header style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #DEE2E6', padding: '16px 24px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Link href="/" style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', textDecoration: 'none' }}>CaisseMobile</Link>
+                    <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+                        <Link href="/" style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', textDecoration: 'none' }}>CaisseMobile</Link>
+                        <nav style={{ display: 'flex', gap: '16px' }}>
+                            <Link href="/" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
+                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
+                                onMouseLeave={(e) => e.target.style.color = '#6C757D'}
+                            >Dashboard</Link>
+                            <Link href="/products" style={{ color: '#2C3E50', fontWeight: '600', textDecoration: 'none', fontSize: '14px' }}>Produits</Link>
+                            <Link href="/sales" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
+                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
+                                onMouseLeave={(e) => e.target.style.color = '#6C757D'}
+                            >Ventes</Link>
+                        </nav>
+                    </div>
                     <Link href="/logout" method="post" as="button" style={{ padding: '8px 16px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', color: '#495057' }}>Déconnexion</Link>
                 </div>
             </header>
@@ -45,25 +72,25 @@ export default function Edit({ product }) {
                         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             <div>
                                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>Nom du produit *</label>
-                                <input type="text" value={data.nom} onChange={(e) => setData('nom', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }} />
+                                <input type="text" value={formData.nom} onChange={(e) => handleChange('nom', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }} />
                                 {errors.nom && <p style={{ color: '#C53030', fontSize: '13px', marginTop: '4px' }}>{errors.nom}</p>}
                             </div>
 
                             <div>
                                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>Description</label>
-                                <textarea value={data.description} onChange={(e) => setData('description', e.target.value)} rows="4" style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', fontFamily: 'inherit', boxSizing: 'border-box' }} />
+                                <textarea value={formData.description || ''} onChange={(e) => handleChange('description', e.target.value)} rows="4" style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', fontFamily: 'inherit', boxSizing: 'border-box' }} />
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                                 <div>
                                     <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>Prix (€) *</label>
-                                    <input type="number" step="0.01" value={data.prix} onChange={(e) => setData('prix', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }} />
+                                    <input type="number" step="0.01" value={formData.prix} onChange={(e) => handleChange('prix', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }} />
                                     {errors.prix && <p style={{ color: '#C53030', fontSize: '13px', marginTop: '4px' }}>{errors.prix}</p>}
                                 </div>
 
                                 <div>
                                     <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>Catégorie *</label>
-                                    <select value={data.categorie} onChange={(e) => setData('categorie', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }}>
+                                    <select value={formData.categorie} onChange={(e) => handleChange('categorie', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }}>
                                         <option value="">Sélectionner...</option>
                                         {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                                     </select>
@@ -74,20 +101,20 @@ export default function Edit({ product }) {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                                 <div>
                                     <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>Stock actuel *</label>
-                                    <input type="number" value={data.stock_actuel} onChange={(e) => setData('stock_actuel', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }} />
+                                    <input type="number" value={formData.stock_actuel} onChange={(e) => handleChange('stock_actuel', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }} />
                                     {errors.stock_actuel && <p style={{ color: '#C53030', fontSize: '13px', marginTop: '4px' }}>{errors.stock_actuel}</p>}
                                 </div>
 
                                 <div>
                                     <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>Stock minimum *</label>
-                                    <input type="number" value={data.stock_minimum} onChange={(e) => setData('stock_minimum', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }} />
+                                    <input type="number" value={formData.stock_minimum} onChange={(e) => handleChange('stock_minimum', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }} />
                                     {errors.stock_minimum && <p style={{ color: '#C53030', fontSize: '13px', marginTop: '4px' }}>{errors.stock_minimum}</p>}
                                 </div>
                             </div>
 
                             <div>
                                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>Matériau d'impression</label>
-                                <select value={data.matiere} onChange={(e) => setData('matiere', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }}>
+                                <select value={formData.matiere || ''} onChange={(e) => handleChange('matiere', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }}>
                                     <option value="">Sélectionner...</option>
                                     {matieres.map(mat => <option key={mat} value={mat}>{mat}</option>)}
                                 </select>

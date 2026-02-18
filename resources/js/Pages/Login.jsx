@@ -11,7 +11,11 @@ export default function Login() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/login');
+        post('/login', {
+            onError: (errors) => {
+                console.log('Erreurs de validation:', errors);
+            }
+        });
     };
 
     const handlePinChange = (e) => {
@@ -94,7 +98,7 @@ export default function Login() {
                         </div>
                     )}
 
-                    {errors.username && (
+                    {(errors.username || errors.pin) && (
                         <div style={{
                             marginBottom: '24px',
                             padding: '16px',
@@ -108,7 +112,7 @@ export default function Login() {
                             gap: '8px'
                         }}>
                             <span>⚠</span>
-                            {errors.username}
+                            {errors.username || errors.pin}
                         </div>
                     )}
 

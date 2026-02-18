@@ -10,8 +10,15 @@ export default function Index({ products, auth }) {
                     <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
                         <Link href="/" style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', textDecoration: 'none' }}>CaisseMobile</Link>
                         <nav style={{ display: 'flex', gap: '16px' }}>
-                            <Link href="/" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px' }}>Dashboard</Link>
+                            <Link href="/" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
+                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
+                                onMouseLeave={(e) => e.target.style.color = '#6C757D'}
+                            >Dashboard</Link>
                             <Link href="/products" style={{ color: '#2C3E50', fontWeight: '600', textDecoration: 'none', fontSize: '14px' }}>Produits</Link>
+                            <Link href="/sales" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
+                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
+                                onMouseLeave={(e) => e.target.style.color = '#6C757D'}
+                            >Ventes</Link>
                         </nav>
                     </div>
                     <Link href="/logout" method="post" as="button" style={{ padding: '8px 16px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', color: '#495057' }}>Déconnexion</Link>

@@ -10,8 +10,18 @@ export default function LowStock({ products }) {
                     <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
                         <Link href="/" style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', textDecoration: 'none' }}>CaisseMobile</Link>
                         <nav style={{ display: 'flex', gap: '16px' }}>
-                            <Link href="/" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px' }}>Dashboard</Link>
-                            <Link href="/products" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px' }}>Produits</Link>
+                            <Link href="/" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
+                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
+                                onMouseLeave={(e) => e.target.style.color = '#6C757D'}
+                            >Dashboard</Link>
+                            <Link href="/products" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
+                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
+                                onMouseLeave={(e) => e.target.style.color = '#6C757D'}
+                            >Produits</Link>
+                            <Link href="/sales" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
+                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
+                                onMouseLeave={(e) => e.target.style.color = '#6C757D'}
+                            >Ventes</Link>
                             <Link href="/products/low-stock" style={{ color: '#2C3E50', fontWeight: '600', textDecoration: 'none', fontSize: '14px' }}>Alertes stock</Link>
                         </nav>
                     </div>

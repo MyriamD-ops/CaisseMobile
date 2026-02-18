@@ -20,8 +20,8 @@ class AuthController extends Controller
         $user = User::where('username', $request->username)->first();
 
         if (!$user || !Hash::check($request->pin, $user->pin_hash)) {
-            throw ValidationException::withMessages([
-                'username' => ['Les identifiants fournis sont incorrects.'],
+            return back()->withErrors([
+                'username' => 'Les identifiants fournis sont incorrects.',
             ]);
         }
 
