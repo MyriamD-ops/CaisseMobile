@@ -10,6 +10,12 @@ class Evenement extends Model
     protected $table = 'evenements';
     protected $primaryKey = 'id_evenement';
     
+    // Pour que les routes utilisent id_evenement
+    public function getRouteKeyName()
+    {
+        return 'id_evenement';
+    }
+    
     protected $fillable = [
         'nom',
         'lieu',

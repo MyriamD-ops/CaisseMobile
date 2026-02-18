@@ -34,6 +34,12 @@ export default function Dashboard({ auth }) {
                             >
                                 Ventes
                             </Link>
+                            <Link href="/events" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
+                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
+                                onMouseLeave={(e) => e.target.style.color = '#6C757D'}
+                            >
+                                Événements
+                            </Link>
                         </nav>
                     </div>
                     <Link
