@@ -1,7 +1,15 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 
 export default function Index({ products, auth }) {
     const { flash } = usePage().props;
+    
+    const handleDelete = (productId, productName) => {
+        if (confirm(`Êtes-vous sûr de vouloir supprimer "${productName}" ?`)) {
+            router.post(`/products/${productId}`, {
+                _method: 'DELETE'
+            });
+        }
+    };
     
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
@@ -85,17 +93,18 @@ export default function Index({ products, auth }) {
                                         onMouseEnter={(e) => e.target.style.backgroundColor = '#E9ECEF'}
                                         onMouseLeave={(e) => e.target.style.backgroundColor = '#F8F9FA'}
                                     >✏️ Modifier</Link>
-                                    <Link 
-                                        href={'/products/' + product.id_produit} 
-                                        method="delete" 
-                                        as="button"
-                                        onBefore={() => {
-                                            return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');
+                                    <button 
+                                        onClick={() => handleDelete(product.id_produit, product.nom)}
+                                        style={{ padding: '8px 14px', backgroundColor: '#FFF5F5', border: '1px solid #FED7D7', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#C53030', transition: 'all 0.2s' }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.backgroundColor = '#FEE2E2';
                                         }}
-                                        style={{ padding: '8px 14px', backgroundColor: '#FFF5F5', border: '1px solid #FED7D7', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#C53030' }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.backgroundColor = '#FFF5F5';
+                                        }}
                                     >
                                         🗑️ Supprimer
-                                    </Link>
+                                    </button>
                                 </div>
                             </div>
                         ))}
