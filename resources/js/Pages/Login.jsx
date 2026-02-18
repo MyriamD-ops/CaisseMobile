@@ -241,7 +241,11 @@ export default function Login() {
                                 cursor: processing ? 'not-allowed' : 'pointer',
                                 fontSize: '15px',
                                 transition: 'all 0.2s ease',
-                                boxSizing: 'border-box'
+                                boxSizing: 'border-box',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '8px'
                             }}
                             onMouseEnter={(e) => {
                                 if (!processing) {
@@ -258,6 +262,18 @@ export default function Login() {
                                 }
                             }}
                         >
+                            {processing && (
+                                <span style={{ 
+                                    width: '16px', 
+                                    height: '16px', 
+                                    border: '2px solid #FFFFFF', 
+                                    borderTop: '2px solid transparent', 
+                                    borderRadius: '50%', 
+                                    animation: 'spin 0.6s linear infinite',
+                                    display: 'inline-block'
+                                }}></span>
+                            )}
+                            <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
                             {processing ? 'Connexion...' : 'Se connecter'}
                         </button>
                     </form>

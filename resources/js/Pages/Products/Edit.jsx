@@ -121,8 +121,20 @@ export default function Edit({ product }) {
                             </div>
 
                             <div style={{ display: 'flex', gap: '12px', paddingTop: '16px', borderTop: '1px solid #DEE2E6' }}>
-                                <button type="submit" disabled={processing} style={{ flex: 1, padding: '12px', backgroundColor: processing ? '#ADB5BD' : '#343A40', color: '#FFFFFF', fontWeight: '600', borderRadius: '6px', border: 'none', cursor: processing ? 'not-allowed' : 'pointer', fontSize: '14px' }}>
-                                    {processing ? 'Modification...' : 'Enregistrer'}
+                                <button type="submit" disabled={processing} style={{ flex: 1, padding: '12px', backgroundColor: processing ? '#ADB5BD' : '#343A40', color: '#FFFFFF', fontWeight: '600', borderRadius: '6px', border: 'none', cursor: processing ? 'not-allowed' : 'pointer', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                    {processing && (
+                                        <span style={{ 
+                                            width: '14px', 
+                                            height: '14px', 
+                                            border: '2px solid #FFFFFF', 
+                                            borderTop: '2px solid transparent', 
+                                            borderRadius: '50%', 
+                                            animation: 'spin 0.6s linear infinite',
+                                            display: 'inline-block'
+                                        }}></span>
+                                    )}
+                                    <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+                                    {processing ? 'Modification en cours...' : 'Enregistrer'}
                                 </button>
                                 <Link href="/products" style={{ flex: 1, padding: '12px', backgroundColor: '#F8F9FA', color: '#495057', fontWeight: '600', borderRadius: '6px', border: '1px solid #DEE2E6', textAlign: 'center', textDecoration: 'none', fontSize: '14px', display: 'block', boxSizing: 'border-box' }}>Annuler</Link>
                             </div>

@@ -156,7 +156,37 @@ export default function Create({ products }) {
 
                     {/* Panier */}
                     <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '24px', border: '1px solid #DEE2E6', height: 'fit-content' }}>
-                        <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', marginBottom: '16px' }}>Panier ({cart.length})</h2>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                            <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', margin: 0 }}>Panier ({cart.length})</h2>
+                            {cart.length > 0 && (
+                                <button
+                                    onClick={() => {
+                                        if (confirm('Vider tout le panier ?')) {
+                                            setCart([]);
+                                        }
+                                    }}
+                                    style={{
+                                        padding: '6px 12px',
+                                        backgroundColor: '#FFF5F5',
+                                        border: '1px solid #FED7D7',
+                                        borderRadius: '6px',
+                                        cursor: 'pointer',
+                                        fontSize: '12px',
+                                        color: '#C53030',
+                                        fontWeight: '500',
+                                        transition: 'all 0.2s'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.backgroundColor = '#FEE2E2';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.backgroundColor = '#FFF5F5';
+                                    }}
+                                >
+                                    🗑️ Vider
+                                </button>
+                            )}
+                        </div>
 
                         {cart.length === 0 ? (
                             <div style={{ padding: '32px', textAlign: 'center' }}>
@@ -203,8 +233,20 @@ export default function Create({ products }) {
                                         </select>
                                     </div>
 
-                                    <button onClick={handleSubmit} disabled={processing} style={{ width: '100%', padding: '14px', backgroundColor: processing ? '#ADB5BD' : '#343A40', color: '#FFFFFF', fontWeight: '600', borderRadius: '6px', border: 'none', cursor: processing ? 'not-allowed' : 'pointer', fontSize: '15px' }}>
-                                        {processing ? 'Validation...' : 'Valider la vente'}
+                                    <button onClick={handleSubmit} disabled={processing} style={{ width: '100%', padding: '14px', backgroundColor: processing ? '#ADB5BD' : '#343A40', color: '#FFFFFF', fontWeight: '600', borderRadius: '6px', border: 'none', cursor: processing ? 'not-allowed' : 'pointer', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.2s' }}>
+                                        {processing && (
+                                            <span style={{ 
+                                                width: '16px', 
+                                                height: '16px', 
+                                                border: '2px solid #FFFFFF', 
+                                                borderTop: '2px solid transparent', 
+                                                borderRadius: '50%', 
+                                                animation: 'spin 0.6s linear infinite',
+                                                display: 'inline-block'
+                                            }}></span>
+                                        )}
+                                        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+                                        {processing ? 'Validation en cours...' : 'Valider la vente'}
                                     </button>
                                 </div>
                             </div>
