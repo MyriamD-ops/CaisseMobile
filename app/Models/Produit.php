@@ -55,4 +55,16 @@ class Produit extends Model
     {
         return $this->hasMany(AlerteStock::class, 'id_produit', 'id_produit');
     }
+
+    public function evenements()
+    {
+        return $this->belongsToMany(
+            Evenement::class,
+            'evenement_produit',
+            'produit_id',
+            'evenement_id'
+        )
+        ->withPivot('stock_evenement')
+        ->withTimestamps();
+    }
 }
