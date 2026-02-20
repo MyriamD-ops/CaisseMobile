@@ -1,75 +1,11 @@
 import { Link } from '@inertiajs/react';
+import Header from '../Components/Header';
 
 export default function Dashboard({ auth }) {
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
-            {/* Header */}
-            <header style={{
-                backgroundColor: '#FFFFFF',
-                borderBottom: '1px solid #DEE2E6',
-                padding: '16px 24px',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-            }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
-                    <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-                        <h1 style={{ 
-                            fontSize: '20px', 
-                            fontWeight: '600', 
-                            color: '#2C3E50',
-                            margin: 0
-                        }}>
-                            CaisseMobile
-                        </h1>
-                        <nav style={{ display: 'flex', gap: '16px' }}>
-                            <Link href="/" style={{ color: '#2C3E50', fontWeight: '600', textDecoration: 'none', fontSize: '14px' }}>Dashboard</Link>
-                            <Link href="/products" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
-                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
-                                onMouseLeave={(e) => e.target.style.color = '#6C757D'}
-                            >
-                                Produits
-                            </Link>
-                            <Link href="/sales" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
-                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
-                                onMouseLeave={(e) => e.target.style.color = '#6C757D'}
-                            >
-                                Ventes
-                            </Link>
-                            <Link href="/events" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
-                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
-                                onMouseLeave={(e) => e.target.style.color = '#6C757D'}
-                            >
-                                Événements
-                            </Link>
-                        </nav>
-                    </div>
-                    <Link
-                        href="/logout"
-                        method="post"
-                        as="button"
-                        style={{
-                            padding: '8px 16px',
-                            backgroundColor: '#F8F9FA',
-                            border: '1px solid #DEE2E6',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            color: '#495057',
-                            fontWeight: '500',
-                            transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = '#E9ECEF';
-                            e.target.style.borderColor = '#ADB5BD';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = '#F8F9FA';
-                            e.target.style.borderColor = '#DEE2E6';
-                        }}
-                    >
-                        Déconnexion
-                    </Link>
-                </div>
-            </header>
+            <Header currentPage="dashboard" />
+            
 
             {/* Contenu */}
             <main style={{ padding: '32px 24px', maxWidth: '1400px', margin: '0 auto' }}>

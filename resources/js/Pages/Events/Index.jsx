@@ -1,4 +1,5 @@
 import { Link, router } from '@inertiajs/react';
+import Header from '../../Components/Header';
 
 export default function Index({ evenements }) {
     const handleDelete = (id, nom) => {
@@ -19,20 +20,7 @@ export default function Index({ evenements }) {
 
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
-            <header style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #DEE2E6', padding: '16px 24px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
-                    <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-                        <Link href="/" style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', textDecoration: 'none' }}>CaisseMobile</Link>
-                        <nav style={{ display: 'flex', gap: '16px' }}>
-                            <Link href="/" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px' }}>Dashboard</Link>
-                            <Link href="/products" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px' }}>Produits</Link>
-                            <Link href="/sales" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px' }}>Ventes</Link>
-                            <Link href="/events" style={{ color: '#2C3E50', fontWeight: '600', textDecoration: 'none', fontSize: '14px' }}>Événements</Link>
-                        </nav>
-                    </div>
-                    <Link href="/logout" method="post" as="button" style={{ padding: '8px 16px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', color: '#495057' }}>Déconnexion</Link>
-                </div>
-            </header>
+            <Header currentPage="events" />
 
             <main style={{ padding: '32px 24px', maxWidth: '1400px', margin: '0 auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
@@ -61,7 +49,11 @@ export default function Index({ evenements }) {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
                                     <div style={{ flex: 1 }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                                            <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50', margin: 0 }}>{event.nom}</h3>
+                                            <Link href={`/events/${event.id_evenement}/admin`} style={{ textDecoration: 'none' }}>
+                                                <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50', margin: 0, cursor: 'pointer' }}>
+                                                    {event.nom}
+                                                </h3>
+                                            </Link>
                                             {getStatutBadge(event.statut)}
                                         </div>
                                         <div style={{ display: 'flex', gap: '20px', fontSize: '14px', color: '#6C757D', marginBottom: '12px' }}>
@@ -74,9 +66,14 @@ export default function Index({ evenements }) {
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', gap: '8px' }}>
-                                        <Link href={`/events/${event.id_evenement}/admin`} style={{ padding: '8px 14px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '13px', color: '#495057', textDecoration: 'none' }}>📱 QR Code</Link>
-                                        <Link href={`/events/${event.id_evenement}/edit`} style={{ padding: '8px 14px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '13px', color: '#495057', textDecoration: 'none' }}>✏️ Modifier</Link>
-                                        <button onClick={() => handleDelete(event.id_evenement, event.nom)} style={{ padding: '8px 14px', backgroundColor: '#FFF5F5', border: '1px solid #FED7D7', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#C53030' }}>🗑️ Supprimer</button>
+                                        <Link href={`/events/${event.id_evenement}/edit`} style={{ padding: '8px 14px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '13px', color: '#495057', textDecoration: 'none', transition: 'all 0.2s' }}
+                                            onMouseEnter={(e) => e.target.style.backgroundColor = '#E9ECEF'}
+                                            onMouseLeave={(e) => e.target.style.backgroundColor = '#F8F9FA'}
+                                        >✏️ Modifier</Link>
+                                        <button onClick={() => handleDelete(event.id_evenement, event.nom)} style={{ padding: '8px 14px', backgroundColor: '#FFF5F5', border: '1px solid #FED7D7', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#C53030', transition: 'all 0.2s' }}
+                                            onMouseEnter={(e) => e.target.style.backgroundColor = '#FEE2E2'}
+                                            onMouseLeave={(e) => e.target.style.backgroundColor = '#FFF5F5'}
+                                        >🗑️ Supprimer</button>
                                     </div>
                                 </div>
                             </div>

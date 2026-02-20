@@ -1,4 +1,5 @@
 import { Link, usePage, router } from '@inertiajs/react';
+import Header from '../../Components/Header';
 
 export default function Index({ products, auth }) {
     const { flash } = usePage().props;
@@ -13,25 +14,7 @@ export default function Index({ products, auth }) {
     
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
-            <header style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #DEE2E6', padding: '16px 24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
-                    <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-                        <Link href="/" style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', textDecoration: 'none' }}>CaisseMobile</Link>
-                        <nav style={{ display: 'flex', gap: '16px' }}>
-                            <Link href="/" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
-                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
-                                onMouseLeave={(e) => e.target.style.color = '#6C757D'}
-                            >Dashboard</Link>
-                            <Link href="/products" style={{ color: '#2C3E50', fontWeight: '600', textDecoration: 'none', fontSize: '14px' }}>Produits</Link>
-                            <Link href="/sales" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
-                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
-                                onMouseLeave={(e) => e.target.style.color = '#6C757D'}
-                            >Ventes</Link>
-                        </nav>
-                    </div>
-                    <Link href="/logout" method="post" as="button" style={{ padding: '8px 16px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', color: '#495057' }}>Déconnexion</Link>
-                </div>
-            </header>
+            <Header currentPage="products" />
 
             <main style={{ padding: '32px 24px', maxWidth: '1400px', margin: '0 auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
@@ -74,7 +57,14 @@ export default function Index({ products, auth }) {
                                 }}
                             >
                                 <div style={{ flex: 1 }}>
-                                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#2C3E50', marginBottom: '8px' }}>{product.nom}</h3>
+                                    <Link href={'/products/' + product.id_produit} style={{ textDecoration: 'none' }}>
+                                        <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#2C3E50', marginBottom: '8px', cursor: 'pointer', transition: 'color 0.2s' }}
+                                            onMouseEnter={(e) => e.target.style.color = '#5D6D7E'}
+                                            onMouseLeave={(e) => e.target.style.color = '#2C3E50'}
+                                        >
+                                            {product.nom}
+                                        </h3>
+                                    </Link>
                                     <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: '#6C757D' }}>
                                         <span>💰 {product.prix_base}€</span>
                                         <span>📦 Stock: {product.stock_actuel}</span>
@@ -85,10 +75,6 @@ export default function Index({ products, auth }) {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '8px' }}>
-                                    <Link href={'/products/' + product.id_produit} style={{ padding: '8px 14px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#495057', textDecoration: 'none', transition: 'all 0.2s' }}
-                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#E9ECEF'}
-                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#F8F9FA'}
-                                    >📱 QR Code</Link>
                                     <Link href={'/products/' + product.id_produit + '/edit'} style={{ padding: '8px 14px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#495057', textDecoration: 'none', transition: 'all 0.2s' }}
                                         onMouseEnter={(e) => e.target.style.backgroundColor = '#E9ECEF'}
                                         onMouseLeave={(e) => e.target.style.backgroundColor = '#F8F9FA'}

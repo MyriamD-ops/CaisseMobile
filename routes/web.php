@@ -22,6 +22,12 @@ Route::middleware('auth')->group(function () {
         return $inertia->render('Dashboard');
     })->name('dashboard');
     
+    // API pour mode hors ligne
+    Route::prefix('api')->group(function () {
+        Route::get('/products', [ProductController::class, 'apiIndex'])->name('api.products');
+        Route::get('/events', [EvenementController::class, 'apiIndex'])->name('api.events');
+    });
+    
     // Produits
     Route::get('/products/low-stock', [ProductController::class, 'lowStock'])->name('products.lowStock');
     Route::resource('products', ProductController::class);

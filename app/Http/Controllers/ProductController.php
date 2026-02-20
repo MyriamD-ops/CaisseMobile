@@ -8,6 +8,29 @@ use Inertia\ResponseFactory;
 
 class ProductController extends Controller
 {
+    /**
+     * API - Retourne tous les produits en JSON pour IndexedDB
+     */
+    public function apiIndex()
+    {
+        $products = Produit::select(
+            'id_produit',
+            'nom',
+            'description',
+            'prix_base',
+            'stock_actuel',
+            'stock_minimum',
+            'categorie',
+            'matiere',
+            'code_barres',
+            'actif'
+        )
+        ->where('actif', true)
+        ->get();
+
+        return response()->json($products);
+    }
+
     public function index(ResponseFactory $inertia)
     {
         $products = Produit::with('variantes', 'images')
