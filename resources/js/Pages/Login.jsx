@@ -14,7 +14,7 @@ export default function Login() {
         post('/login', {
             onError: (errors) => {
                 console.log('Erreurs de validation:', errors);
-            }
+            },
         });
     };
 
@@ -26,268 +26,105 @@ export default function Login() {
     };
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            background: 'linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '16px',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-        }}>
-            <div style={{ width: '100%', maxWidth: '420px' }}>
-                {/* Logo / Titre */}
-                <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                    <div style={{ 
-                        fontSize: '48px',
-                        marginBottom: '16px',
-                        filter: 'grayscale(100%)'
-                    }}>💎</div>
-                    <h1 style={{
-                        fontSize: '32px',
-                        fontWeight: '600',
-                        color: '#2C3E50',
-                        letterSpacing: '1px',
-                        margin: 0
-                    }}>
+        /* Fond : dégradé vertical blanc cassé → gris doux */
+        <div className="min-h-screen bg-linear-to-b from-snow to-[#D4D4D4] flex items-center justify-center p-4">
+            <div className="w-full max-w-sm">
+
+                {/* ── Logo ── */}
+                <div className="text-center mb-8">
+                    <div className="text-5xl mb-4">💎</div>
+                    <h1 className="text-3xl font-bold text-dark tracking-tight">
                         CaisseMobile
                     </h1>
-                    <p style={{
-                        fontSize: '14px',
-                        color: '#6C757D',
-                        marginTop: '8px',
-                        fontWeight: '400'
-                    }}>
-                        Point de vente artisan
-                    </p>
+                    <p className="text-slate text-sm mt-2">Point de vente artisan</p>
                 </div>
 
-                {/* Carte de connexion */}
-                <div style={{
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 20px rgba(44, 62, 80, 0.08)',
-                    padding: '40px',
-                    border: '1px solid #DEE2E6'
-                }}>
-                    <h2 style={{
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        color: '#2C3E50',
-                        marginBottom: '32px',
-                        textAlign: 'center'
-                    }}>
+                {/* ── Card ── */}
+                <div className="bg-white rounded-2xl border border-[#D8D8D8] shadow-[0_8px_32px_rgba(0,0,0,0.08)] p-8">
+
+                    <h2 className="text-lg font-semibold text-dark text-center mb-7">
                         Connexion
                     </h2>
 
+                    {/* Flash succès */}
                     {flash?.success && (
-                        <div style={{
-                            marginBottom: '24px',
-                            padding: '16px',
-                            backgroundColor: '#F8F9FA',
-                            border: '1px solid #DEE2E6',
-                            borderRadius: '8px',
-                            color: '#2C3E50',
-                            fontSize: '14px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px'
-                        }}>
-                            <span style={{ color: '#495057' }}>✓</span>
-                            {flash.success}
+                        <div className="mb-5 p-4 bg-[#EEFAF5] border border-mint/40 rounded-xl text-[#065F46] text-sm flex items-center gap-2">
+                            <span>✓</span>
+                            <span>{flash.success}</span>
                         </div>
                     )}
 
+                    {/* Erreur */}
                     {(errors.username || errors.pin) && (
-                        <div style={{
-                            marginBottom: '24px',
-                            padding: '16px',
-                            backgroundColor: '#FFF5F5',
-                            border: '1px solid #FED7D7',
-                            borderRadius: '8px',
-                            color: '#C53030',
-                            fontSize: '14px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px'
-                        }}>
-                            <span>⚠</span>
-                            {errors.username || errors.pin}
+                        <div className="mb-5 p-4 bg-[#FFF0E8] border border-ember/50 rounded-xl text-dark text-sm flex items-center gap-2">
+                            <span className="text-ember">⚠</span>
+                            <span>{errors.username || errors.pin}</span>
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit}>
-                        <div style={{ marginBottom: '24px' }}>
-                            <label style={{
-                                display: 'block',
-                                fontSize: '13px',
-                                fontWeight: '500',
-                                color: '#495057',
-                                marginBottom: '8px'
-                            }}>
+                    <form onSubmit={handleSubmit} className="space-y-5">
+
+                        {/* Nom d'utilisateur */}
+                        <div>
+                            <label className="block text-xs font-semibold text-dark uppercase tracking-widest mb-2">
                                 Nom d'utilisateur
                             </label>
                             <input
                                 type="text"
                                 value={data.username}
                                 onChange={(e) => setData('username', e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '12px 16px',
-                                    border: '2px solid #DEE2E6',
-                                    borderRadius: '8px',
-                                    fontSize: '15px',
-                                    color: '#2C3E50',
-                                    backgroundColor: '#FFFFFF',
-                                    outline: 'none',
-                                    transition: 'all 0.2s ease',
-                                    boxSizing: 'border-box'
-                                }}
-                                onFocus={(e) => {
-                                    e.target.style.borderColor = '#495057';
-                                    e.target.style.boxShadow = '0 0 0 3px rgba(73, 80, 87, 0.1)';
-                                }}
-                                onBlur={(e) => {
-                                    e.target.style.borderColor = '#DEE2E6';
-                                    e.target.style.boxShadow = 'none';
-                                }}
+                                className="w-full h-12 px-4 bg-white border border-slate/40 rounded-xl text-dark text-sm placeholder:text-slate/50 focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors"
                                 autoFocus
                                 autoComplete="username"
                             />
                         </div>
 
-                        <div style={{ marginBottom: '32px' }}>
-                            <label style={{
-                                display: 'block',
-                                fontSize: '13px',
-                                fontWeight: '500',
-                                color: '#495057',
-                                marginBottom: '8px'
-                            }}>
+                        {/* Code PIN */}
+                        <div>
+                            <label className="block text-xs font-semibold text-dark uppercase tracking-widest mb-2">
                                 Code PIN
                             </label>
-                            <div style={{ position: 'relative' }}>
+                            <div className="relative">
                                 <input
                                     type={showPin ? 'text' : 'password'}
                                     value={data.pin}
                                     onChange={handlePinChange}
-                                    style={{
-                                        width: '100%',
-                                        padding: '12px 50px 12px 16px',
-                                        border: '2px solid #DEE2E6',
-                                        borderRadius: '8px',
-                                        fontSize: '15px',
-                                        color: '#2C3E50',
-                                        backgroundColor: '#FFFFFF',
-                                        outline: 'none',
-                                        letterSpacing: '6px',
-                                        fontWeight: '600',
-                                        transition: 'all 0.2s ease',
-                                        boxSizing: 'border-box'
-                                    }}
+                                    className="w-full h-12 px-4 pr-12 bg-white border border-slate/40 rounded-xl text-dark text-sm tracking-[0.4em] font-bold focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors"
                                     maxLength="6"
                                     autoComplete="off"
-                                    onFocus={(e) => {
-                                        e.target.style.borderColor = '#495057';
-                                        e.target.style.boxShadow = '0 0 0 3px rgba(73, 80, 87, 0.1)';
-                                    }}
-                                    onBlur={(e) => {
-                                        e.target.style.borderColor = '#DEE2E6';
-                                        e.target.style.boxShadow = 'none';
-                                    }}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPin(!showPin)}
-                                    style={{
-                                        position: 'absolute',
-                                        right: '12px',
-                                        top: '50%',
-                                        transform: 'translateY(-50%)',
-                                        background: 'none',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        fontSize: '18px',
-                                        padding: '8px',
-                                        color: '#6C757D',
-                                        transition: 'color 0.2s'
-                                    }}
-                                    onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
-                                    onMouseLeave={(e) => e.target.style.color = '#6C757D'}
+                                    className="absolute right-0 top-0 w-12 h-12 flex items-center justify-center text-slate hover:text-dark transition-colors"
+                                    aria-label="Afficher/masquer le PIN"
                                 >
                                     {showPin ? '🙈' : '👁️'}
                                 </button>
                             </div>
-                            <p style={{
-                                fontSize: '12px',
-                                color: '#ADB5BD',
-                                marginTop: '8px'
-                            }}>
-                                4 à 6 chiffres
-                            </p>
+                            <p className="text-xs text-slate/60 mt-1.5">4 à 6 chiffres</p>
                         </div>
 
+                        {/* Bouton — dégradé ember */}
                         <button
                             type="submit"
                             disabled={processing}
-                            style={{
-                                width: '100%',
-                                padding: '14px',
-                                backgroundColor: processing ? '#ADB5BD' : '#343A40',
-                                color: '#FFFFFF',
-                                fontWeight: '600',
-                                borderRadius: '8px',
-                                border: 'none',
-                                cursor: processing ? 'not-allowed' : 'pointer',
-                                fontSize: '15px',
-                                transition: 'all 0.2s ease',
-                                boxSizing: 'border-box',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '8px'
-                            }}
-                            onMouseEnter={(e) => {
-                                if (!processing) {
-                                    e.target.style.backgroundColor = '#23272B';
-                                    e.target.style.transform = 'translateY(-1px)';
-                                    e.target.style.boxShadow = '0 4px 12px rgba(52, 58, 64, 0.3)';
-                                }
-                            }}
-                            onMouseLeave={(e) => {
-                                if (!processing) {
-                                    e.target.style.backgroundColor = '#343A40';
-                                    e.target.style.transform = 'translateY(0)';
-                                    e.target.style.boxShadow = 'none';
-                                }
-                            }}
+                            className="w-full h-12 bg-linear-to-r from-ember to-ember-dim hover:brightness-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all"
                         >
                             {processing && (
-                                <span style={{ 
-                                    width: '16px', 
-                                    height: '16px', 
-                                    border: '2px solid #FFFFFF', 
-                                    borderTop: '2px solid transparent', 
-                                    borderRadius: '50%', 
-                                    animation: 'spin 0.6s linear infinite',
-                                    display: 'inline-block'
-                                }}></span>
+                                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                             )}
-                            <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
                             {processing ? 'Connexion...' : 'Se connecter'}
                         </button>
+
                     </form>
                 </div>
 
-                {/* Footer */}
-                <p style={{
-                    textAlign: 'center',
-                    marginTop: '24px',
-                    fontSize: '13px',
-                    color: '#ADB5BD'
-                }}>
+                {/* Version */}
+                <p className="text-center mt-6 text-xs text-slate/60">
                     CaisseMobile · Version 1.0
                 </p>
+
             </div>
         </div>
     );

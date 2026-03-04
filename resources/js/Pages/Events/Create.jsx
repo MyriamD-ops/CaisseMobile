@@ -1,5 +1,6 @@
 import { Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import Header from '../../Components/Header';
 
 export default function Create({ produits }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -8,15 +9,12 @@ export default function Create({ produits }) {
         date_debut: '',
         date_fin: '',
         description: '',
-        produits: []
+        produits: [],
     });
 
     const [selectedProduits, setSelectedProduits] = useState([]);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        post('/events');
-    };
+    // ── handleSubmit (doublon mort) supprimé — seul handleFormSubmit est utilisé ──
 
     const addProduit = (produit) => {
         if (!selectedProduits.find(p => p.id === produit.id_produit)) {
@@ -24,13 +22,13 @@ export default function Create({ produits }) {
                 id: produit.id_produit,
                 nom: produit.nom,
                 stock: 1,
-                stock_max: produit.stock_actuel
+                stock_max: produit.stock_actuel,
             }]);
         }
     };
 
     const updateStock = (id, stock) => {
-        setSelectedProduits(selectedProduits.map(p => 
+        setSelectedProduits(selectedProduits.map(p =>
             p.id === id ? { ...p, stock: Math.min(Math.max(0, stock), p.stock_max) } : p
         ));
     };
@@ -41,116 +39,231 @@ export default function Create({ produits }) {
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
-        
+
         if (selectedProduits.length === 0) {
             alert('⚠️ Aucun produit sélectionné !\n\nVeuillez ajouter au moins un produit à l\'événement.');
             return;
         }
-        
+
         const formData = {
             ...data,
-            produits: selectedProduits.map(p => ({ id: p.id, stock: p.stock }))
+            produits: selectedProduits.map(p => ({ id: p.id, stock: p.stock })),
         };
-        
+
         console.log('📤 Envoi événement:', formData);
         post('/events', formData);
     };
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
-            <header style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #DEE2E6', padding: '16px 24px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Link href="/" style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', textDecoration: 'none' }}>CaisseMobile</Link>
-                    <Link href="/logout" method="post" as="button" style={{ padding: '8px 16px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', color: '#495057' }}>Déconnexion</Link>
-                </div>
-            </header>
+        <div className="min-h-screen bg-night">
+            <Header currentPage="events" />
 
-            <main style={{ padding: '32px 24px' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                    <Link href="/events" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', marginBottom: '24px', display: 'inline-block' }}>← Retour aux événements</Link>
+            <main className="p-4 lg:p-6 max-w-7xl mx-auto">
+                <Link
+                    href="/events"
+                    className="inline-flex items-center gap-1 text-fog hover:text-snow text-sm mb-6 transition-colors"
+                >
+                    ← Retour aux événements
+                </Link>
 
-                    <h2 style={{ fontSize: '24px', fontWeight: '600', color: '#2C3E50', marginBottom: '24px' }}>Nouvel événement</h2>
+                <h2 className="text-2xl font-bold text-snow mb-6">Nouvel événement</h2>
 
-                    <form onSubmit={handleFormSubmit}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
-                            <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '24px', border: '1px solid #DEE2E6' }}>
-                                <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50', marginBottom: '16px' }}>Informations</h3>
-                                
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <form onSubmit={handleFormSubmit}>
+                    <div className="lg:grid lg:grid-cols-[2fr_1fr] lg:gap-6 lg:items-start">
+
+                        {/* ── Colonne gauche : informations + produits disponibles ── */}
+                        <div className="space-y-6">
+
+                            {/* Bloc informations */}
+                            <div className="bg-surface rounded-2xl border border-ink p-5 lg:p-6">
+                                <h3 className="text-base font-semibold text-snow mb-5">Informations</h3>
+
+                                <div className="space-y-4">
+                                    {/* Nom */}
                                     <div>
-                                        <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>Nom de l'événement *</label>
-                                        <input type="text" value={data.nom} onChange={(e) => setData('nom', e.target.value)} placeholder="Marché de Noël 2026" style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }} />
-                                        {errors.nom && <p style={{ color: '#C53030', fontSize: '13px', marginTop: '4px' }}>{errors.nom}</p>}
+                                        <label className="block text-xs font-semibold text-fog uppercase tracking-widest mb-2">
+                                            Nom de l'événement *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={data.nom}
+                                            onChange={(e) => setData('nom', e.target.value)}
+                                            placeholder="Marché de Noël 2026"
+                                            className="w-full h-11 px-4 bg-night border border-ink rounded-xl text-snow text-sm placeholder:text-fog/40 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-colors"
+                                        />
+                                        {errors.nom && (
+                                            <p className="text-ruby text-xs mt-1.5">{errors.nom}</p>
+                                        )}
                                     </div>
 
+                                    {/* Lieu */}
                                     <div>
-                                        <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>Lieu</label>
-                                        <input type="text" value={data.lieu} onChange={(e) => setData('lieu', e.target.value)} placeholder="Place du marché" style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }} />
+                                        <label className="block text-xs font-semibold text-fog uppercase tracking-widest mb-2">
+                                            Lieu
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={data.lieu}
+                                            onChange={(e) => setData('lieu', e.target.value)}
+                                            placeholder="Place du marché"
+                                            className="w-full h-11 px-4 bg-night border border-ink rounded-xl text-snow text-sm placeholder:text-fog/40 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-colors"
+                                        />
                                     </div>
 
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                                    {/* Dates : côte à côte sur sm+, empilées sur xs */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
-                                            <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>Date début *</label>
-                                            <input type="date" value={data.date_debut} onChange={(e) => setData('date_debut', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }} />
-                                            {errors.date_debut && <p style={{ color: '#C53030', fontSize: '13px', marginTop: '4px' }}>{errors.date_debut}</p>}
+                                            <label className="block text-xs font-semibold text-fog uppercase tracking-widest mb-2">
+                                                Date début *
+                                            </label>
+                                            <input
+                                                type="date"
+                                                value={data.date_debut}
+                                                onChange={(e) => setData('date_debut', e.target.value)}
+                                                className="w-full h-11 px-4 bg-night border border-ink rounded-xl text-snow text-sm focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-colors"
+                                            />
+                                            {errors.date_debut && (
+                                                <p className="text-ruby text-xs mt-1.5">{errors.date_debut}</p>
+                                            )}
                                         </div>
                                         <div>
-                                            <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>Date fin *</label>
-                                            <input type="date" value={data.date_fin} onChange={(e) => setData('date_fin', e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }} />
-                                            {errors.date_fin && <p style={{ color: '#C53030', fontSize: '13px', marginTop: '4px' }}>{errors.date_fin}</p>}
+                                            <label className="block text-xs font-semibold text-fog uppercase tracking-widest mb-2">
+                                                Date fin *
+                                            </label>
+                                            <input
+                                                type="date"
+                                                value={data.date_fin}
+                                                onChange={(e) => setData('date_fin', e.target.value)}
+                                                className="w-full h-11 px-4 bg-night border border-ink rounded-xl text-snow text-sm focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-colors"
+                                            />
+                                            {errors.date_fin && (
+                                                <p className="text-ruby text-xs mt-1.5">{errors.date_fin}</p>
+                                            )}
                                         </div>
                                     </div>
 
+                                    {/* Description */}
                                     <div>
-                                        <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>Description</label>
-                                        <textarea value={data.description} onChange={(e) => setData('description', e.target.value)} rows="3" style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', fontFamily: 'inherit', boxSizing: 'border-box' }} />
+                                        <label className="block text-xs font-semibold text-fog uppercase tracking-widest mb-2">
+                                            Description
+                                        </label>
+                                        <textarea
+                                            value={data.description}
+                                            onChange={(e) => setData('description', e.target.value)}
+                                            rows="3"
+                                            className="w-full px-4 py-3 bg-night border border-ink rounded-xl text-snow text-sm placeholder:text-fog/40 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-colors resize-none font-sans"
+                                        />
                                     </div>
-                                </div>
-
-                                <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50', marginTop: '32px', marginBottom: '16px' }}>Produits disponibles</h3>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px', maxHeight: '400px', overflowY: 'auto' }}>
-                                    {produits.map((produit) => (
-                                        <button key={produit.id_produit} type="button" onClick={() => addProduit(produit)} disabled={selectedProduits.find(p => p.id === produit.id_produit)} style={{ padding: '12px', backgroundColor: selectedProduits.find(p => p.id === produit.id_produit) ? '#F8F9FA' : '#FFFFFF', border: '1px solid #DEE2E6', borderRadius: '6px', cursor: selectedProduits.find(p => p.id === produit.id_produit) ? 'not-allowed' : 'pointer', textAlign: 'left', transition: 'all 0.2s' }}>
-                                            <div style={{ fontSize: '14px', fontWeight: '600', color: '#2C3E50', marginBottom: '4px' }}>{produit.nom}</div>
-                                            <div style={{ fontSize: '13px', color: '#6C757D' }}>Stock: {produit.stock_actuel}</div>
-                                        </button>
-                                    ))}
                                 </div>
                             </div>
 
-                            <div>
-                                <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '24px', border: '1px solid #DEE2E6', position: 'sticky', top: '24px' }}>
-                                    <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50', marginBottom: '16px' }}>Produits sélectionnés ({selectedProduits.length})</h3>
-                                    
-                                    {selectedProduits.length === 0 ? (
-                                        <p style={{ color: '#6C757D', fontSize: '14px', textAlign: 'center', padding: '32px 0' }}>Aucun produit sélectionné</p>
-                                    ) : (
-                                        <div style={{ marginBottom: '16px', maxHeight: '300px', overflowY: 'auto' }}>
-                                            {selectedProduits.map((p) => (
-                                                <div key={p.id} style={{ padding: '12px', backgroundColor: '#F8F9FA', borderRadius: '6px', marginBottom: '8px' }}>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '8px' }}>
-                                                        <span style={{ fontSize: '14px', fontWeight: '600', color: '#2C3E50', flex: 1 }}>{p.nom}</span>
-                                                        <button type="button" onClick={() => removeProduit(p.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', color: '#C53030' }}>×</button>
-                                                    </div>
-                                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                                        <button type="button" onClick={() => updateStock(p.id, p.stock - 1)} style={{ padding: '4px 12px', backgroundColor: '#FFFFFF', border: '1px solid #DEE2E6', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' }}>−</button>
-                                                        <input type="number" value={p.stock} onChange={(e) => updateStock(p.id, parseInt(e.target.value) || 0)} style={{ width: '50px', padding: '4px', textAlign: 'center', border: '1px solid #DEE2E6', borderRadius: '4px', fontSize: '14px' }} />
-                                                        <button type="button" onClick={() => updateStock(p.id, p.stock + 1)} style={{ padding: '4px 12px', backgroundColor: '#FFFFFF', border: '1px solid #DEE2E6', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' }}>+</button>
-                                                        <span style={{ fontSize: '12px', color: '#6C757D', marginLeft: 'auto' }}>Max: {p.stock_max}</span>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-
-                                    <button type="submit" disabled={processing} style={{ width: '100%', padding: '12px', backgroundColor: processing ? '#ADB5BD' : '#343A40', color: '#FFFFFF', fontWeight: '600', borderRadius: '6px', border: 'none', cursor: processing ? 'not-allowed' : 'pointer', fontSize: '14px' }}>
-                                        {processing ? 'Création...' : 'Créer l\'événement'}
-                                    </button>
+                            {/* Bloc produits disponibles */}
+                            <div className="bg-surface rounded-2xl border border-ink p-5 lg:p-6">
+                                <h3 className="text-base font-semibold text-snow mb-4">
+                                    Produits disponibles
+                                </h3>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto pr-1">
+                                    {produits.map((produit) => {
+                                        const dejaSel = !!selectedProduits.find(p => p.id === produit.id_produit);
+                                        return (
+                                            <button
+                                                key={produit.id_produit}
+                                                type="button"
+                                                onClick={() => addProduit(produit)}
+                                                disabled={dejaSel}
+                                                className={`p-4 rounded-xl text-left border transition-all ${
+                                                    dejaSel
+                                                        ? 'bg-gold/10 border-gold/30 cursor-not-allowed'
+                                                        : 'bg-night border-ink hover:border-gold/50 hover:bg-gold/5 cursor-pointer'
+                                                }`}
+                                            >
+                                                <p className="text-sm font-semibold text-snow truncate mb-1">
+                                                    {produit.nom}
+                                                </p>
+                                                <p className="text-xs text-fog">
+                                                    Stock : {produit.stock_actuel}
+                                                </p>
+                                                {dejaSel && (
+                                                    <p className="text-xs text-gold mt-1 font-medium">✓ Ajouté</p>
+                                                )}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </div>
+
+                        {/* ── Colonne droite : sélection + submit ── */}
+                        {/* Sur mobile : affiché après les blocs gauche, pleine largeur */}
+                        {/* Sur desktop : sidebar sticky */}
+                        <div className="mt-6 lg:mt-0 lg:sticky lg:top-6">
+                            <div className="bg-surface rounded-2xl border border-ink p-5 lg:p-6">
+                                <h3 className="text-base font-semibold text-snow mb-4">
+                                    Produits sélectionnés
+                                    <span className="ml-2 px-2 py-0.5 bg-gold/15 text-gold text-xs rounded-full font-bold">
+                                        {selectedProduits.length}
+                                    </span>
+                                </h3>
+
+                                {selectedProduits.length === 0 ? (
+                                    <p className="text-fog text-sm text-center py-8">
+                                        Aucun produit sélectionné
+                                    </p>
+                                ) : (
+                                    <div className="space-y-3 mb-5 max-h-72 overflow-y-auto pr-1">
+                                        {selectedProduits.map((p) => (
+                                            <div key={p.id} className="bg-night rounded-xl p-3 border border-ink">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <span className="text-sm font-medium text-snow truncate flex-1 mr-2">
+                                                        {p.nom}
+                                                    </span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeProduit(p.id)}
+                                                        className="w-7 h-7 flex items-center justify-center text-ruby hover:bg-ruby/10 rounded-lg transition-colors text-lg leading-none shrink-0"
+                                                    >×</button>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => updateStock(p.id, p.stock - 1)}
+                                                        className="w-11 h-11 flex items-center justify-center bg-ink rounded-xl text-snow hover:bg-gold/10 hover:text-gold transition-colors font-bold text-lg shrink-0"
+                                                    >−</button>
+                                                    <input
+                                                        type="number"
+                                                        value={p.stock}
+                                                        onChange={(e) => updateStock(p.id, parseInt(e.target.value) || 0)}
+                                                        className="w-14 h-11 text-center bg-ink border border-ink rounded-xl text-snow text-sm focus:outline-none focus:border-gold transition-colors"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => updateStock(p.id, p.stock + 1)}
+                                                        className="w-11 h-11 flex items-center justify-center bg-ink rounded-xl text-snow hover:bg-gold/10 hover:text-gold transition-colors font-bold text-lg shrink-0"
+                                                    >+</button>
+                                                    <span className="ml-auto text-xs text-fog shrink-0">
+                                                        Max : {p.stock_max}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <button
+                                    type="submit"
+                                    disabled={processing}
+                                    className="w-full h-12 bg-gold hover:bg-gold-dim disabled:opacity-50 disabled:cursor-not-allowed text-night font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
+                                >
+                                    {processing && (
+                                        <span className="w-4 h-4 border-2 border-night/30 border-t-night rounded-full animate-spin" />
+                                    )}
+                                    {processing ? 'Création...' : "Créer l'événement"}
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
             </main>
         </div>
     );
