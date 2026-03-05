@@ -14,12 +14,12 @@ export default function Header({ currentPage = 'dashboard' }) {
     ];
 
     return (
-        <header className="bg-surface border-b border-ink">
+        <header className="bg-snow border-b-2 border-slate/30 shadow-sm">
             {/* ── barre principale ── */}
             <div className="flex items-center justify-between px-4 h-14 max-w-7xl mx-auto">
 
                 {/* Logo */}
-                <Link href="/" className="text-gold font-bold text-lg tracking-tight shrink-0">
+                <Link href="/" className="text-ember font-bold text-lg tracking-tight shrink-0">
                     CaisseMobile
                 </Link>
 
@@ -31,8 +31,8 @@ export default function Header({ currentPage = 'dashboard' }) {
                             href={item.href}
                             className={`text-sm font-medium transition-colors ${
                                 currentPage === item.key
-                                    ? 'text-gold'
-                                    : 'text-fog hover:text-snow'
+                                    ? 'text-ember'
+                                    : 'text-slate hover:text-dark'
                             }`}
                         >
                             {item.name}
@@ -56,7 +56,7 @@ export default function Header({ currentPage = 'dashboard' }) {
                         href="/logout"
                         method="post"
                         as="button"
-                        className="hidden lg:flex items-center justify-center h-9 px-4 bg-ink hover:bg-ink/70 text-fog hover:text-snow border border-ink rounded-lg text-sm font-medium transition-colors"
+                        className="hidden lg:flex items-center justify-center h-9 px-4 bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark border border-slate/20 rounded-lg text-sm font-medium transition-colors"
                     >
                         Déconnexion
                     </Link>
@@ -64,7 +64,7 @@ export default function Header({ currentPage = 'dashboard' }) {
                     {/* Hamburger — mobile uniquement */}
                     <button
                         onClick={() => setMenuOpen(!menuOpen)}
-                        className="lg:hidden flex items-center justify-center w-11 h-11 rounded-xl bg-ink text-fog hover:text-snow transition-colors"
+                        className="lg:hidden flex items-center justify-center w-11 h-11 rounded-xl bg-slate/10 text-slate hover:text-dark transition-colors"
                         aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
                         aria-expanded={menuOpen}
                     >
@@ -85,17 +85,17 @@ export default function Header({ currentPage = 'dashboard' }) {
 
             {/* ── Menu mobile déroulant ── */}
             {menuOpen && (
-                <div className="lg:hidden border-t border-ink bg-surface">
+                <div className="lg:hidden border-t border-slate/20 bg-white">
                     <nav className="px-4">
                         {navItems.map((item) => (
                             <Link
                                 key={item.key}
                                 href={item.href}
                                 onClick={() => setMenuOpen(false)}
-                                className={`flex items-center h-12 text-sm font-medium border-b border-ink last:border-b-0 transition-colors ${
+                                className={`flex items-center h-12 text-sm font-medium border-b border-slate/10 last:border-b-0 transition-colors ${
                                     currentPage === item.key
-                                        ? 'text-gold'
-                                        : 'text-fog hover:text-snow'
+                                        ? 'text-ember'
+                                        : 'text-slate hover:text-dark'
                                 }`}
                             >
                                 {item.name}
@@ -103,7 +103,7 @@ export default function Header({ currentPage = 'dashboard' }) {
                         ))}
 
                         {/* Pied du menu : badge (xs) + déconnexion */}
-                        <div className="flex items-center justify-between py-3 border-t border-ink">
+                        <div className="flex items-center justify-between py-3 border-t border-slate/10">
                             {/* Badge online sur xs (caché sur sm+ car déjà dans la barre) */}
                             <div className={`flex sm:hidden items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
                                 isOnline ? 'bg-mint/10 text-mint' : 'bg-ruby/10 text-ruby'
@@ -115,7 +115,7 @@ export default function Header({ currentPage = 'dashboard' }) {
                                 href="/logout"
                                 method="post"
                                 as="button"
-                                className="flex items-center justify-center h-11 px-5 bg-ink hover:bg-ink/70 text-fog hover:text-snow rounded-xl text-sm font-medium transition-colors ml-auto"
+                                className="flex items-center justify-center h-11 px-5 bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark rounded-xl text-sm font-medium transition-colors ml-auto"
                             >
                                 Déconnexion
                             </Link>

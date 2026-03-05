@@ -10,70 +10,103 @@ export default function Index({ evenements }) {
 
     const getStatutBadge = (statut) => {
         const styles = {
-            planifie: { bg: '#F8F9FA', color: '#495057', text: '📅 Planifié' },
-            en_cours: { bg: '#E8F5E9', color: '#2E7D32', text: '✅ En cours' },
-            termine: { bg: '#F5F5F5', color: '#757575', text: '🏁 Terminé' }
+            planifie: 'bg-slate/10 text-slate border-slate/20',
+            en_cours: 'bg-mint/10 text-mint border-mint/20',
+            termine:  'bg-slate/10 text-slate/60 border-slate/10',
         };
-        const s = styles[statut] || styles.planifie;
-        return <span style={{ padding: '4px 12px', backgroundColor: s.bg, color: s.color, borderRadius: '4px', fontSize: '12px', fontWeight: '500' }}>{s.text}</span>;
+        const labels = {
+            planifie: '📅 Planifié',
+            en_cours: '✅ En cours',
+            termine:  '🏁 Terminé',
+        };
+        return (
+            <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${styles[statut] || styles.planifie}`}>
+                {labels[statut] || labels.planifie}
+            </span>
+        );
     };
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+        <div className="min-h-screen bg-snow">
             <Header currentPage="events" />
 
-            <main style={{ padding: '32px 24px', maxWidth: '1400px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+            <main className="p-4 lg:p-6 max-w-7xl mx-auto">
+
+                {/* En-tête */}
+                <div className="flex items-start justify-between gap-4 mb-6">
                     <div>
-                        <h2 style={{ fontSize: '28px', fontWeight: '600', color: '#2C3E50', marginBottom: '4px' }}>Événements</h2>
-                        <p style={{ color: '#6C757D', fontSize: '14px' }}>{evenements.length} événement{evenements.length > 1 ? 's' : ''}</p>
+                        <h2 className="text-2xl font-bold text-dark">Événements</h2>
+                        <p className="text-slate text-sm mt-1">
+                            {evenements.length} événement{evenements.length > 1 ? 's' : ''}
+                        </p>
                     </div>
-                    <Link href="/events/create" style={{ padding: '10px 20px', backgroundColor: '#343A40', color: '#FFFFFF', fontWeight: '500', borderRadius: '6px', textDecoration: 'none', fontSize: '14px' }}>
+                    <Link
+                        href="/events/create"
+                        className="shrink-0 flex items-center justify-center h-11 px-5 bg-ember hover:bg-ember-dim text-white font-bold rounded-xl text-sm transition-colors"
+                    >
                         + Nouvel événement
                     </Link>
                 </div>
 
+                {/* État vide */}
                 {evenements.length === 0 ? (
-                    <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '64px', textAlign: 'center', border: '1px solid #DEE2E6' }}>
-                        <p style={{ fontSize: '48px', marginBottom: '16px', filter: 'grayscale(100%)' }}>🎪</p>
-                        <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50', marginBottom: '8px' }}>Aucun événement</h3>
-                        <p style={{ color: '#6C757D', marginBottom: '24px', fontSize: '14px' }}>Créez votre premier événement</p>
-                        <Link href="/events/create" style={{ padding: '10px 20px', backgroundColor: '#343A40', color: '#FFFFFF', fontWeight: '500', borderRadius: '6px', textDecoration: 'none', fontSize: '14px', display: 'inline-block' }}>Créer un événement</Link>
+                    <div className="bg-white rounded-2xl border border-slate/20 p-12 text-center">
+                        <p className="text-5xl mb-4 grayscale">🎪</p>
+                        <h3 className="text-lg font-semibold text-dark mb-2">Aucun événement</h3>
+                        <p className="text-slate text-sm mb-6">Créez votre premier événement</p>
+                        <Link
+                            href="/events/create"
+                            className="inline-flex items-center justify-center h-11 px-6 bg-ember hover:bg-ember-dim text-white font-bold rounded-xl text-sm transition-colors"
+                        >
+                            Créer un événement
+                        </Link>
                     </div>
                 ) : (
-                    <div style={{ display: 'grid', gap: '16px' }}>
+                    <div className="flex flex-col gap-3">
                         {evenements.map((event) => (
-                            <div key={event.id_evenement} style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '24px', border: '1px solid #DEE2E6', transition: 'all 0.2s' }}
-                                onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)'}
-                                onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                                    <div style={{ flex: 1 }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                                            <Link href={`/events/${event.id_evenement}/admin`} style={{ textDecoration: 'none' }}>
-                                                <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50', margin: 0, cursor: 'pointer' }}>
+                            <div
+                                key={event.id_evenement}
+                                className="bg-white rounded-2xl border border-slate/20 p-5 hover:border-slate/40 hover:shadow-sm transition-all"
+                            >
+                                <div className="flex justify-between items-start gap-4">
+                                    <div className="flex-1 min-w-0">
+                                        {/* Nom + statut */}
+                                        <div className="flex items-center gap-3 mb-2 flex-wrap">
+                                            <Link href={`/events/${event.id_evenement}/admin`}>
+                                                <h3 className="text-base font-semibold text-dark hover:text-ember transition-colors">
                                                     {event.nom}
                                                 </h3>
                                             </Link>
                                             {getStatutBadge(event.statut)}
                                         </div>
-                                        <div style={{ display: 'flex', gap: '20px', fontSize: '14px', color: '#6C757D', marginBottom: '12px' }}>
+
+                                        {/* Méta */}
+                                        <div className="flex flex-wrap gap-4 text-sm text-slate mb-3">
                                             <span>📍 {event.lieu || 'Non précisé'}</span>
                                             <span>📅 Du {new Date(event.date_debut).toLocaleDateString('fr-FR')} au {new Date(event.date_fin).toLocaleDateString('fr-FR')}</span>
                                             <span>📦 {event.produits_count} produit{event.produits_count > 1 ? 's' : ''}</span>
                                         </div>
-                                        <div style={{ padding: '8px 12px', backgroundColor: '#F8F9FA', borderRadius: '6px', display: 'inline-block' }}>
-                                            <span style={{ fontSize: '12px', color: '#6C757D', fontFamily: 'monospace' }}>Code: {event.code_unique}</span>
+
+                                        {/* Code unique */}
+                                        <div className="inline-block px-3 py-1.5 bg-slate/5 border border-slate/10 rounded-lg">
+                                            <span className="text-xs text-slate font-mono">Code : {event.code_unique}</span>
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '8px' }}>
-                                        <Link href={`/events/${event.id_evenement}/edit`} style={{ padding: '8px 14px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '13px', color: '#495057', textDecoration: 'none', transition: 'all 0.2s' }}
-                                            onMouseEnter={(e) => e.target.style.backgroundColor = '#E9ECEF'}
-                                            onMouseLeave={(e) => e.target.style.backgroundColor = '#F8F9FA'}
-                                        >✏️ Modifier</Link>
-                                        <button onClick={() => handleDelete(event.id_evenement, event.nom)} style={{ padding: '8px 14px', backgroundColor: '#FFF5F5', border: '1px solid #FED7D7', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#C53030', transition: 'all 0.2s' }}
-                                            onMouseEnter={(e) => e.target.style.backgroundColor = '#FEE2E2'}
-                                            onMouseLeave={(e) => e.target.style.backgroundColor = '#FFF5F5'}
-                                        >🗑️ Supprimer</button>
+
+                                    {/* Actions */}
+                                    <div className="flex gap-2 shrink-0">
+                                        <Link
+                                            href={`/events/${event.id_evenement}/edit`}
+                                            className="h-9 px-4 flex items-center bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark rounded-xl text-sm font-medium transition-colors"
+                                        >
+                                            ✏️ Modifier
+                                        </Link>
+                                        <button
+                                            onClick={() => handleDelete(event.id_evenement, event.nom)}
+                                            className="h-9 px-4 flex items-center bg-ruby/10 hover:bg-ruby/20 text-ruby rounded-xl text-sm font-medium transition-colors border border-ruby/20"
+                                        >
+                                            🗑️ Supprimer
+                                        </button>
                                     </div>
                                 </div>
                             </div>

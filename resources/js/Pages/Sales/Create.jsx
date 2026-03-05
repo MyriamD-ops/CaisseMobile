@@ -183,14 +183,14 @@ export default function Create({ products: serverProducts }) {
         });
     };
 
-    // ── JSX du contenu panier (utilisé dans sidebar desktop ET bottom sheet mobile) ──
+    // ── JSX du contenu panier (sidebar desktop + bottom sheet mobile) ──────────
     const renderCartContent = (onClose) => (
         <div className="flex flex-col h-full">
             {/* En-tête panier */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-ink shrink-0">
-                <h2 className="font-semibold text-snow">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-slate/20 shrink-0">
+                <h2 className="font-semibold text-dark">
                     Panier
-                    <span className="ml-2 px-2 py-0.5 bg-gold/15 text-gold text-xs rounded-full font-bold">
+                    <span className="ml-2 px-2 py-0.5 bg-ember/10 text-ember text-xs rounded-full font-bold">
                         {cart.length}
                     </span>
                 </h2>
@@ -198,14 +198,14 @@ export default function Create({ products: serverProducts }) {
                     {cart.length > 0 && (
                         showClearConfirm ? (
                             <div className="flex items-center gap-2 text-sm">
-                                <span className="text-fog text-xs">Vider ?</span>
+                                <span className="text-slate text-xs">Vider ?</span>
                                 <button
                                     onClick={() => { setCart([]); setShowClearConfirm(false); }}
                                     className="text-ruby text-xs font-semibold hover:opacity-80 transition-opacity"
                                 >Oui</button>
                                 <button
                                     onClick={() => setShowClearConfirm(false)}
-                                    className="text-fog text-xs hover:text-snow transition-colors"
+                                    className="text-slate text-xs hover:text-dark transition-colors"
                                 >Non</button>
                             </div>
                         ) : (
@@ -220,7 +220,7 @@ export default function Create({ products: serverProducts }) {
                     {onClose && (
                         <button
                             onClick={onClose}
-                            className="flex items-center justify-center w-8 h-8 rounded-lg bg-ink text-fog hover:text-snow transition-colors text-lg leading-none"
+                            className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate/10 text-slate hover:text-dark transition-colors text-lg leading-none"
                         >
                             ×
                         </button>
@@ -233,16 +233,16 @@ export default function Create({ products: serverProducts }) {
                 {cart.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 text-center">
                         <span className="text-4xl mb-3 grayscale">🛒</span>
-                        <p className="text-fog text-sm">Panier vide</p>
-                        <p className="text-fog/50 text-xs mt-1">Appuyez sur un produit pour l'ajouter</p>
+                        <p className="text-slate text-sm">Panier vide</p>
+                        <p className="text-slate/50 text-xs mt-1">Appuyez sur un produit pour l'ajouter</p>
                     </div>
                 ) : (
                     cart.map((item) => (
-                        <div key={item.id_produit} className="bg-night rounded-xl p-3 border border-ink">
+                        <div key={item.id_produit} className="bg-snow rounded-xl p-3 border border-slate/20">
                             <div className="flex items-start justify-between mb-2">
                                 <div className="flex-1 min-w-0 mr-2">
-                                    <p className="text-sm font-medium text-snow truncate">{item.nom}</p>
-                                    <p className="text-xs text-fog mt-0.5">{item.prix_unitaire}€ × {item.quantite}</p>
+                                    <p className="text-sm font-medium text-dark truncate">{item.nom}</p>
+                                    <p className="text-xs text-slate mt-0.5">{item.prix_unitaire}€ × {item.quantite}</p>
                                 </div>
                                 <button
                                     onClick={() => removeFromCart(item.id_produit)}
@@ -252,19 +252,19 @@ export default function Create({ products: serverProducts }) {
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => updateQuantity(item.id_produit, item.quantite - 1)}
-                                    className="w-11 h-11 flex items-center justify-center bg-ink rounded-xl text-snow hover:bg-gold/10 hover:text-gold transition-colors font-bold text-lg shrink-0"
+                                    className="w-11 h-11 flex items-center justify-center bg-slate/10 hover:bg-ember/10 hover:text-ember text-dark rounded-xl transition-colors font-bold text-lg shrink-0"
                                 >−</button>
                                 <input
                                     type="number"
                                     value={item.quantite}
                                     onChange={(e) => updateQuantity(item.id_produit, parseInt(e.target.value) || 0)}
-                                    className="w-14 h-11 text-center bg-ink border border-ink rounded-xl text-snow text-sm focus:outline-none focus:border-gold transition-colors"
+                                    className="w-14 h-11 text-center bg-white border border-slate/30 rounded-xl text-dark text-sm focus:outline-none focus:border-ember transition-colors"
                                 />
                                 <button
                                     onClick={() => updateQuantity(item.id_produit, item.quantite + 1)}
-                                    className="w-11 h-11 flex items-center justify-center bg-ink rounded-xl text-snow hover:bg-gold/10 hover:text-gold transition-colors font-bold text-lg shrink-0"
+                                    className="w-11 h-11 flex items-center justify-center bg-slate/10 hover:bg-ember/10 hover:text-ember text-dark rounded-xl transition-colors font-bold text-lg shrink-0"
                                 >+</button>
-                                <span className="ml-auto text-sm font-bold text-gold shrink-0">
+                                <span className="ml-auto text-sm font-bold text-ember shrink-0">
                                     {(item.prix_unitaire * item.quantite).toFixed(2)}€
                                 </span>
                             </div>
@@ -275,16 +275,16 @@ export default function Create({ products: serverProducts }) {
 
             {/* Pied panier : total + paiement + valider */}
             {cart.length > 0 && (
-                <div className="p-4 border-t border-ink space-y-3 shrink-0">
+                <div className="p-4 border-t border-slate/20 space-y-3 shrink-0">
                     <div className="flex justify-between items-center">
-                        <span className="text-fog text-sm font-medium">Total</span>
-                        <span className="text-2xl font-bold text-gold">{total.toFixed(2)}€</span>
+                        <span className="text-slate text-sm font-medium">Total</span>
+                        <span className="text-2xl font-bold text-dark">{total.toFixed(2)}€</span>
                     </div>
 
                     <select
                         value={moyenPaiement}
                         onChange={(e) => setMoyenPaiement(e.target.value)}
-                        className="w-full h-11 px-3 bg-night border border-ink rounded-xl text-snow text-sm focus:outline-none focus:border-gold transition-colors"
+                        className="w-full h-11 px-3 bg-white border border-slate/40 rounded-xl text-dark text-sm focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors"
                     >
                         <option value="Espèces">Espèces</option>
                         <option value="Carte bancaire">Carte bancaire</option>
@@ -295,10 +295,10 @@ export default function Create({ products: serverProducts }) {
                     <button
                         onClick={handleSubmit}
                         disabled={processing}
-                        className="w-full h-12 bg-gold hover:bg-gold-dim disabled:opacity-50 disabled:cursor-not-allowed text-night font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
+                        className="w-full h-12 bg-linear-to-r from-ember to-ember-dim hover:brightness-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm shadow-ember/20"
                     >
                         {processing && (
-                            <span className="w-4 h-4 border-2 border-night/30 border-t-night rounded-full animate-spin" />
+                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         )}
                         {processing ? 'Traitement...' : (isOnline ? 'Valider la vente' : '💾 Sauvegarder hors ligne')}
                     </button>
@@ -310,20 +310,23 @@ export default function Create({ products: serverProducts }) {
     // ── Rendu principal ────────────────────────────────────────────────────────
 
     return (
-        <div className="min-h-screen bg-night">
+        <div className="min-h-screen bg-snow">
             <Header currentPage="sales" />
 
             {/* Toast notification */}
             {notification && (
                 <div className={`fixed top-4 left-4 right-4 z-50 p-4 rounded-xl text-sm font-medium flex items-start gap-3 shadow-xl ${
                     notification.type === 'success'
-                        ? 'bg-mint/20 border border-mint/40 text-mint'
-                        : 'bg-ruby/20 border border-ruby/40 text-ruby'
+                        ? 'bg-mint/10 border border-mint/40 text-dark'
+                        : 'bg-ruby/5 border border-ruby/30 text-dark'
                 }`}>
+                    <span className={`text-lg leading-none mt-0.5 ${notification.type === 'success' ? 'text-mint' : 'text-ruby'}`}>
+                        {notification.type === 'success' ? '✓' : '⚠'}
+                    </span>
                     <span className="flex-1 leading-relaxed">{notification.message}</span>
                     <button
                         onClick={() => setNotification(null)}
-                        className="text-current opacity-60 hover:opacity-100 font-bold text-lg leading-none shrink-0"
+                        className="text-slate hover:text-dark font-bold text-lg leading-none shrink-0"
                     >×</button>
                 </div>
             )}
@@ -337,17 +340,17 @@ export default function Create({ products: serverProducts }) {
                 <div className="lg:grid lg:grid-cols-[2fr_1fr] lg:gap-6 lg:h-[calc(100vh-8rem)]">
 
                     {/* ── Colonne produits ── */}
-                    <div className="bg-surface rounded-2xl border border-ink flex flex-col overflow-hidden mb-4 lg:mb-0">
+                    <div className="bg-white rounded-2xl border border-slate/20 shadow-sm flex flex-col overflow-hidden mb-4 lg:mb-0">
                         {/* Barre de recherche */}
-                        <div className="p-4 border-b border-ink shrink-0">
-                            <h2 className="text-base font-semibold text-snow mb-3">Produits</h2>
+                        <div className="p-4 border-b border-slate/20 shrink-0">
+                            <h2 className="text-base font-semibold text-dark mb-3">Produits</h2>
                             <div className="flex gap-2">
                                 <input
                                     type="text"
                                     placeholder="Rechercher..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="flex-1 h-11 px-4 bg-night border border-ink rounded-xl text-snow text-sm placeholder:text-fog/50 focus:outline-none focus:border-gold transition-colors"
+                                    className="flex-1 h-11 px-4 bg-snow border border-slate/30 rounded-xl text-dark text-sm placeholder:text-slate/40 focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors"
                                 />
                                 <button
                                     onClick={() => setShowScanner(true)}
@@ -363,7 +366,7 @@ export default function Create({ products: serverProducts }) {
                             {filteredProducts.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-12 text-center">
                                     <p className="text-4xl mb-3 grayscale">📦</p>
-                                    <p className="text-fog text-sm">Aucun produit trouvé</p>
+                                    <p className="text-slate text-sm">Aucun produit trouvé</p>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3">
@@ -374,18 +377,18 @@ export default function Create({ products: serverProducts }) {
                                             disabled={product.stock_actuel === 0}
                                             className={`p-4 rounded-xl text-left border transition-all ${
                                                 product.stock_actuel === 0
-                                                    ? 'bg-night border-ink opacity-40 cursor-not-allowed'
-                                                    : 'bg-night border-ink hover:border-gold/50 hover:bg-gold/5 active:scale-95 cursor-pointer'
+                                                    ? 'bg-snow border-slate/20 opacity-40 cursor-not-allowed'
+                                                    : 'bg-snow border-slate/20 hover:border-ember/40 hover:bg-ember/5 active:scale-95 cursor-pointer'
                                             }`}
                                         >
-                                            <p className="text-sm font-semibold text-snow mb-1 truncate">
+                                            <p className="text-sm font-semibold text-dark mb-1 truncate">
                                                 {product.nom}
                                             </p>
-                                            <p className="text-base font-bold text-gold">
+                                            <p className="text-base font-bold text-ember">
                                                 {product.prix_base}€
                                             </p>
                                             <p className={`text-xs mt-1 ${
-                                                product.stock_actuel === 0 ? 'text-ruby' : 'text-fog'
+                                                product.stock_actuel === 0 ? 'text-ruby' : 'text-slate'
                                             }`}>
                                                 Stock : {product.stock_actuel}
                                             </p>
@@ -397,7 +400,7 @@ export default function Create({ products: serverProducts }) {
                     </div>
 
                     {/* ── Panier desktop (sidebar droite) ── */}
-                    <div className="hidden lg:flex flex-col bg-surface rounded-2xl border border-ink overflow-hidden">
+                    <div className="hidden lg:flex flex-col bg-white rounded-2xl border border-slate/20 shadow-sm overflow-hidden">
                         {renderCartContent(null)}
                     </div>
                 </div>
@@ -405,13 +408,13 @@ export default function Create({ products: serverProducts }) {
 
             {/* ── Barre panier fixe en bas (mobile, si panier non vide) ── */}
             {cart.length > 0 && (
-                <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-surface/95 backdrop-blur border-t border-ink z-30">
+                <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur border-t border-slate/20 z-30">
                     <button
                         onClick={() => setShowCart(true)}
-                        className="w-full h-14 bg-gold hover:bg-gold-dim text-night font-bold rounded-2xl flex items-center justify-between px-5 transition-colors active:scale-98"
+                        className="w-full h-14 bg-linear-to-r from-ember to-ember-dim hover:brightness-90 text-white font-bold rounded-2xl flex items-center justify-between px-5 transition-all shadow-sm shadow-ember/20"
                     >
                         <span className="flex items-center gap-2.5">
-                            <span className="bg-night/25 text-night text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shrink-0">
+                            <span className="bg-white/25 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shrink-0">
                                 {cart.length}
                             </span>
                             <span>Voir le panier</span>
@@ -424,16 +427,16 @@ export default function Create({ products: serverProducts }) {
             {/* ── Bottom sheet panier (mobile) ── */}
             {showCart && (
                 <div className="lg:hidden fixed inset-0 z-40">
-                    {/* Overlay sombre */}
+                    {/* Overlay */}
                     <div
-                        className="absolute inset-0 bg-black/70"
+                        className="absolute inset-0 bg-black/50"
                         onClick={() => setShowCart(false)}
                     />
                     {/* Sheet */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-surface rounded-t-2xl max-h-[85vh] flex flex-col border-t border-ink">
+                    <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[85vh] flex flex-col border-t border-slate/20">
                         {/* Poignée visuelle */}
                         <div className="flex justify-center pt-3 pb-1 shrink-0">
-                            <div className="w-10 h-1 bg-ink rounded-full" />
+                            <div className="w-10 h-1 bg-slate/20 rounded-full" />
                         </div>
                         {renderCartContent(() => setShowCart(false))}
                     </div>

@@ -55,18 +55,18 @@ export default function Create({ produits }) {
     };
 
     return (
-        <div className="min-h-screen bg-night">
+        <div className="min-h-screen bg-snow">
             <Header currentPage="events" />
 
             <main className="p-4 lg:p-6 max-w-7xl mx-auto">
                 <Link
                     href="/events"
-                    className="inline-flex items-center gap-1 text-fog hover:text-snow text-sm mb-6 transition-colors"
+                    className="inline-flex items-center gap-1 text-slate hover:text-dark text-sm mb-6 transition-colors"
                 >
                     ← Retour aux événements
                 </Link>
 
-                <h2 className="text-2xl font-bold text-snow mb-6">Nouvel événement</h2>
+                <h2 className="text-2xl font-bold text-dark mb-6">Nouvel événement</h2>
 
                 <form onSubmit={handleFormSubmit}>
                     <div className="lg:grid lg:grid-cols-[2fr_1fr] lg:gap-6 lg:items-start">
@@ -75,13 +75,13 @@ export default function Create({ produits }) {
                         <div className="space-y-6">
 
                             {/* Bloc informations */}
-                            <div className="bg-surface rounded-2xl border border-ink p-5 lg:p-6">
-                                <h3 className="text-base font-semibold text-snow mb-5">Informations</h3>
+                            <div className="bg-white rounded-2xl border border-slate/20 shadow-sm p-5 lg:p-6">
+                                <h3 className="text-base font-semibold text-dark mb-5">Informations</h3>
 
                                 <div className="space-y-4">
                                     {/* Nom */}
                                     <div>
-                                        <label className="block text-xs font-semibold text-fog uppercase tracking-widest mb-2">
+                                        <label className="block text-xs font-semibold text-dark uppercase tracking-widest mb-2">
                                             Nom de l'événement *
                                         </label>
                                         <input
@@ -89,7 +89,7 @@ export default function Create({ produits }) {
                                             value={data.nom}
                                             onChange={(e) => setData('nom', e.target.value)}
                                             placeholder="Marché de Noël 2026"
-                                            className="w-full h-11 px-4 bg-night border border-ink rounded-xl text-snow text-sm placeholder:text-fog/40 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-colors"
+                                            className="w-full h-11 px-4 bg-white border border-slate/40 rounded-xl text-dark text-sm placeholder:text-slate/40 focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors"
                                         />
                                         {errors.nom && (
                                             <p className="text-ruby text-xs mt-1.5">{errors.nom}</p>
@@ -98,7 +98,7 @@ export default function Create({ produits }) {
 
                                     {/* Lieu */}
                                     <div>
-                                        <label className="block text-xs font-semibold text-fog uppercase tracking-widest mb-2">
+                                        <label className="block text-xs font-semibold text-dark uppercase tracking-widest mb-2">
                                             Lieu
                                         </label>
                                         <input
@@ -106,35 +106,35 @@ export default function Create({ produits }) {
                                             value={data.lieu}
                                             onChange={(e) => setData('lieu', e.target.value)}
                                             placeholder="Place du marché"
-                                            className="w-full h-11 px-4 bg-night border border-ink rounded-xl text-snow text-sm placeholder:text-fog/40 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-colors"
+                                            className="w-full h-11 px-4 bg-white border border-slate/40 rounded-xl text-dark text-sm placeholder:text-slate/40 focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors"
                                         />
                                     </div>
 
-                                    {/* Dates : côte à côte sur sm+, empilées sur xs */}
+                                    {/* Dates */}
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-xs font-semibold text-fog uppercase tracking-widest mb-2">
+                                            <label className="block text-xs font-semibold text-dark uppercase tracking-widest mb-2">
                                                 Date début *
                                             </label>
                                             <input
                                                 type="date"
                                                 value={data.date_debut}
                                                 onChange={(e) => setData('date_debut', e.target.value)}
-                                                className="w-full h-11 px-4 bg-night border border-ink rounded-xl text-snow text-sm focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-colors"
+                                                className="w-full h-11 px-4 bg-white border border-slate/40 rounded-xl text-dark text-sm focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors"
                                             />
                                             {errors.date_debut && (
                                                 <p className="text-ruby text-xs mt-1.5">{errors.date_debut}</p>
                                             )}
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-semibold text-fog uppercase tracking-widest mb-2">
+                                            <label className="block text-xs font-semibold text-dark uppercase tracking-widest mb-2">
                                                 Date fin *
                                             </label>
                                             <input
                                                 type="date"
                                                 value={data.date_fin}
                                                 onChange={(e) => setData('date_fin', e.target.value)}
-                                                className="w-full h-11 px-4 bg-night border border-ink rounded-xl text-snow text-sm focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-colors"
+                                                className="w-full h-11 px-4 bg-white border border-slate/40 rounded-xl text-dark text-sm focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors"
                                             />
                                             {errors.date_fin && (
                                                 <p className="text-ruby text-xs mt-1.5">{errors.date_fin}</p>
@@ -144,22 +144,22 @@ export default function Create({ produits }) {
 
                                     {/* Description */}
                                     <div>
-                                        <label className="block text-xs font-semibold text-fog uppercase tracking-widest mb-2">
+                                        <label className="block text-xs font-semibold text-dark uppercase tracking-widest mb-2">
                                             Description
                                         </label>
                                         <textarea
                                             value={data.description}
                                             onChange={(e) => setData('description', e.target.value)}
                                             rows="3"
-                                            className="w-full px-4 py-3 bg-night border border-ink rounded-xl text-snow text-sm placeholder:text-fog/40 focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-colors resize-none font-sans"
+                                            className="w-full px-4 py-3 bg-white border border-slate/40 rounded-xl text-dark text-sm placeholder:text-slate/40 focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors resize-none font-sans"
                                         />
                                     </div>
                                 </div>
                             </div>
 
                             {/* Bloc produits disponibles */}
-                            <div className="bg-surface rounded-2xl border border-ink p-5 lg:p-6">
-                                <h3 className="text-base font-semibold text-snow mb-4">
+                            <div className="bg-white rounded-2xl border border-slate/20 shadow-sm p-5 lg:p-6">
+                                <h3 className="text-base font-semibold text-dark mb-4">
                                     Produits disponibles
                                 </h3>
                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto pr-1">
@@ -173,18 +173,18 @@ export default function Create({ produits }) {
                                                 disabled={dejaSel}
                                                 className={`p-4 rounded-xl text-left border transition-all ${
                                                     dejaSel
-                                                        ? 'bg-gold/10 border-gold/30 cursor-not-allowed'
-                                                        : 'bg-night border-ink hover:border-gold/50 hover:bg-gold/5 cursor-pointer'
+                                                        ? 'bg-ember/5 border-ember/30 cursor-not-allowed'
+                                                        : 'bg-snow border-slate/20 hover:border-ember/40 hover:bg-ember/5 cursor-pointer'
                                                 }`}
                                             >
-                                                <p className="text-sm font-semibold text-snow truncate mb-1">
+                                                <p className="text-sm font-semibold text-dark truncate mb-1">
                                                     {produit.nom}
                                                 </p>
-                                                <p className="text-xs text-fog">
+                                                <p className="text-xs text-slate">
                                                     Stock : {produit.stock_actuel}
                                                 </p>
                                                 {dejaSel && (
-                                                    <p className="text-xs text-gold mt-1 font-medium">✓ Ajouté</p>
+                                                    <p className="text-xs text-ember mt-1 font-medium">✓ Ajouté</p>
                                                 )}
                                             </button>
                                         );
@@ -194,27 +194,25 @@ export default function Create({ produits }) {
                         </div>
 
                         {/* ── Colonne droite : sélection + submit ── */}
-                        {/* Sur mobile : affiché après les blocs gauche, pleine largeur */}
-                        {/* Sur desktop : sidebar sticky */}
                         <div className="mt-6 lg:mt-0 lg:sticky lg:top-6">
-                            <div className="bg-surface rounded-2xl border border-ink p-5 lg:p-6">
-                                <h3 className="text-base font-semibold text-snow mb-4">
+                            <div className="bg-white rounded-2xl border border-slate/20 shadow-sm p-5 lg:p-6">
+                                <h3 className="text-base font-semibold text-dark mb-4">
                                     Produits sélectionnés
-                                    <span className="ml-2 px-2 py-0.5 bg-gold/15 text-gold text-xs rounded-full font-bold">
+                                    <span className="ml-2 px-2 py-0.5 bg-ember/10 text-ember text-xs rounded-full font-bold">
                                         {selectedProduits.length}
                                     </span>
                                 </h3>
 
                                 {selectedProduits.length === 0 ? (
-                                    <p className="text-fog text-sm text-center py-8">
+                                    <p className="text-slate text-sm text-center py-8">
                                         Aucun produit sélectionné
                                     </p>
                                 ) : (
                                     <div className="space-y-3 mb-5 max-h-72 overflow-y-auto pr-1">
                                         {selectedProduits.map((p) => (
-                                            <div key={p.id} className="bg-night rounded-xl p-3 border border-ink">
+                                            <div key={p.id} className="bg-snow rounded-xl p-3 border border-slate/20">
                                                 <div className="flex items-center justify-between mb-2">
-                                                    <span className="text-sm font-medium text-snow truncate flex-1 mr-2">
+                                                    <span className="text-sm font-medium text-dark truncate flex-1 mr-2">
                                                         {p.nom}
                                                     </span>
                                                     <button
@@ -227,20 +225,20 @@ export default function Create({ produits }) {
                                                     <button
                                                         type="button"
                                                         onClick={() => updateStock(p.id, p.stock - 1)}
-                                                        className="w-11 h-11 flex items-center justify-center bg-ink rounded-xl text-snow hover:bg-gold/10 hover:text-gold transition-colors font-bold text-lg shrink-0"
+                                                        className="w-11 h-11 flex items-center justify-center bg-slate/10 hover:bg-ember/10 hover:text-ember text-dark rounded-xl transition-colors font-bold text-lg shrink-0"
                                                     >−</button>
                                                     <input
                                                         type="number"
                                                         value={p.stock}
                                                         onChange={(e) => updateStock(p.id, parseInt(e.target.value) || 0)}
-                                                        className="w-14 h-11 text-center bg-ink border border-ink rounded-xl text-snow text-sm focus:outline-none focus:border-gold transition-colors"
+                                                        className="w-14 h-11 text-center bg-white border border-slate/30 rounded-xl text-dark text-sm focus:outline-none focus:border-ember transition-colors"
                                                     />
                                                     <button
                                                         type="button"
                                                         onClick={() => updateStock(p.id, p.stock + 1)}
-                                                        className="w-11 h-11 flex items-center justify-center bg-ink rounded-xl text-snow hover:bg-gold/10 hover:text-gold transition-colors font-bold text-lg shrink-0"
+                                                        className="w-11 h-11 flex items-center justify-center bg-slate/10 hover:bg-ember/10 hover:text-ember text-dark rounded-xl transition-colors font-bold text-lg shrink-0"
                                                     >+</button>
-                                                    <span className="ml-auto text-xs text-fog shrink-0">
+                                                    <span className="ml-auto text-xs text-slate shrink-0">
                                                         Max : {p.stock_max}
                                                     </span>
                                                 </div>
@@ -252,10 +250,10 @@ export default function Create({ produits }) {
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="w-full h-12 bg-gold hover:bg-gold-dim disabled:opacity-50 disabled:cursor-not-allowed text-night font-bold rounded-xl flex items-center justify-center gap-2 transition-colors"
+                                    className="w-full h-12 bg-linear-to-r from-ember to-ember-dim hover:brightness-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm shadow-ember/20"
                                 >
                                     {processing && (
-                                        <span className="w-4 h-4 border-2 border-night/30 border-t-night rounded-full animate-spin" />
+                                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                     )}
                                     {processing ? 'Création...' : "Créer l'événement"}
                                 </button>

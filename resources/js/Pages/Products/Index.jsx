@@ -51,7 +51,7 @@ export default function Index({ products: serverProducts }) {
     };
 
     return (
-        <div className="min-h-screen bg-night">
+        <div className="min-h-screen bg-snow">
             <Header currentPage="products" />
 
             <main className="p-4 lg:p-6 max-w-7xl mx-auto">
@@ -59,12 +59,12 @@ export default function Index({ products: serverProducts }) {
                 {/* En-tête page */}
                 <div className="flex items-start justify-between gap-4 mb-6">
                     <div>
-                        <h2 className="text-2xl font-bold text-snow">Produits</h2>
-                        <p className="text-fog text-sm mt-1">
+                        <h2 className="text-2xl font-bold text-dark">Produits</h2>
+                        <p className="text-slate text-sm mt-1">
                             {products.length} produit{products.length > 1 ? 's' : ''}
                             {loading && (
-                                <span className="ml-2 inline-flex items-center gap-1 text-gold">
-                                    <span className="w-3 h-3 border border-gold border-t-transparent rounded-full animate-spin" />
+                                <span className="ml-2 inline-flex items-center gap-1 text-ember">
+                                    <span className="w-3 h-3 border border-ember border-t-transparent rounded-full animate-spin" />
                                     Synchronisation…
                                 </span>
                             )}
@@ -72,7 +72,7 @@ export default function Index({ products: serverProducts }) {
                     </div>
                     <Link
                         href="/products/create"
-                        className="shrink-0 flex items-center justify-center h-11 px-5 bg-gold hover:bg-gold-dim text-night font-bold rounded-xl text-sm transition-colors"
+                        className="shrink-0 flex items-center justify-center h-11 px-5 bg-ember hover:bg-ember-dim text-white font-bold rounded-xl text-sm transition-colors"
                     >
                         + Nouveau
                     </Link>
@@ -88,15 +88,15 @@ export default function Index({ products: serverProducts }) {
 
                 {/* État vide */}
                 {products.length === 0 ? (
-                    <div className="bg-surface rounded-2xl border border-ink p-12 text-center">
+                    <div className="bg-white rounded-2xl border border-slate/20 p-12 text-center">
                         <p className="text-5xl mb-4 grayscale">📦</p>
-                        <h3 className="text-lg font-semibold text-snow mb-2">Aucun produit</h3>
-                        <p className="text-fog text-sm mb-6">
+                        <h3 className="text-lg font-semibold text-dark mb-2">Aucun produit</h3>
+                        <p className="text-slate text-sm mb-6">
                             Commencez par ajouter votre premier produit
                         </p>
                         <Link
                             href="/products/create"
-                            className="inline-flex items-center justify-center h-11 px-6 bg-gold hover:bg-gold-dim text-night font-bold rounded-xl text-sm transition-colors"
+                            className="inline-flex items-center justify-center h-11 px-6 bg-ember hover:bg-ember-dim text-white font-bold rounded-xl text-sm transition-colors"
                         >
                             Créer un produit
                         </Link>
@@ -109,7 +109,7 @@ export default function Index({ products: serverProducts }) {
                             return (
                                 <div
                                     key={product.id_produit}
-                                    className="bg-surface rounded-2xl border border-ink p-5 flex flex-col gap-4 hover:border-ink/80 transition-colors"
+                                    className="bg-white rounded-2xl border border-slate/20 p-5 flex flex-col gap-4 hover:border-slate/40 transition-colors shadow-sm"
                                 >
                                     {/* Ligne nom + badge stock */}
                                     <div className="flex items-start justify-between gap-2">
@@ -117,7 +117,7 @@ export default function Index({ products: serverProducts }) {
                                             href={`/products/${product.id_produit}`}
                                             className="flex-1 min-w-0"
                                         >
-                                            <h3 className="font-semibold text-snow hover:text-gold transition-colors truncate">
+                                            <h3 className="font-semibold text-dark hover:text-ember transition-colors truncate">
                                                 {product.nom}
                                             </h3>
                                         </Link>
@@ -132,16 +132,16 @@ export default function Index({ products: serverProducts }) {
 
                                     {/* Méta : prix, stock, catégorie */}
                                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-                                        <span className="text-gold font-bold">{product.prix_base}€</span>
-                                        <span className="text-fog">Stock : {product.stock_actuel}</span>
-                                        <span className="text-fog truncate">{product.categorie}</span>
+                                        <span className="text-ember font-bold">{product.prix_base}€</span>
+                                        <span className="text-slate">Stock : {product.stock_actuel}</span>
+                                        <span className="text-slate truncate">{product.categorie}</span>
                                     </div>
 
                                     {/* Actions */}
                                     <div className="flex gap-2 mt-auto">
                                         <Link
                                             href={`/products/${product.id_produit}/edit`}
-                                            className="flex-1 h-11 flex items-center justify-center bg-ink hover:bg-ink/70 text-fog hover:text-snow rounded-xl text-sm font-medium transition-colors"
+                                            className="flex-1 h-11 flex items-center justify-center bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark rounded-xl text-sm font-medium transition-colors"
                                         >
                                             ✏️ Modifier
                                         </Link>
