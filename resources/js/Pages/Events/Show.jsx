@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { QRCodeSVG } from 'qrcode.react';
+import Header from '../../Components/Header';
 
 export default function Show({ evenement }) {
     const downloadQR = () => {
@@ -8,100 +9,106 @@ export default function Show({ evenement }) {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         const img = new Image();
-        
+
         img.onload = () => {
             canvas.width = img.width;
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             const pngFile = canvas.toDataURL('image/png');
-            
             const downloadLink = document.createElement('a');
             downloadLink.download = `qr-event-${evenement.code_unique}.png`;
             downloadLink.href = pngFile;
             downloadLink.click();
         };
-        
+
         img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
     };
 
     const eventUrl = window.location.origin + '/events/' + evenement.code_unique;
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
-            <header style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #DEE2E6', padding: '16px 24px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Link href="/" style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', textDecoration: 'none' }}>CaisseMobile</Link>
-                    <Link href="/logout" method="post" as="button" style={{ padding: '8px 16px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', color: '#495057' }}>Déconnexion</Link>
-                </div>
-            </header>
+        <div className="min-h-screen bg-snow">
+            <Header currentPage="events" />
 
-            <main style={{ padding: '32px 24px' }}>
-                <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-                    <Link href="/events" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px', marginBottom: '24px', display: 'inline-block' }}>← Retour aux événements</Link>
+            <main className="p-4 lg:p-6 max-w-5xl mx-auto">
+                <Link
+                    href="/events"
+                    className="inline-flex items-center gap-1 text-slate hover:text-dark text-sm mb-6 transition-colors"
+                >
+                    ← Retour aux événements
+                </Link>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '32px', border: '1px solid #DEE2E6' }}>
-                            <h2 style={{ fontSize: '24px', fontWeight: '600', color: '#2C3E50', marginBottom: '16px' }}>{evenement.nom}</h2>
-                            
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid #DEE2E6' }}>
-                                    <span style={{ color: '#6C757D', fontSize: '14px' }}>Lieu</span>
-                                    <span style={{ fontWeight: '500', fontSize: '14px', color: '#2C3E50' }}>{evenement.lieu || 'Non précisé'}</span>
-                                </div>
-                                
-                                <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid #DEE2E6' }}>
-                                    <span style={{ color: '#6C757D', fontSize: '14px' }}>Dates</span>
-                                    <span style={{ fontWeight: '500', fontSize: '14px', color: '#2C3E50' }}>
-                                        {new Date(evenement.date_debut).toLocaleDateString('fr-FR')} - {new Date(evenement.date_fin).toLocaleDateString('fr-FR')}
-                                    </span>
-                                </div>
-                                
-                                <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid #DEE2E6' }}>
-                                    <span style={{ color: '#6C757D', fontSize: '14px' }}>Code d'accès</span>
-                                    <span style={{ fontFamily: 'monospace', fontSize: '14px', fontWeight: '600', color: '#343A40' }}>{evenement.code_unique}</span>
-                                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Informations événement */}
+                    <div className="bg-white rounded-2xl border border-slate/20 shadow-sm p-6">
+                        <h2 className="text-2xl font-bold text-dark mb-5">{evenement.nom}</h2>
 
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <span style={{ color: '#6C757D', fontSize: '14px' }}>Produits</span>
-                                    <span style={{ fontWeight: '500', fontSize: '14px', color: '#2C3E50' }}>{evenement.produits?.length || 0} produit(s)</span>
-                                </div>
+                        <div className="divide-y divide-slate/10">
+                            <div className="flex justify-between items-center py-3">
+                                <span className="text-sm text-slate">Lieu</span>
+                                <span className="text-sm font-medium text-dark">{evenement.lieu || 'Non précisé'}</span>
                             </div>
-
-                            <div style={{ marginTop: '24px', padding: '16px', backgroundColor: '#F8F9FA', borderRadius: '6px' }}>
-                                <p style={{ fontSize: '13px', color: '#495057', marginBottom: '8px', fontWeight: '500' }}>URL d'accès public :</p>
-                                <p style={{ fontSize: '12px', color: '#6C757D', fontFamily: 'monospace', wordBreak: 'break-all' }}>{eventUrl}</p>
+                            <div className="flex justify-between items-center py-3">
+                                <span className="text-sm text-slate">Dates</span>
+                                <span className="text-sm font-medium text-dark">
+                                    {new Date(evenement.date_debut).toLocaleDateString('fr-FR')} → {new Date(evenement.date_fin).toLocaleDateString('fr-FR')}
+                                </span>
                             </div>
-
-                            <div style={{ marginTop: '24px' }}>
-                                <Link href={`/events/${evenement.id_evenement}/edit`} style={{ width: '100%', padding: '12px', backgroundColor: '#343A40', color: '#FFFFFF', fontWeight: '600', borderRadius: '6px', textDecoration: 'none', textAlign: 'center', display: 'block', fontSize: '14px' }}>
-                                    ✏️ Modifier l'événement
-                                </Link>
+                            <div className="flex justify-between items-center py-3">
+                                <span className="text-sm text-slate">Produits</span>
+                                <span className="text-sm font-medium text-dark">{evenement.produits?.length || 0} produit(s)</span>
+                            </div>
+                            <div className="flex justify-between items-center py-3">
+                                <span className="text-sm text-slate">Code d'accès</span>
+                                <span className="text-sm font-mono font-semibold text-dark">{evenement.code_unique}</span>
                             </div>
                         </div>
 
-                        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '32px', border: '1px solid #DEE2E6', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50', marginBottom: '16px' }}>QR Code pour vos clients</h3>
-                            
-                            <div style={{ padding: '24px', backgroundColor: '#F8F9FA', borderRadius: '8px', marginBottom: '16px' }}>
-                                <QRCodeSVG id="qr-code-event" value={eventUrl} size={250} level="H" includeMargin={true} />
-                            </div>
+                        {/* URL publique */}
+                        <div className="mt-5 p-3 bg-snow border border-slate/20 rounded-xl">
+                            <p className="text-xs font-semibold text-dark uppercase tracking-widest mb-1.5">URL d'accès public</p>
+                            <p className="text-xs text-slate font-mono break-all">{eventUrl}</p>
+                        </div>
 
-                            <p style={{ fontSize: '13px', color: '#6C757D', textAlign: 'center', marginBottom: '16px' }}>
-                                Vos clients scannent ce code pour voir votre catalogue
-                            </p>
-
-                            <button onClick={downloadQR} style={{ width: '100%', padding: '12px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: '500', color: '#495057', transition: 'all 0.2s' }}
-                                onMouseEnter={(e) => e.target.style.backgroundColor = '#E9ECEF'}
-                                onMouseLeave={(e) => e.target.style.backgroundColor = '#F8F9FA'}
+                        <div className="mt-5">
+                            <Link
+                                href={`/events/${evenement.id_evenement}/edit`}
+                                className="w-full h-11 flex items-center justify-center bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark border border-slate/20 rounded-xl text-sm font-medium transition-colors"
                             >
-                                📥 Télécharger le QR Code
-                            </button>
+                                ✏️ Modifier l'événement
+                            </Link>
+                        </div>
+                    </div>
 
-                            <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#FFF5E1', border: '1px solid #FFE0B2', borderRadius: '6px', width: '100%' }}>
-                                <p style={{ fontSize: '12px', color: '#E65100', textAlign: 'center' }}>
-                                    💡 Affichez ce QR code sur votre stand !
-                                </p>
-                            </div>
+                    {/* QR Code clients */}
+                    <div className="bg-white rounded-2xl border border-slate/20 shadow-sm p-6 flex flex-col items-center">
+                        <h3 className="text-lg font-semibold text-dark mb-5 text-center">QR Code pour vos clients</h3>
+
+                        <div className="p-6 bg-snow rounded-xl mb-4">
+                            <QRCodeSVG
+                                id="qr-code-event"
+                                value={eventUrl}
+                                size={220}
+                                level="H"
+                                marginSize={4}
+                            />
+                        </div>
+
+                        <p className="text-sm text-slate text-center mb-5 leading-relaxed">
+                            Vos clients scannent ce code pour voir votre catalogue
+                        </p>
+
+                        <button
+                            onClick={downloadQR}
+                            className="w-full h-11 bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark border border-slate/20 rounded-xl text-sm font-medium transition-colors mb-3"
+                        >
+                            📥 Télécharger le QR Code
+                        </button>
+
+                        <div className="w-full p-3 bg-ember/5 border border-ember/20 rounded-xl">
+                            <p className="text-xs text-ember text-center font-medium">
+                                💡 Affichez ce QR code sur votre stand !
+                            </p>
                         </div>
                     </div>
                 </div>

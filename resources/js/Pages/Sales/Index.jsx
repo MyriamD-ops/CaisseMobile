@@ -9,12 +9,10 @@ export default function Index({ sales }) {
     const [ventesLocales, setVentesLocales] = useState([]);
     const [syncing, setSyncing] = useState(false);
 
-    // Charger les ventes locales au montage
     useEffect(() => {
         loadVentesLocales();
     }, []);
 
-    // Synchroniser automatiquement quand en ligne ET qu'il y a des ventes locales
     useEffect(() => {
         if (isOnline && ventesLocales.length > 0 && !syncing) {
             console.log('🔄 Synchronisation automatique déclenchée');
@@ -38,7 +36,6 @@ export default function Index({ sales }) {
             const count = await syncVentes();
             if (count > 0) {
                 alert(`✅ ${count} vente(s) synchronisée(s) !`);
-                // Recharger la page pour voir les ventes serveur
                 window.location.reload();
             }
         } catch (error) {
@@ -52,104 +49,98 @@ export default function Index({ sales }) {
     const totalVentes = serverSales.length + ventesLocales.length;
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+        <div className="min-h-screen bg-snow">
             <Header currentPage="sales" />
 
-            <main style={{ padding: '32px 24px', maxWidth: '1400px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+            <main className="p-4 lg:p-6 max-w-7xl mx-auto">
+
+                {/* En-tête */}
+                <div className="flex items-start justify-between gap-4 mb-6">
                     <div>
-                        <h2 style={{ fontSize: '28px', fontWeight: '600', color: '#2C3E50', marginBottom: '4px' }}>Historique des ventes</h2>
-                        <p style={{ color: '#6C757D', fontSize: '14px' }}>
+                        <h2 className="text-2xl font-bold text-dark">Historique des ventes</h2>
+                        <p className="text-slate text-sm mt-1">
                             {totalVentes} vente{totalVentes > 1 ? 's' : ''}
-                            {ventesLocales.length > 0 && ` • ${ventesLocales.length} non synchronisée${ventesLocales.length > 1 ? 's' : ''}`}
+                            {ventesLocales.length > 0 && (
+                                <span className="ml-1 text-ember">
+                                    • {ventesLocales.length} non synchronisée{ventesLocales.length > 1 ? 's' : ''}
+                                </span>
+                            )}
                         </p>
                     </div>
-                    <div style={{ display: 'flex', gap: '12px' }}>
+                    <div className="flex gap-3 shrink-0">
                         {ventesLocales.length > 0 && isOnline && (
                             <button
                                 onClick={handleSync}
                                 disabled={syncing}
-                                style={{
-                                    padding: '10px 20px',
-                                    backgroundColor: syncing ? '#ADB5BD' : '#28A745',
-                                    color: '#FFFFFF',
-                                    fontWeight: '500',
-                                    borderRadius: '6px',
-                                    border: 'none',
-                                    cursor: syncing ? 'not-allowed' : 'pointer',
-                                    fontSize: '14px',
-                                    transition: 'all 0.2s'
-                                }}
+                                className="h-11 px-5 bg-mint/10 hover:bg-mint/20 text-mint border border-mint/30 font-medium rounded-xl text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {syncing ? '⏳ Synchronisation...' : '🔄 Synchroniser maintenant'}
+                                {syncing ? '⏳ Synchronisation...' : '🔄 Synchroniser'}
                             </button>
                         )}
-                        <Link href="/sales/create" style={{ padding: '10px 20px', backgroundColor: '#343A40', color: '#FFFFFF', fontWeight: '500', borderRadius: '6px', textDecoration: 'none', display: 'inline-block', fontSize: '14px', transition: 'all 0.2s' }}
-                            onMouseEnter={(e) => e.target.style.backgroundColor = '#23272B'}
-                            onMouseLeave={(e) => e.target.style.backgroundColor = '#343A40'}
+                        <Link
+                            href="/sales/create"
+                            className="h-11 px-5 flex items-center bg-ember hover:bg-ember-dim text-white font-bold rounded-xl text-sm transition-colors"
                         >
                             + Nouvelle vente
                         </Link>
                     </div>
                 </div>
 
+                {/* État vide */}
                 {totalVentes === 0 ? (
-                    <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '64px', textAlign: 'center', border: '1px solid #DEE2E6' }}>
-                        <p style={{ fontSize: '48px', marginBottom: '16px', filter: 'grayscale(100%)' }}>🛍️</p>
-                        <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50', marginBottom: '8px' }}>Aucune vente</h3>
-                        <p style={{ color: '#6C757D', marginBottom: '24px', fontSize: '14px' }}>Les ventes apparaîtront ici</p>
-                        <Link href="/sales/create" style={{ padding: '10px 20px', backgroundColor: '#343A40', color: '#FFFFFF', fontWeight: '500', borderRadius: '6px', textDecoration: 'none', display: 'inline-block', fontSize: '14px' }}>Nouvelle vente</Link>
+                    <div className="bg-white rounded-2xl border border-slate/20 p-12 text-center">
+                        <p className="text-5xl mb-4 grayscale">🛍️</p>
+                        <h3 className="text-lg font-semibold text-dark mb-2">Aucune vente</h3>
+                        <p className="text-slate text-sm mb-6">Les ventes apparaîtront ici</p>
+                        <Link
+                            href="/sales/create"
+                            className="inline-flex items-center justify-center h-11 px-6 bg-ember hover:bg-ember-dim text-white font-bold rounded-xl text-sm transition-colors"
+                        >
+                            Nouvelle vente
+                        </Link>
                     </div>
                 ) : (
-                    <div style={{ display: 'grid', gap: '16px' }}>
+                    <div className="flex flex-col gap-3">
+
                         {/* Ventes locales non synchronisées */}
                         {ventesLocales.map((vente) => (
-                            <div key={`local-${vente.id}`} style={{ backgroundColor: '#FFFBEB', borderRadius: '8px', padding: '24px', border: '2px solid #FDB022', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.2s' }}>
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
-                                        <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#2C3E50', margin: 0 }}>
+                            <div key={`local-${vente.id}`} className="bg-white rounded-2xl border-2 border-ember/40 p-5 flex justify-between items-center shadow-sm">
+                                <div className="flex-1">
+                                    <div className="flex gap-3 items-center mb-2">
+                                        <h3 className="text-base font-semibold text-dark">
                                             Vente locale #{vente.id}
                                         </h3>
-                                        <span style={{ padding: '4px 12px', backgroundColor: '#FFF5E1', color: '#E65100', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>
+                                        <span className="px-2.5 py-1 bg-ember/5 text-ember border border-ember/30 rounded-full text-xs font-semibold">
                                             ⏳ Non synchronisée
                                         </span>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '20px', fontSize: '14px', color: '#6C757D' }}>
+                                    <div className="flex flex-wrap gap-4 text-sm text-slate">
                                         <span>📅 {new Date(vente.date_vente).toLocaleDateString('fr-FR')} à {new Date(vente.date_vente).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
                                         <span>💳 {vente.mode_paiement}</span>
-                                        <span style={{ fontWeight: '600', color: '#2C3E50' }}>💰 {parseFloat(vente.montant_total).toFixed(2)}€</span>
-                                        <span style={{ fontSize: '13px' }}>📦 {vente.articles?.length || 0} article{vente.articles?.length > 1 ? 's' : ''}</span>
+                                        <span className="font-semibold text-dark">💰 {parseFloat(vente.montant_total).toFixed(2)}€</span>
+                                        <span>📦 {vente.articles?.length || 0} article{vente.articles?.length > 1 ? 's' : ''}</span>
                                     </div>
                                 </div>
                             </div>
                         ))}
 
-                        {/* Ventes serveur synchronisées */}
+                        {/* Ventes serveur */}
                         {serverSales.map((sale) => (
-                            <div key={sale.id_vente} style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '24px', border: '1px solid #DEE2E6', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.2s' }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
-                                    e.currentTarget.style.transform = 'translateY(-2px)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.boxShadow = 'none';
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                }}
-                            >
-                                <div style={{ flex: 1 }}>
-                                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#2C3E50', marginBottom: '8px' }}>
+                            <div key={sale.id_vente} className="bg-white rounded-2xl border border-slate/20 p-5 flex justify-between items-center hover:border-slate/40 hover:shadow-sm transition-all">
+                                <div className="flex-1">
+                                    <h3 className="text-base font-semibold text-dark mb-2">
                                         Vente {sale.numero_vente}
                                     </h3>
-                                    <div style={{ display: 'flex', gap: '20px', fontSize: '14px', color: '#6C757D' }}>
+                                    <div className="flex flex-wrap gap-4 text-sm text-slate">
                                         <span>📅 {new Date(sale.date_vente).toLocaleDateString('fr-FR')} à {new Date(sale.date_vente).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
                                         <span>👤 {sale.utilisateur?.username || 'N/A'}</span>
                                         <span>💳 {sale.mode_paiement}</span>
-                                        <span style={{ fontWeight: '600', color: '#2C3E50' }}>💰 {parseFloat(sale.montant_total).toFixed(2)}€</span>
+                                        <span className="font-semibold text-dark">💰 {parseFloat(sale.montant_total).toFixed(2)}€</span>
                                     </div>
                                 </div>
-                                <Link href={`/sales/${sale.id_vente}`} style={{ padding: '8px 14px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '13px', color: '#495057', textDecoration: 'none', transition: 'all 0.2s' }}
-                                    onMouseEnter={(e) => e.target.style.backgroundColor = '#E9ECEF'}
-                                    onMouseLeave={(e) => e.target.style.backgroundColor = '#F8F9FA'}
+                                <Link
+                                    href={`/sales/${sale.id_vente}`}
+                                    className="shrink-0 h-9 px-4 flex items-center bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark border border-slate/20 rounded-xl text-sm font-medium transition-colors"
                                 >
                                     📄 Détails
                                 </Link>
@@ -158,13 +149,27 @@ export default function Index({ sales }) {
                     </div>
                 )}
 
+                {/* Pagination */}
                 {sales.links && (
-                    <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center', gap: '8px' }}>
+                    <div className="mt-6 flex justify-center gap-2">
                         {sales.links.map((link, index) => (
                             link.url ? (
-                                <Link key={index} href={link.url} style={{ padding: '8px 12px', backgroundColor: link.active ? '#343A40' : '#F8F9FA', color: link.active ? '#FFFFFF' : '#495057', border: '1px solid #DEE2E6', borderRadius: '6px', textDecoration: 'none', fontSize: '13px' }} dangerouslySetInnerHTML={{ __html: link.label }} />
+                                <Link
+                                    key={index}
+                                    href={link.url}
+                                    className={`px-3 py-2 rounded-lg text-sm border transition-colors ${
+                                        link.active
+                                            ? 'bg-ember text-white border-ember'
+                                            : 'bg-white text-slate border-slate/20 hover:border-slate/40'
+                                    }`}
+                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                />
                             ) : (
-                                <span key={index} style={{ padding: '8px 12px', backgroundColor: '#F8F9FA', color: '#ADB5BD', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '13px' }} dangerouslySetInnerHTML={{ __html: link.label }} />
+                                <span
+                                    key={index}
+                                    className="px-3 py-2 rounded-lg text-sm border border-slate/20 bg-white text-slate/40"
+                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                />
                             )
                         ))}
                     </div>

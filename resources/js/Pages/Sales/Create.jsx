@@ -1,4 +1,4 @@
-import { Link, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import Header from '../../Components/Header';
 import QRScanner from '../../Components/QRScanner';
@@ -13,6 +13,18 @@ export default function Create({ products: serverProducts }) {
     const [moyenPaiement, setMoyenPaiement] = useState('Espèces');
     const [processing, setProcessing] = useState(false);
     const [showScanner, setShowScanner] = useState(false);
+
+    // ── UI state (mobile + notifications) ──────────────────────────────────────
+    const [showCart, setShowCart] = useState(false);
+    const [notification, setNotification] = useState(null);
+    const [showClearConfirm, setShowClearConfirm] = useState(false);
+
+    const notify = (type, message) => {
+        setNotification({ type, message });
+        setTimeout(() => setNotification(null), 4000);
+    };
+
+    // ── Logique métier inchangée ────────────────────────────────────────────────
 
     useEffect(() => {
         loadProducts();
@@ -45,7 +57,7 @@ export default function Create({ products: serverProducts }) {
         }
     };
 
-    const filteredProducts = products.filter(p => 
+    const filteredProducts = products.filter(p =>
         p.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.categorie.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -54,13 +66,13 @@ export default function Create({ products: serverProducts }) {
         const existing = cart.find(item => item.id_produit === product.id_produit);
         if (existing) {
             if (existing.quantite < product.stock_actuel) {
-                setCart(cart.map(item => 
-                    item.id_produit === product.id_produit 
+                setCart(cart.map(item =>
+                    item.id_produit === product.id_produit
                         ? { ...item, quantite: item.quantite + 1 }
                         : item
                 ));
             } else {
-                alert('Stock insuffisant');
+                notify('error', 'Stock insuffisant');
             }
         } else {
             setCart([...cart, {
@@ -68,7 +80,7 @@ export default function Create({ products: serverProducts }) {
                 nom: product.nom,
                 prix_unitaire: product.prix_base,
                 quantite: 1,
-                stock_max: product.stock_actuel
+                stock_max: product.stock_actuel,
             }]);
         }
     };
@@ -84,10 +96,10 @@ export default function Create({ products: serverProducts }) {
         }
         const item = cart.find(i => i.id_produit === id_produit);
         if (quantite > item.stock_max) {
-            alert('Stock insuffisant');
+            notify('error', 'Stock insuffisant');
             return;
         }
-        setCart(cart.map(item => 
+        setCart(cart.map(item =>
             item.id_produit === id_produit ? { ...item, quantite } : item
         ));
     };
@@ -96,27 +108,22 @@ export default function Create({ products: serverProducts }) {
 
     const handleQRScan = (qrCode) => {
         console.log('🔍 Recherche produit avec code:', qrCode);
-        
-        // Chercher le produit par code_barres
         const product = products.find(p => p.code_barres === qrCode);
-        
         if (product) {
             addToCart(product);
             setShowScanner(false);
-            // Feedback visuel
             const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZURE');
             audio.play().catch(() => {});
         } else {
-            alert(`❌ Produit non trouvé\n\nCode scanné : ${qrCode}\n\nVérifiez que le QR code correspond à un produit actif.`);
+            notify('error', `Produit non trouvé — Code scanné : ${qrCode}`);
         }
-        
         setShowScanner(false);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (cart.length === 0) {
-            alert('Le panier est vide !');
+            notify('error', 'Le panier est vide !');
             return;
         }
 
@@ -128,22 +135,23 @@ export default function Create({ products: serverProducts }) {
                 nom_produit: item.nom,
                 quantite: item.quantite,
                 prix_unitaire: item.prix_unitaire,
-                sous_total: item.prix_unitaire * item.quantite
+                sous_total: item.prix_unitaire * item.quantite,
             })),
             mode_paiement: moyenPaiement,
             montant_total: total,
-            date_vente: new Date().toISOString()
+            date_vente: new Date().toISOString(),
         };
 
         if (!isOnline) {
             try {
                 await saveVenteLocal(venteData);
                 setCart([]);
+                setShowCart(false);
                 setProcessing(false);
-                alert('✅ Vente sauvegardée hors ligne !\n\nElle sera synchronisée automatiquement au retour de la connexion.\n\nVous pouvez continuer à vendre hors ligne.');
+                notify('success', 'Vente sauvegardée hors ligne — synchronisation automatique au retour de la connexion.');
             } catch (error) {
                 console.error('Erreur sauvegarde locale:', error);
-                alert('❌ Erreur lors de la sauvegarde locale');
+                notify('error', 'Erreur lors de la sauvegarde locale');
                 setProcessing(false);
             }
             return;
@@ -153,136 +161,291 @@ export default function Create({ products: serverProducts }) {
             items: cart.map(item => ({
                 id_produit: item.id_produit,
                 quantite: item.quantite,
-                prix_unitaire: item.prix_unitaire
+                prix_unitaire: item.prix_unitaire,
             })),
-            moyen_paiement: moyenPaiement
+            moyen_paiement: moyenPaiement,
         };
 
         router.post('/sales', formData, {
             onSuccess: () => {
                 setCart([]);
+                setShowCart(false);
                 setProcessing(false);
             },
             onError: (errors) => {
                 console.error('Erreurs:', errors);
-                alert('Erreur lors de l\'enregistrement');
+                notify('error', "Erreur lors de l'enregistrement");
                 setProcessing(false);
             },
             onFinish: () => {
                 setProcessing(false);
-            }
+            },
         });
     };
 
-    return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
-            <Header currentPage="sales" />
-            <main style={{ padding: '24px' }}>
-                <div style={{ maxWidth: '1600px', margin: '0 auto', display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
-                    <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '24px', border: '1px solid #DEE2E6' }}>
-                        <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', marginBottom: '16px' }}>Produits</h2>
-                        
-                        <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
-                            <input 
-                                type="text" 
-                                placeholder="🔍 Rechercher un produit..." 
-                                value={searchTerm} 
-                                onChange={(e) => setSearchTerm(e.target.value)} 
-                                style={{ flex: 1, padding: '12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }} 
-                            />
-                            <button
-                                onClick={() => setShowScanner(true)}
-                                style={{
-                                    padding: '12px 20px',
-                                    backgroundColor: '#28A745',
-                                    color: '#FFFFFF',
-                                    border: 'none',
-                                    borderRadius: '6px',
-                                    cursor: 'pointer',
-                                    fontSize: '14px',
-                                    fontWeight: '500',
-                                    transition: 'all 0.2s',
-                                    whiteSpace: 'nowrap'
-                                }}
-                                onMouseEnter={(e) => e.target.style.backgroundColor = '#218838'}
-                                onMouseLeave={(e) => e.target.style.backgroundColor = '#28A745'}
-                            >
-                                📷 Scanner
-                            </button>
-                        </div>
-                        
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px', maxHeight: '600px', overflowY: 'auto' }}>
-                            {filteredProducts.map((product) => (
-                                <button key={product.id_produit} onClick={() => addToCart(product)} disabled={product.stock_actuel === 0} style={{ padding: '16px', backgroundColor: product.stock_actuel === 0 ? '#F8F9FA' : '#FFFFFF', border: '1px solid #DEE2E6', borderRadius: '6px', cursor: product.stock_actuel === 0 ? 'not-allowed' : 'pointer', textAlign: 'left', transition: 'all 0.2s' }} onMouseEnter={(e) => { if (product.stock_actuel > 0) { e.target.style.backgroundColor = '#F8F9FA'; e.target.style.borderColor = '#ADB5BD'; } }} onMouseLeave={(e) => { if (product.stock_actuel > 0) { e.target.style.backgroundColor = '#FFFFFF'; e.target.style.borderColor = '#DEE2E6'; } }}>
-                                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#2C3E50', marginBottom: '4px' }}>{product.nom}</div>
-                                    <div style={{ fontSize: '16px', fontWeight: '600', color: '#343A40', marginBottom: '4px' }}>{product.prix_base}€</div>
-                                    <div style={{ fontSize: '12px', color: product.stock_actuel === 0 ? '#C53030' : '#6C757D' }}>Stock: {product.stock_actuel}</div>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                    <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '24px', border: '1px solid #DEE2E6', height: 'fit-content' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                            <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', margin: 0 }}>Panier ({cart.length})</h2>
-                            {cart.length > 0 && (
-                                <button onClick={() => { if (confirm('Vider tout le panier ?')) { setCart([]); } }} style={{ padding: '6px 12px', backgroundColor: '#FFF5F5', border: '1px solid #FED7D7', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', color: '#C53030', fontWeight: '500', transition: 'all 0.2s' }} onMouseEnter={(e) => e.target.style.backgroundColor = '#FEE2E2'} onMouseLeave={(e) => e.target.style.backgroundColor = '#FFF5F5'}>🗑️ Vider</button>
-                            )}
-                        </div>
-                        {cart.length === 0 ? (
-                            <div style={{ padding: '32px', textAlign: 'center' }}>
-                                <p style={{ fontSize: '32px', marginBottom: '8px', filter: 'grayscale(100%)' }}>🛒</p>
-                                <p style={{ color: '#6C757D', fontSize: '14px' }}>Panier vide</p>
+    // ── JSX du contenu panier (sidebar desktop + bottom sheet mobile) ──────────
+    const renderCartContent = (onClose) => (
+        <div className="flex flex-col h-full">
+            {/* En-tête panier */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-slate/20 shrink-0">
+                <h2 className="font-semibold text-dark">
+                    Panier
+                    <span className="ml-2 px-2 py-0.5 bg-ember/10 text-ember text-xs rounded-full font-bold">
+                        {cart.length}
+                    </span>
+                </h2>
+                <div className="flex items-center gap-2">
+                    {cart.length > 0 && (
+                        showClearConfirm ? (
+                            <div className="flex items-center gap-2 text-sm">
+                                <span className="text-slate text-xs">Vider ?</span>
+                                <button
+                                    onClick={() => { setCart([]); setShowClearConfirm(false); }}
+                                    className="text-ruby text-xs font-semibold hover:opacity-80 transition-opacity"
+                                >Oui</button>
+                                <button
+                                    onClick={() => setShowClearConfirm(false)}
+                                    className="text-slate text-xs hover:text-dark transition-colors"
+                                >Non</button>
                             </div>
                         ) : (
-                            <div>
-                                <div style={{ marginBottom: '16px', maxHeight: '300px', overflowY: 'auto' }}>
-                                    {cart.map((item) => (
-                                        <div key={item.id_produit} style={{ padding: '12px', backgroundColor: '#F8F9FA', borderRadius: '6px', marginBottom: '8px' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '8px' }}>
-                                                <div style={{ flex: 1 }}>
-                                                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#2C3E50' }}>{item.nom}</div>
-                                                    <div style={{ fontSize: '13px', color: '#6C757D' }}>{item.prix_unitaire}€ × {item.quantite}</div>
-                                                </div>
-                                                <button onClick={() => removeFromCart(item.id_produit)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', color: '#C53030' }}>×</button>
-                                            </div>
-                                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                                <button onClick={() => updateQuantity(item.id_produit, item.quantite - 1)} style={{ padding: '4px 12px', backgroundColor: '#FFFFFF', border: '1px solid #DEE2E6', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' }}>−</button>
-                                                <input type="number" value={item.quantite} onChange={(e) => updateQuantity(item.id_produit, parseInt(e.target.value) || 0)} style={{ width: '50px', padding: '4px', textAlign: 'center', border: '1px solid #DEE2E6', borderRadius: '4px', fontSize: '14px' }} />
-                                                <button onClick={() => updateQuantity(item.id_produit, item.quantite + 1)} style={{ padding: '4px 12px', backgroundColor: '#FFFFFF', border: '1px solid #DEE2E6', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' }}>+</button>
-                                                <div style={{ marginLeft: 'auto', fontSize: '16px', fontWeight: '600', color: '#2C3E50' }}>{(item.prix_unitaire * item.quantite).toFixed(2)}€</div>
-                                            </div>
-                                        </div>
+                            <button
+                                onClick={() => setShowClearConfirm(true)}
+                                className="flex items-center gap-1 px-2.5 h-7 bg-ruby/10 text-ruby text-xs font-medium rounded-lg hover:bg-ruby/20 transition-colors border border-ruby/20"
+                            >
+                                🗑️ Vider
+                            </button>
+                        )
+                    )}
+                    {onClose && (
+                        <button
+                            onClick={onClose}
+                            className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate/10 text-slate hover:text-dark transition-colors text-lg leading-none"
+                        >
+                            ×
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* Items */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                {cart.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                        <span className="text-4xl mb-3 grayscale">🛒</span>
+                        <p className="text-slate text-sm">Panier vide</p>
+                        <p className="text-slate/50 text-xs mt-1">Appuyez sur un produit pour l'ajouter</p>
+                    </div>
+                ) : (
+                    cart.map((item) => (
+                        <div key={item.id_produit} className="bg-snow rounded-xl p-3 border border-slate/20">
+                            <div className="flex items-start justify-between mb-2">
+                                <div className="flex-1 min-w-0 mr-2">
+                                    <p className="text-sm font-medium text-dark truncate">{item.nom}</p>
+                                    <p className="text-xs text-slate mt-0.5">{item.prix_unitaire}€ × {item.quantite}</p>
+                                </div>
+                                <button
+                                    onClick={() => removeFromCart(item.id_produit)}
+                                    className="w-7 h-7 flex items-center justify-center rounded-lg text-ruby hover:bg-ruby/10 transition-colors text-lg leading-none shrink-0"
+                                >×</button>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => updateQuantity(item.id_produit, item.quantite - 1)}
+                                    className="w-11 h-11 flex items-center justify-center bg-slate/10 hover:bg-ember/10 hover:text-ember text-dark rounded-xl transition-colors font-bold text-lg shrink-0"
+                                >−</button>
+                                <input
+                                    type="number"
+                                    value={item.quantite}
+                                    onChange={(e) => updateQuantity(item.id_produit, parseInt(e.target.value) || 0)}
+                                    className="w-14 h-11 text-center bg-white border border-slate/30 rounded-xl text-dark text-sm focus:outline-none focus:border-ember transition-colors"
+                                />
+                                <button
+                                    onClick={() => updateQuantity(item.id_produit, item.quantite + 1)}
+                                    className="w-11 h-11 flex items-center justify-center bg-slate/10 hover:bg-ember/10 hover:text-ember text-dark rounded-xl transition-colors font-bold text-lg shrink-0"
+                                >+</button>
+                                <span className="ml-auto text-sm font-bold text-ember shrink-0">
+                                    {(item.prix_unitaire * item.quantite).toFixed(2)}€
+                                </span>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+
+            {/* Pied panier : total + paiement + valider */}
+            {cart.length > 0 && (
+                <div className="p-4 border-t border-slate/20 space-y-3 shrink-0">
+                    <div className="flex justify-between items-center">
+                        <span className="text-slate text-sm font-medium">Total</span>
+                        <span className="text-2xl font-bold text-dark">{total.toFixed(2)}€</span>
+                    </div>
+
+                    <select
+                        value={moyenPaiement}
+                        onChange={(e) => setMoyenPaiement(e.target.value)}
+                        className="w-full h-11 px-3 bg-white border border-slate/40 rounded-xl text-dark text-sm focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors"
+                    >
+                        <option value="Espèces">Espèces</option>
+                        <option value="Carte bancaire">Carte bancaire</option>
+                        <option value="Chèque">Chèque</option>
+                        <option value="Virement">Virement</option>
+                    </select>
+
+                    <button
+                        onClick={handleSubmit}
+                        disabled={processing}
+                        className="w-full h-12 bg-linear-to-r from-ember to-ember-dim hover:brightness-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm shadow-ember/20"
+                    >
+                        {processing && (
+                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        )}
+                        {processing ? 'Traitement...' : (isOnline ? 'Valider la vente' : '💾 Sauvegarder hors ligne')}
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+
+    // ── Rendu principal ────────────────────────────────────────────────────────
+
+    return (
+        <div className="min-h-screen bg-snow">
+            <Header currentPage="sales" />
+
+            {/* Toast notification */}
+            {notification && (
+                <div className={`fixed top-4 left-4 right-4 z-50 p-4 rounded-xl text-sm font-medium flex items-start gap-3 shadow-xl ${
+                    notification.type === 'success'
+                        ? 'bg-mint/10 border border-mint/40 text-dark'
+                        : 'bg-ruby/5 border border-ruby/30 text-dark'
+                }`}>
+                    <span className={`text-lg leading-none mt-0.5 ${notification.type === 'success' ? 'text-mint' : 'text-ruby'}`}>
+                        {notification.type === 'success' ? '✓' : '⚠'}
+                    </span>
+                    <span className="flex-1 leading-relaxed">{notification.message}</span>
+                    <button
+                        onClick={() => setNotification(null)}
+                        className="text-slate hover:text-dark font-bold text-lg leading-none shrink-0"
+                    >×</button>
+                </div>
+            )}
+
+            {/*
+                Layout :
+                  mobile  → 1 colonne, panier en bottom sheet
+                  desktop → grille 2fr + 1fr avec colonnes scrollables
+            */}
+            <main className="p-4 lg:p-6 max-w-7xl mx-auto pb-28 lg:pb-6">
+                <div className="lg:grid lg:grid-cols-[2fr_1fr] lg:gap-6 lg:h-[calc(100vh-8rem)]">
+
+                    {/* ── Colonne produits ── */}
+                    <div className="bg-white rounded-2xl border border-slate/20 shadow-sm flex flex-col overflow-hidden mb-4 lg:mb-0">
+                        {/* Barre de recherche */}
+                        <div className="p-4 border-b border-slate/20 shrink-0">
+                            <h2 className="text-base font-semibold text-dark mb-3">Produits</h2>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Rechercher..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="flex-1 h-11 px-4 bg-snow border border-slate/30 rounded-xl text-dark text-sm placeholder:text-slate/40 focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors"
+                                />
+                                <button
+                                    onClick={() => setShowScanner(true)}
+                                    className="h-11 px-4 bg-mint/10 text-mint border border-mint/30 rounded-xl text-sm font-medium hover:bg-mint/20 transition-colors whitespace-nowrap shrink-0"
+                                >
+                                    📷 Scanner
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Grille produits */}
+                        <div className="flex-1 overflow-y-auto p-4">
+                            {filteredProducts.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center py-12 text-center">
+                                    <p className="text-4xl mb-3 grayscale">📦</p>
+                                    <p className="text-slate text-sm">Aucun produit trouvé</p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+                                    {filteredProducts.map((product) => (
+                                        <button
+                                            key={product.id_produit}
+                                            onClick={() => addToCart(product)}
+                                            disabled={product.stock_actuel === 0}
+                                            className={`p-4 rounded-xl text-left border transition-all ${
+                                                product.stock_actuel === 0
+                                                    ? 'bg-snow border-slate/20 opacity-40 cursor-not-allowed'
+                                                    : 'bg-snow border-slate/20 hover:border-ember/40 hover:bg-ember/5 active:scale-95 cursor-pointer'
+                                            }`}
+                                        >
+                                            <p className="text-sm font-semibold text-dark mb-1 truncate">
+                                                {product.nom}
+                                            </p>
+                                            <p className="text-base font-bold text-ember">
+                                                {product.prix_base}€
+                                            </p>
+                                            <p className={`text-xs mt-1 ${
+                                                product.stock_actuel === 0 ? 'text-ruby' : 'text-slate'
+                                            }`}>
+                                                Stock : {product.stock_actuel}
+                                            </p>
+                                        </button>
                                     ))}
                                 </div>
-                                <div style={{ borderTop: '1px solid #DEE2E6', paddingTop: '16px', marginBottom: '16px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-                                        <span style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50' }}>Total</span>
-                                        <span style={{ fontSize: '24px', fontWeight: '600', color: '#343A40' }}>{total.toFixed(2)}€</span>
-                                    </div>
-                                    <div style={{ marginBottom: '16px' }}>
-                                        <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#495057', marginBottom: '8px' }}>Moyen de paiement</label>
-                                        <select value={moyenPaiement} onChange={(e) => setMoyenPaiement(e.target.value)} style={{ width: '100%', padding: '10px 12px', border: '1px solid #DEE2E6', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }}>
-                                            <option value="Espèces">Espèces</option>
-                                            <option value="Carte bancaire">Carte bancaire</option>
-                                            <option value="Chèque">Chèque</option>
-                                            <option value="Virement">Virement</option>
-                                        </select>
-                                    </div>
-                                    <button onClick={handleSubmit} disabled={processing} style={{ width: '100%', padding: '14px', backgroundColor: processing ? '#ADB5BD' : '#343A40', color: '#FFFFFF', fontWeight: '600', borderRadius: '6px', border: 'none', cursor: processing ? 'not-allowed' : 'pointer', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.2s' }}>
-                                        {processing && <span style={{ width: '16px', height: '16px', border: '2px solid #FFFFFF', borderTop: '2px solid transparent', borderRadius: '50%', animation: 'spin 0.6s linear infinite', display: 'inline-block' }}></span>}
-                                        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-                                        {processing ? 'Traitement...' : (isOnline ? 'Valider la vente' : '💾 Sauvegarder hors ligne')}
-                                    </button>
-                                </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
+                    </div>
+
+                    {/* ── Panier desktop (sidebar droite) ── */}
+                    <div className="hidden lg:flex flex-col bg-white rounded-2xl border border-slate/20 shadow-sm overflow-hidden">
+                        {renderCartContent(null)}
                     </div>
                 </div>
             </main>
-            
-            {/* Scanner QR Code */}
+
+            {/* ── Barre panier fixe en bas (mobile, si panier non vide) ── */}
+            {cart.length > 0 && (
+                <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur border-t border-slate/20 z-30">
+                    <button
+                        onClick={() => setShowCart(true)}
+                        className="w-full h-14 bg-linear-to-r from-ember to-ember-dim hover:brightness-90 text-white font-bold rounded-2xl flex items-center justify-between px-5 transition-all shadow-sm shadow-ember/20"
+                    >
+                        <span className="flex items-center gap-2.5">
+                            <span className="bg-white/25 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shrink-0">
+                                {cart.length}
+                            </span>
+                            <span>Voir le panier</span>
+                        </span>
+                        <span className="text-lg font-bold">{total.toFixed(2)}€</span>
+                    </button>
+                </div>
+            )}
+
+            {/* ── Bottom sheet panier (mobile) ── */}
+            {showCart && (
+                <div className="lg:hidden fixed inset-0 z-40">
+                    {/* Overlay */}
+                    <div
+                        className="absolute inset-0 bg-black/50"
+                        onClick={() => setShowCart(false)}
+                    />
+                    {/* Sheet */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[85vh] flex flex-col border-t border-slate/20">
+                        {/* Poignée visuelle */}
+                        <div className="flex justify-center pt-3 pb-1 shrink-0">
+                            <div className="w-10 h-1 bg-slate/20 rounded-full" />
+                        </div>
+                        {renderCartContent(() => setShowCart(false))}
+                    </div>
+                </div>
+            )}
+
+            {/* ── Scanner QR ── */}
             {showScanner && (
-                <QRScanner 
+                <QRScanner
                     onScan={handleQRScan}
                     onClose={() => setShowScanner(false)}
                 />

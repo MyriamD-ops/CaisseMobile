@@ -4,27 +4,24 @@ import Header from '../../Components/Header';
 import useOnlineStatus from '../../Hooks/useOnlineStatus';
 import { syncProduits, getProduitsLocal } from '../../utils/sync';
 
-export default function Index({ products: serverProducts, auth }) {
+export default function Index({ products: serverProducts }) {
     const { flash } = usePage().props;
     const isOnline = useOnlineStatus();
     const [products, setProducts] = useState(serverProducts);
     const [loading, setLoading] = useState(false);
-    
-    // Charger les produits depuis IndexedDB au montage
+
     useEffect(() => {
         loadProducts();
     }, []);
-    
-    // Synchroniser quand la connexion revient
+
     useEffect(() => {
         if (isOnline) {
             syncProducts();
         }
     }, [isOnline]);
-    
+
     const loadProducts = async () => {
         try {
-            // Charger depuis IndexedDB (instantané)
             const localProducts = await getProduitsLocal();
             if (localProducts.length > 0) {
                 setProducts(localProducts);
@@ -33,10 +30,9 @@ export default function Index({ products: serverProducts, auth }) {
             console.error('Erreur chargement produits locaux:', error);
         }
     };
-    
+
     const syncProducts = async () => {
         if (!isOnline) return;
-        
         setLoading(true);
         try {
             const synced = await syncProduits();
@@ -47,100 +43,118 @@ export default function Index({ products: serverProducts, auth }) {
             setLoading(false);
         }
     };
-    
+
     const handleDelete = (productId, productName) => {
         if (confirm(`Êtes-vous sûr de vouloir supprimer "${productName}" ?`)) {
-            router.post(`/products/${productId}`, {
-                _method: 'DELETE'
-            });
+            router.post(`/products/${productId}`, { _method: 'DELETE' });
         }
     };
-    
+
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+        <div className="min-h-screen bg-snow">
             <Header currentPage="products" />
 
-            <main style={{ padding: '32px 24px', maxWidth: '1400px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+            <main className="p-4 lg:p-6 max-w-7xl mx-auto">
+
+                {/* En-tête page */}
+                <div className="flex items-start justify-between gap-4 mb-6">
                     <div>
-                        <h2 style={{ fontSize: '28px', fontWeight: '600', color: '#2C3E50', marginBottom: '4px' }}>Produits</h2>
-                        <p style={{ color: '#6C757D', fontSize: '14px' }}>
-                            {products.length} produit{products.length > 1 ? 's' : ''} au total
-                            {loading && ' • Synchronisation...'}
+                        <h2 className="text-2xl font-bold text-dark">Produits</h2>
+                        <p className="text-slate text-sm mt-1">
+                            {products.length} produit{products.length > 1 ? 's' : ''}
+                            {loading && (
+                                <span className="ml-2 inline-flex items-center gap-1 text-ember">
+                                    <span className="w-3 h-3 border border-ember border-t-transparent rounded-full animate-spin" />
+                                    Synchronisation…
+                                </span>
+                            )}
                         </p>
                     </div>
-                    <Link href="/products/create" style={{ padding: '10px 20px', backgroundColor: '#343A40', color: '#FFFFFF', fontWeight: '500', borderRadius: '6px', textDecoration: 'none', display: 'inline-block', fontSize: '14px', transition: 'all 0.2s' }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = '#23272B'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = '#343A40'}
+                    <Link
+                        href="/products/create"
+                        className="shrink-0 flex items-center justify-center h-11 px-5 bg-ember hover:bg-ember-dim text-white font-bold rounded-xl text-sm transition-colors"
                     >
-                        + Nouveau produit
+                        + Nouveau
                     </Link>
                 </div>
 
+                {/* Flash success */}
                 {flash?.success && (
-                    <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', color: '#2C3E50', fontSize: '14px' }}>
-                        ✓ {flash.success}
+                    <div className="mb-5 p-4 bg-mint/10 border border-mint/30 rounded-xl text-mint text-sm flex items-center gap-2">
+                        <span>✓</span>
+                        <span>{flash.success}</span>
                     </div>
                 )}
 
+                {/* État vide */}
                 {products.length === 0 ? (
-                    <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '64px', textAlign: 'center', border: '1px solid #DEE2E6' }}>
-                        <p style={{ fontSize: '48px', marginBottom: '16px', filter: 'grayscale(100%)' }}>📦</p>
-                        <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50', marginBottom: '8px' }}>Aucun produit</h3>
-                        <p style={{ color: '#6C757D', marginBottom: '24px', fontSize: '14px' }}>Commencez par ajouter votre premier produit</p>
-                        <Link href="/products/create" style={{ padding: '10px 20px', backgroundColor: '#343A40', color: '#FFFFFF', fontWeight: '500', borderRadius: '6px', textDecoration: 'none', display: 'inline-block', fontSize: '14px' }}>Créer un produit</Link>
+                    <div className="bg-white rounded-2xl border border-slate/20 p-12 text-center">
+                        <p className="text-5xl mb-4 grayscale">📦</p>
+                        <h3 className="text-lg font-semibold text-dark mb-2">Aucun produit</h3>
+                        <p className="text-slate text-sm mb-6">
+                            Commencez par ajouter votre premier produit
+                        </p>
+                        <Link
+                            href="/products/create"
+                            className="inline-flex items-center justify-center h-11 px-6 bg-ember hover:bg-ember-dim text-white font-bold rounded-xl text-sm transition-colors"
+                        >
+                            Créer un produit
+                        </Link>
                     </div>
                 ) : (
-                    <div style={{ display: 'grid', gap: '16px' }}>
-                        {products.map((product) => (
-                            <div key={product.id_produit} style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '20px', border: '1px solid #DEE2E6', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.2s' }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
-                                    e.currentTarget.style.transform = 'translateY(-2px)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.boxShadow = 'none';
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                }}
-                            >
-                                <div style={{ flex: 1 }}>
-                                    <Link href={'/products/' + product.id_produit} style={{ textDecoration: 'none' }}>
-                                        <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#2C3E50', marginBottom: '8px', cursor: 'pointer', transition: 'color 0.2s' }}
-                                            onMouseEnter={(e) => e.target.style.color = '#5D6D7E'}
-                                            onMouseLeave={(e) => e.target.style.color = '#2C3E50'}
+                    /* Grille responsive */
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                        {products.map((product) => {
+                            const stockBas = product.stock_actuel <= product.stock_minimum;
+                            return (
+                                <div
+                                    key={product.id_produit}
+                                    className="bg-white rounded-2xl border border-slate/20 p-5 flex flex-col gap-4 hover:border-slate/40 transition-colors shadow-sm"
+                                >
+                                    {/* Ligne nom + badge stock */}
+                                    <div className="flex items-start justify-between gap-2">
+                                        <Link
+                                            href={`/products/${product.id_produit}`}
+                                            className="flex-1 min-w-0"
                                         >
-                                            {product.nom}
-                                        </h3>
-                                    </Link>
-                                    <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: '#6C757D' }}>
-                                        <span>💰 {product.prix_base}€</span>
-                                        <span>📦 Stock: {product.stock_actuel}</span>
-                                        <span>🏷️ {product.categorie}</span>
-                                        <span style={{ padding: '2px 8px', borderRadius: '4px', backgroundColor: product.stock_actuel <= product.stock_minimum ? '#FFF5F5' : '#F8F9FA', color: product.stock_actuel <= product.stock_minimum ? '#C53030' : '#495057', fontSize: '12px', fontWeight: '500' }}>
-                                            {product.stock_actuel <= product.stock_minimum ? '⚠️ Stock bas' : '✓ Stock OK'}
+                                            <h3 className="font-semibold text-dark hover:text-ember transition-colors truncate">
+                                                {product.nom}
+                                            </h3>
+                                        </Link>
+                                        <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full ${
+                                            stockBas
+                                                ? 'bg-ruby/10 text-ruby border border-ruby/20'
+                                                : 'bg-mint/10 text-mint border border-mint/20'
+                                        }`}>
+                                            {stockBas ? '⚠ Bas' : '✓ OK'}
                                         </span>
                                     </div>
+
+                                    {/* Méta : prix, stock, catégorie */}
+                                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                                        <span className="text-ember font-bold">{product.prix_base}€</span>
+                                        <span className="text-slate">Stock : {product.stock_actuel}</span>
+                                        <span className="text-slate truncate">{product.categorie}</span>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="flex gap-2 mt-auto">
+                                        <Link
+                                            href={`/products/${product.id_produit}/edit`}
+                                            className="flex-1 h-11 flex items-center justify-center bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark rounded-xl text-sm font-medium transition-colors"
+                                        >
+                                            ✏️ Modifier
+                                        </Link>
+                                        <button
+                                            onClick={() => handleDelete(product.id_produit, product.nom)}
+                                            className="flex-1 h-11 flex items-center justify-center bg-ruby/10 hover:bg-ruby/20 text-ruby rounded-xl text-sm font-medium transition-colors border border-ruby/20"
+                                        >
+                                            🗑️ Supprimer
+                                        </button>
+                                    </div>
                                 </div>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                    <Link href={'/products/' + product.id_produit + '/edit'} style={{ padding: '8px 14px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#495057', textDecoration: 'none', transition: 'all 0.2s' }}
-                                        onMouseEnter={(e) => e.target.style.backgroundColor = '#E9ECEF'}
-                                        onMouseLeave={(e) => e.target.style.backgroundColor = '#F8F9FA'}
-                                    >✏️ Modifier</Link>
-                                    <button 
-                                        onClick={() => handleDelete(product.id_produit, product.nom)}
-                                        style={{ padding: '8px 14px', backgroundColor: '#FFF5F5', border: '1px solid #FED7D7', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', color: '#C53030', transition: 'all 0.2s' }}
-                                        onMouseEnter={(e) => {
-                                            e.target.style.backgroundColor = '#FEE2E2';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.target.style.backgroundColor = '#FFF5F5';
-                                        }}
-                                    >
-                                        🗑️ Supprimer
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </main>

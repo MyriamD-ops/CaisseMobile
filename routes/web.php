@@ -7,6 +7,12 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\EvenementController;
 
+// Preview Design System (accessible sans auth)
+Route::get('/ui', function (ResponseFactory $inertia) {
+    return $inertia->render('UIPreview');
+})->name('ui.preview');
+
+
 // Page de login
 Route::get('/login', function (ResponseFactory $inertia) {
     return $inertia->render('Login');

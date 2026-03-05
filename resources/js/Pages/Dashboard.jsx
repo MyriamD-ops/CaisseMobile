@@ -3,88 +3,47 @@ import Header from '../Components/Header';
 
 export default function Dashboard({ auth }) {
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
-            <Header currentPage="dashboard" />
-            
+        <div className="relative min-h-screen bg-snow">
+            {/* Éléments décoratifs flous (blobs) */}
+            <div className="fixed top-0 -left-20 w-72 h-72 bg-ember rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob pointer-events-none" />
+            <div className="fixed bottom-0 -right-20 w-80 h-80 bg-dark rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000 pointer-events-none" />
 
-            {/* Contenu */}
-            <main style={{ padding: '32px 24px', maxWidth: '1400px', margin: '0 auto' }}>
+            <Header currentPage="dashboard" />
+
+            <main className="relative z-10 px-4 sm:px-6 py-8 max-w-7xl mx-auto">
+
                 {/* En-tête */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h2 style={{ 
-                        fontSize: '28px', 
-                        fontWeight: '600', 
-                        color: '#2C3E50',
-                        marginBottom: '4px'
-                    }}>
+                <div className="mb-8">
+                    <h1 className="text-3xl sm:text-4xl font-bold text-dark tracking-tight">
                         Dashboard
-                    </h2>
-                    <p style={{ color: '#6C757D', fontSize: '15px' }}>
+                    </h1>
+                    <p className="text-slate text-base mt-1">
                         Bienvenue {auth.user?.username}
                     </p>
                 </div>
 
-                {/* Stats Cards */}
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                    gap: '20px',
-                    marginBottom: '40px'
-                }}>
+                {/* Cartes statistiques */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
                     {[
-                        { title: 'Produits', value: '247', icon: '📦' },
-                        { title: 'Stock Bas', value: '8', icon: '⚠️' },
-                        { title: 'Ventes du jour', value: '23', icon: '🛒' },
-                        { title: 'Montant du jour', value: '1 447€', icon: '💰' },
+                        { title: 'Produits',       value: '247',    icon: '📦', accent: false },
+                        { title: 'Stock Bas',       value: '8',      icon: '⚠️', accent: true  },
+                        { title: 'Ventes du jour',  value: '23',     icon: '🛒', accent: false },
+                        { title: 'Montant du jour', value: '1 447€', icon: '💰', accent: false },
                     ].map((card, index) => (
                         <div
                             key={index}
-                            style={{
-                                backgroundColor: '#FFFFFF',
-                                borderRadius: '8px',
-                                padding: '24px',
-                                border: '1px solid #DEE2E6',
-                                transition: 'all 0.2s ease'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.boxShadow = 'none';
-                                e.currentTarget.style.transform = 'translateY(0)';
-                            }}
+                            className="bg-white/90 backdrop-blur-sm rounded-2xl border border-white/30 p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                         >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                                <div style={{ flex: 1 }}>
-                                    <p style={{ 
-                                        fontSize: '13px', 
-                                        color: '#6C757D', 
-                                        fontWeight: '500', 
-                                        marginBottom: '8px'
-                                    }}>
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <p className="text-xs font-semibold text-slate uppercase tracking-wider mb-1">
                                         {card.title}
                                     </p>
-                                    <p style={{ 
-                                        fontSize: '32px', 
-                                        fontWeight: '600', 
-                                        color: '#2C3E50',
-                                        margin: 0
-                                    }}>
+                                    <p className="text-3xl font-bold text-dark">
                                         {card.value}
                                     </p>
                                 </div>
-                                <div style={{
-                                    width: '48px',
-                                    height: '48px',
-                                    backgroundColor: '#F8F9FA',
-                                    borderRadius: '8px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '24px',
-                                    filter: 'grayscale(100%)'
-                                }}>
+                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl ${card.accent ? 'bg-ruby/10' : 'bg-ember/10'}`}>
                                     {card.icon}
                                 </div>
                             </div>
@@ -94,116 +53,36 @@ export default function Dashboard({ auth }) {
 
                 {/* Actions rapides */}
                 <div>
-                    <h3 style={{ 
-                        fontSize: '18px', 
-                        fontWeight: '600', 
-                        color: '#2C3E50', 
-                        marginBottom: '20px'
-                    }}>
+                    <h2 className="text-xl font-semibold text-dark mb-5">
                         Actions rapides
-                    </h3>
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                        gap: '16px'
-                    }}>
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                        {/* Nouvelle vente */}
                         <Link
                             href="/sales/create"
-                            style={{
-                                padding: '24px',
-                                backgroundColor: '#343A40',
-                                borderRadius: '8px',
-                                cursor: 'pointer',
-                                fontSize: '15px',
-                                fontWeight: '500',
-                                color: '#FFFFFF',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                gap: '12px',
-                                textDecoration: 'none',
-                                transition: 'all 0.2s ease',
-                                border: 'none'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = '#23272B';
-                                e.target.style.transform = 'translateY(-2px)';
-                                e.target.style.boxShadow = '0 4px 12px rgba(52, 58, 64, 0.3)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = '#343A40';
-                                e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = 'none';
-                            }}
+                            className="bg-linear-to-r from-ember to-ember-dim rounded-2xl p-6 flex flex-col items-center gap-3 text-white shadow-lg shadow-ember/30 hover:brightness-90 hover:scale-[1.02] transition-all duration-300"
                         >
-                            <span style={{ fontSize: '32px', filter: 'grayscale(100%)' }}>🛒</span>
-                            <span>Nouvelle vente</span>
+                            <span className="text-4xl filter drop-shadow-lg">🛒</span>
+                            <span className="font-bold text-lg">Nouvelle vente</span>
                         </Link>
-                        
+
+                        {/* Ajouter produit */}
                         <Link
                             href="/products/create"
-                            style={{
-                                padding: '24px',
-                                backgroundColor: '#FFFFFF',
-                                border: '2px solid #DEE2E6',
-                                borderRadius: '8px',
-                                cursor: 'pointer',
-                                fontSize: '15px',
-                                fontWeight: '500',
-                                color: '#495057',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                gap: '12px',
-                                textDecoration: 'none',
-                                transition: 'all 0.2s ease'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = '#F8F9FA';
-                                e.target.style.borderColor = '#ADB5BD';
-                                e.target.style.transform = 'translateY(-2px)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = '#FFFFFF';
-                                e.target.style.borderColor = '#DEE2E6';
-                                e.target.style.transform = 'translateY(0)';
-                            }}
+                            className="bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-slate/30 p-6 flex flex-col items-center gap-3 text-dark hover:bg-white hover:border-ember hover:shadow-lg transition-all duration-300"
                         >
-                            <span style={{ fontSize: '32px', filter: 'grayscale(100%)' }}>📦</span>
-                            <span>Ajouter produit</span>
+                            <span className="text-4xl">📦</span>
+                            <span className="font-bold text-lg">Ajouter produit</span>
                         </Link>
-                        
+
+                        {/* Alertes stock */}
                         <Link
                             href="/products/low-stock"
-                            style={{
-                                padding: '24px',
-                                backgroundColor: '#FFFFFF',
-                                border: '2px solid #DEE2E6',
-                                borderRadius: '8px',
-                                cursor: 'pointer',
-                                fontSize: '15px',
-                                fontWeight: '500',
-                                color: '#495057',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                gap: '12px',
-                                textDecoration: 'none',
-                                transition: 'all 0.2s ease'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = '#F8F9FA';
-                                e.target.style.borderColor = '#ADB5BD';
-                                e.target.style.transform = 'translateY(-2px)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = '#FFFFFF';
-                                e.target.style.borderColor = '#DEE2E6';
-                                e.target.style.transform = 'translateY(0)';
-                            }}
+                            className="bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-slate/30 p-6 flex flex-col items-center gap-3 text-dark hover:bg-white hover:border-ember hover:shadow-lg transition-all duration-300"
                         >
-                            <span style={{ fontSize: '32px', filter: 'grayscale(100%)' }}>⚠️</span>
-                            <span>Alertes stock</span>
+                            <span className="text-4xl">⚠️</span>
+                            <span className="font-bold text-lg">Alertes stock</span>
                         </Link>
                     </div>
                 </div>

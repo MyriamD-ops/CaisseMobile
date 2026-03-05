@@ -1,4 +1,5 @@
 // === REACT INERTIA APP ===
+import '../css/app.css';
 import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { syncVentes } from './utils/sync';

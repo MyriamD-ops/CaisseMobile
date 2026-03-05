@@ -1,77 +1,73 @@
 export default function Public({ evenement }) {
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
-            {/* Header simple */}
-            <header style={{ backgroundColor: '#343A40', color: '#FFFFFF', padding: '24px', textAlign: 'center' }}>
-                <h1 style={{ fontSize: '28px', fontWeight: '600', margin: 0, marginBottom: '8px' }}>{evenement.nom}</h1>
-                <p style={{ fontSize: '15px', opacity: 0.9, margin: 0 }}>
-                    📍 {evenement.lieu} • 📅 {evenement.date_debut} - {evenement.date_fin}
+        <div className="min-h-screen bg-snow flex flex-col">
+            {/* Header public — pas de nav admin */}
+            <header className="bg-dark text-white px-4 py-6 text-center">
+                <h1 className="text-2xl font-bold tracking-tight mb-1">{evenement.nom}</h1>
+                <p className="text-sm text-white/70">
+                    📍 {evenement.lieu} · 📅 {evenement.date_debut} – {evenement.date_fin}
                 </p>
             </header>
 
-            {/* Catalogue produits */}
-            <main style={{ padding: '32px 16px', maxWidth: '1200px', margin: '0 auto' }}>
+            {/* Catalogue */}
+            <main className="flex-1 px-4 py-8 max-w-5xl mx-auto w-full">
+                {/* Description */}
                 {evenement.description && (
-                    <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '20px', marginBottom: '24px', border: '1px solid #DEE2E6' }}>
-                        <p style={{ fontSize: '15px', color: '#495057', margin: 0 }}>{evenement.description}</p>
+                    <div className="bg-white rounded-2xl border border-slate/20 p-5 mb-6 shadow-sm">
+                        <p className="text-sm text-slate leading-relaxed">{evenement.description}</p>
                     </div>
                 )}
 
-                <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', marginBottom: '16px' }}>
-                    Nos produits disponibles ({evenement.produits.length})
+                <h2 className="text-lg font-semibold text-dark mb-4">
+                    Nos produits disponibles
+                    <span className="ml-2 text-slate font-normal">({evenement.produits.length})</span>
                 </h2>
 
                 {evenement.produits.length === 0 ? (
-                    <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '64px', textAlign: 'center', border: '1px solid #DEE2E6' }}>
-                        <p style={{ fontSize: '48px', marginBottom: '16px', filter: 'grayscale(100%)' }}>📦</p>
-                        <p style={{ color: '#6C757D', fontSize: '16px' }}>Aucun produit disponible pour le moment</p>
+                    <div className="bg-white rounded-2xl border border-slate/20 p-12 text-center">
+                        <p className="text-5xl mb-4 grayscale">📦</p>
+                        <p className="text-slate">Aucun produit disponible pour le moment</p>
                     </div>
                 ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {evenement.produits.map((produit) => (
-                            <div key={produit.id} style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', padding: '20px', border: '1px solid #DEE2E6', transition: 'all 0.2s' }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.1)';
-                                    e.currentTarget.style.transform = 'translateY(-4px)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.boxShadow = 'none';
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                }}>
-                                
+                            <div
+                                key={produit.id}
+                                className="bg-white rounded-2xl border border-slate/20 p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200"
+                            >
                                 {/* Badge disponibilité */}
-                                <div style={{ marginBottom: '12px' }}>
+                                <div className="mb-3">
                                     {produit.disponible ? (
-                                        <span style={{ padding: '4px 12px', backgroundColor: '#E8F5E9', color: '#2E7D32', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>
+                                        <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-mint/10 text-mint border border-mint/20">
                                             ✓ Disponible
                                         </span>
                                     ) : (
-                                        <span style={{ padding: '4px 12px', backgroundColor: '#FFEBEE', color: '#C62828', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>
+                                        <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-ruby/10 text-ruby border border-ruby/20">
                                             ✗ Rupture
                                         </span>
                                     )}
                                 </div>
 
-                                {/* Nom produit */}
-                                <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50', marginBottom: '8px' }}>{produit.nom}</h3>
+                                {/* Nom */}
+                                <h3 className="text-base font-semibold text-dark mb-2">{produit.nom}</h3>
 
                                 {/* Description */}
                                 {produit.description && (
-                                    <p style={{ fontSize: '14px', color: '#6C757D', marginBottom: '12px', lineHeight: '1.5' }}>{produit.description}</p>
+                                    <p className="text-sm text-slate mb-3 leading-relaxed">{produit.description}</p>
                                 )}
 
-                                {/* Infos produit */}
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px', fontSize: '13px', color: '#6C757D' }}>
+                                {/* Méta */}
+                                <div className="flex flex-col gap-1 mb-4 text-sm text-slate">
                                     {produit.categorie && <span>🏷️ {produit.categorie}</span>}
                                     {produit.matiere && <span>🔧 {produit.matiere}</span>}
                                     {produit.disponible && <span>📦 {produit.stock_evenement} en stock</span>}
                                 </div>
 
                                 {/* Prix */}
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid #DEE2E6' }}>
-                                    <span style={{ fontSize: '24px', fontWeight: '700', color: '#343A40' }}>{produit.prix}€</span>
+                                <div className="flex items-center justify-between pt-4 border-t border-slate/10">
+                                    <span className="text-2xl font-bold text-ember">{produit.prix}€</span>
                                     {!produit.disponible && (
-                                        <span style={{ fontSize: '12px', color: '#C62828', fontWeight: '500' }}>Plus disponible</span>
+                                        <span className="text-xs text-ruby font-medium">Plus disponible</span>
                                     )}
                                 </div>
                             </div>
@@ -81,10 +77,8 @@ export default function Public({ evenement }) {
             </main>
 
             {/* Footer */}
-            <footer style={{ backgroundColor: '#343A40', color: '#FFFFFF', padding: '24px', textAlign: 'center', marginTop: '48px' }}>
-                <p style={{ fontSize: '14px', opacity: 0.8, margin: 0 }}>
-                    Powered by CaisseMobile
-                </p>
+            <footer className="bg-dark text-white/60 text-center py-5 text-xs mt-auto">
+                Powered by CaisseMobile
             </footer>
         </div>
     );
