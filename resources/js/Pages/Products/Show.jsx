@@ -9,117 +9,127 @@ export default function Show({ product }) {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         const img = new Image();
-        
+
         img.onload = () => {
             canvas.width = img.width;
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             const pngFile = canvas.toDataURL('image/png');
-            
             const downloadLink = document.createElement('a');
             downloadLink.download = `qr-${product.nom.replace(/\s+/g, '-')}.png`;
             downloadLink.href = pngFile;
             downloadLink.click();
         };
-        
+
         img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
     };
 
+    const stockBas = product.stock_actuel <= product.stock_minimum;
+
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+        <div className="min-h-screen bg-snow">
             <Header currentPage="products" />
 
-            <main style={{ padding: '32px 24px' }}>
-                <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-                    <div style={{ marginBottom: '24px' }}>
-                        <Link href="/products" style={{ color: '#6C757D', textDecoration: 'none', fontSize: '14px' }}>← Retour aux produits</Link>
-                    </div>
+            <main className="p-4 lg:p-6 max-w-5xl mx-auto">
+                <Link
+                    href="/products"
+                    className="inline-flex items-center gap-1 text-slate hover:text-dark text-sm mb-6 transition-colors"
+                >
+                    ← Retour aux produits
+                </Link>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                        {/* Informations produit */}
-                        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '32px', border: '1px solid #DEE2E6' }}>
-                            <h2 style={{ fontSize: '24px', fontWeight: '600', color: '#2C3E50', marginBottom: '16px' }}>{product.nom}</h2>
-                            
-                            {product.description && (
-                                <p style={{ color: '#6C757D', marginBottom: '24px', lineHeight: '1.6', fontSize: '14px' }}>{product.description}</p>
-                            )}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Informations produit */}
+                    <div className="bg-white rounded-2xl border border-slate/20 shadow-sm p-6">
+                        <div className="flex items-start justify-between gap-3 mb-5">
+                            <h2 className="text-2xl font-bold text-dark">{product.nom}</h2>
+                            <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full border ${
+                                stockBas
+                                    ? 'bg-ruby/10 text-ruby border-ruby/20'
+                                    : 'bg-mint/10 text-mint border-mint/20'
+                            }`}>
+                                {stockBas ? '⚠ Bas' : '✓ OK'}
+                            </span>
+                        </div>
 
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid #DEE2E6' }}>
-                                    <span style={{ color: '#6C757D', fontSize: '14px' }}>Prix</span>
-                                    <span style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50' }}>{product.prix_base}€</span>
-                                </div>
-                                
-                                <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid #DEE2E6' }}>
-                                    <span style={{ color: '#6C757D', fontSize: '14px' }}>Catégorie</span>
-                                    <span style={{ fontWeight: '500', fontSize: '14px', color: '#2C3E50' }}>{product.categorie}</span>
-                                </div>
-                                
-                                {product.matiere && (
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid #DEE2E6' }}>
-                                        <span style={{ color: '#6C757D', fontSize: '14px' }}>Matériau</span>
-                                        <span style={{ fontWeight: '500', fontSize: '14px', color: '#2C3E50' }}>{product.matiere}</span>
-                                    </div>
-                                )}
-                                
-                                <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid #DEE2E6' }}>
-                                    <span style={{ color: '#6C757D', fontSize: '14px' }}>Stock actuel</span>
-                                    <span style={{ fontWeight: '500', fontSize: '14px', color: product.stock_actuel <= product.stock_minimum ? '#C53030' : '#2C3E50' }}>
-                                        {product.stock_actuel} unités
-                                    </span>
-                                </div>
-                                
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <span style={{ color: '#6C757D', fontSize: '14px' }}>Code barre</span>
-                                    <span style={{ fontFamily: 'monospace', fontSize: '12px', color: '#495057' }}>{product.code_barres}</span>
-                                </div>
+                        {product.description && (
+                            <p className="text-slate text-sm mb-5 leading-relaxed">{product.description}</p>
+                        )}
+
+                        <div className="space-y-0 divide-y divide-slate/10">
+                            <div className="flex justify-between items-center py-3">
+                                <span className="text-sm text-slate">Prix</span>
+                                <span className="text-lg font-bold text-ember">{product.prix_base}€</span>
                             </div>
-
-                            <div style={{ marginTop: '24px' }}>
-                                <Link href={'/products/' + product.id_produit + '/edit'} style={{ width: '100%', padding: '12px', backgroundColor: '#343A40', color: '#FFFFFF', fontWeight: '600', borderRadius: '6px', textDecoration: 'none', textAlign: 'center', display: 'block', fontSize: '14px' }}>
-                                    ✏️ Modifier
-                                </Link>
+                            <div className="flex justify-between items-center py-3">
+                                <span className="text-sm text-slate">Catégorie</span>
+                                <span className="text-sm font-medium text-dark">{product.categorie}</span>
+                            </div>
+                            {product.matiere && (
+                                <div className="flex justify-between items-center py-3">
+                                    <span className="text-sm text-slate">Matériau</span>
+                                    <span className="text-sm font-medium text-dark">{product.matiere}</span>
+                                </div>
+                            )}
+                            <div className="flex justify-between items-center py-3">
+                                <span className="text-sm text-slate">Stock actuel</span>
+                                <span className={`text-sm font-semibold ${stockBas ? 'text-ruby' : 'text-dark'}`}>
+                                    {product.stock_actuel} unités
+                                </span>
+                            </div>
+                            <div className="flex justify-between items-center py-3">
+                                <span className="text-sm text-slate">Stock minimum</span>
+                                <span className="text-sm font-medium text-dark">{product.stock_minimum} unités</span>
+                            </div>
+                            <div className="flex justify-between items-center py-3">
+                                <span className="text-sm text-slate">Code barre</span>
+                                <span className="text-xs font-mono text-slate">{product.code_barres}</span>
                             </div>
                         </div>
 
-                        {/* QR Code pour scan caisse */}
-                        <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '32px', border: '1px solid #DEE2E6', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50', marginBottom: '16px', textAlign: 'center' }}>QR Code du produit</h3>
-                            
-                            <div style={{ padding: '24px', backgroundColor: '#F8F9FA', borderRadius: '8px', marginBottom: '16px' }}>
-                                <QRCodeSVG 
-                                    id="qr-code-barcode" 
-                                    value={product.code_barres} 
-                                    size={220} 
-                                    level="H" 
-                                    includeMargin={true} 
-                                />
-                            </div>
-
-                            <div style={{ padding: '12px', backgroundColor: '#F8F9FA', borderRadius: '6px', marginBottom: '16px', width: '100%' }}>
-                                <p style={{ fontSize: '12px', color: '#495057', textAlign: 'center', fontFamily: 'monospace' }}>
-                                    {product.code_barres}
-                                </p>
-                            </div>
-
-                            <p style={{ fontSize: '13px', color: '#6C757D', textAlign: 'center', marginBottom: '16px', lineHeight: '1.5' }}>
-                                Scannez ce code lors d'une vente pour ajouter le produit automatiquement au panier
-                            </p>
-
-                            <button 
-                                onClick={downloadQR} 
-                                style={{ width: '100%', padding: '12px', backgroundColor: '#28A745', border: 'none', color: '#FFFFFF', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: '500', transition: 'all 0.2s', marginBottom: '12px' }}
-                                onMouseEnter={(e) => e.target.style.backgroundColor = '#218838'}
-                                onMouseLeave={(e) => e.target.style.backgroundColor = '#28A745'}
+                        <div className="mt-6">
+                            <Link
+                                href={`/products/${product.id_produit}/edit`}
+                                className="w-full h-11 flex items-center justify-center bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark border border-slate/20 rounded-xl text-sm font-medium transition-colors"
                             >
-                                📥 Télécharger le QR Code
-                            </button>
+                                ✏️ Modifier
+                            </Link>
+                        </div>
+                    </div>
 
-                            <div style={{ padding: '12px', backgroundColor: '#D4EDDA', border: '1px solid #C3E6CB', borderRadius: '6px', width: '100%' }}>
-                                <p style={{ fontSize: '12px', color: '#155724', textAlign: 'center', fontWeight: '500' }}>
-                                    💡 Imprimez ce QR code pour vos étiquettes produit
-                                </p>
-                            </div>
+                    {/* QR Code */}
+                    <div className="bg-white rounded-2xl border border-slate/20 shadow-sm p-6 flex flex-col items-center">
+                        <h3 className="text-lg font-semibold text-dark mb-5 text-center">QR Code du produit</h3>
+
+                        <div className="p-6 bg-snow rounded-xl mb-4">
+                            <QRCodeSVG
+                                id="qr-code-barcode"
+                                value={product.code_barres}
+                                size={200}
+                                level="H"
+                                marginSize={4}
+                            />
+                        </div>
+
+                        <div className="w-full px-4 py-2.5 bg-snow border border-slate/20 rounded-xl mb-4">
+                            <p className="text-xs text-slate text-center font-mono">{product.code_barres}</p>
+                        </div>
+
+                        <p className="text-sm text-slate text-center mb-5 leading-relaxed">
+                            Scannez ce code lors d'une vente pour ajouter le produit automatiquement au panier
+                        </p>
+
+                        <button
+                            onClick={downloadQR}
+                            className="w-full h-11 bg-mint/10 hover:bg-mint/20 text-mint border border-mint/20 rounded-xl text-sm font-medium transition-colors mb-3"
+                        >
+                            📥 Télécharger le QR Code
+                        </button>
+
+                        <div className="w-full p-3 bg-ember/5 border border-ember/20 rounded-xl">
+                            <p className="text-xs text-ember text-center font-medium">
+                                💡 Imprimez ce QR code pour vos étiquettes produit
+                            </p>
                         </div>
                     </div>
                 </div>

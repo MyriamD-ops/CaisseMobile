@@ -1,98 +1,128 @@
 import { Link } from '@inertiajs/react';
+import { useState } from 'react';
 import useOnlineStatus from '../Hooks/useOnlineStatus';
 
 export default function Header({ currentPage = 'dashboard' }) {
     const isOnline = useOnlineStatus();
-    
+    const [menuOpen, setMenuOpen] = useState(false);
+
     const navItems = [
-        { name: 'Dashboard', href: '/', key: 'dashboard' },
-        { name: 'Produits', href: '/products', key: 'products' },
-        { name: 'Ventes', href: '/sales', key: 'sales' },
-        { name: 'Événements', href: '/events', key: 'events' }
+        { name: 'Dashboard',   href: '/',        key: 'dashboard' },
+        { name: 'Produits',    href: '/products', key: 'products'  },
+        { name: 'Ventes',      href: '/sales',    key: 'sales'     },
+        { name: 'Événements',  href: '/events',   key: 'events'    },
     ];
 
     return (
-        <header style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #DEE2E6', padding: '16px 24px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-                    <Link href="/" style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', textDecoration: 'none' }}>
-                        CaisseMobile
-                    </Link>
-                    <nav style={{ display: 'flex', gap: '16px' }}>
-                        {navItems.map((item) => (
-                            <Link 
-                                key={item.key}
-                                href={item.href} 
-                                style={{ 
-                                    color: currentPage === item.key ? '#2C3E50' : '#6C757D',
-                                    fontWeight: currentPage === item.key ? '600' : '400',
-                                    textDecoration: 'none', 
-                                    fontSize: '14px', 
-                                    transition: 'color 0.2s' 
-                                }}
-                                onMouseEnter={(e) => e.target.style.color = '#2C3E50'}
-                                onMouseLeave={(e) => {
-                                    if (currentPage !== item.key) {
-                                        e.target.style.color = '#6C757D';
-                                    }
-                                }}
-                            >
-                                {item.name}
-                            </Link>
-                        ))}
-                    </nav>
-                </div>
-                
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                    {/* Indicateur de connexion */}
-                    <div style={{ 
-                        padding: '6px 12px', 
-                        backgroundColor: isOnline ? '#E8F5E9' : '#FFF5F5',
-                        color: isOnline ? '#2E7D32' : '#C53030',
-                        borderRadius: '6px',
-                        fontSize: '13px',
-                        fontWeight: '500',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px'
-                    }}>
-                        <span style={{ 
-                            width: '8px', 
-                            height: '8px', 
-                            borderRadius: '50%', 
-                            backgroundColor: isOnline ? '#2E7D32' : '#C53030' 
-                        }}></span>
+        <header className="bg-snow border-b-2 border-slate/30 shadow-sm">
+            {/* ── barre principale ── */}
+            <div className="flex items-center justify-between px-4 h-14 max-w-7xl mx-auto">
+
+                {/* Logo */}
+                <Link href="/" className="text-ember font-bold text-lg tracking-tight shrink-0">
+                    CaisseMobile
+                </Link>
+
+                {/* Nav desktop */}
+                <nav className="hidden lg:flex items-center gap-6">
+                    {navItems.map((item) => (
+                        <Link
+                            key={item.key}
+                            href={item.href}
+                            className={`text-sm font-medium transition-colors ${
+                                currentPage === item.key
+                                    ? 'text-ember'
+                                    : 'text-slate hover:text-dark'
+                            }`}
+                        >
+                            {item.name}
+                        </Link>
+                    ))}
+                </nav>
+
+                {/* Droite : badge + déconnexion/hamburger */}
+                <div className="flex items-center gap-3">
+
+                    {/* Badge online (masqué sur xs, visible à partir de sm) */}
+                    <div className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
+                        isOnline ? 'bg-mint/10 text-mint' : 'bg-ruby/10 text-ruby'
+                    }`}>
+                        <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-mint' : 'bg-ruby'}`} />
                         {isOnline ? 'En ligne' : 'Hors ligne'}
                     </div>
-                    
+
+                    {/* Déconnexion — desktop uniquement */}
                     <Link
                         href="/logout"
                         method="post"
                         as="button"
-                        style={{
-                            padding: '8px 16px',
-                            backgroundColor: '#F8F9FA',
-                            border: '1px solid #DEE2E6',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            color: '#495057',
-                            fontWeight: '500',
-                            transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = '#E9ECEF';
-                            e.target.style.borderColor = '#ADB5BD';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = '#F8F9FA';
-                            e.target.style.borderColor = '#DEE2E6';
-                        }}
+                        className="hidden lg:flex items-center justify-center h-9 px-4 bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark border border-slate/20 rounded-lg text-sm font-medium transition-colors"
                     >
                         Déconnexion
                     </Link>
+
+                    {/* Hamburger — mobile uniquement */}
+                    <button
+                        onClick={() => setMenuOpen(!menuOpen)}
+                        className="lg:hidden flex items-center justify-center w-11 h-11 rounded-xl bg-slate/10 text-slate hover:text-dark transition-colors"
+                        aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+                        aria-expanded={menuOpen}
+                    >
+                        {menuOpen ? (
+                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                                <path d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        ) : (
+                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                                <path d="M3 6h18M3 12h18M3 18h18" />
+                            </svg>
+                        )}
+                    </button>
                 </div>
             </div>
+
+            {/* ── Menu mobile déroulant ── */}
+            {menuOpen && (
+                <div className="lg:hidden border-t border-slate/20 bg-white">
+                    <nav className="px-4">
+                        {navItems.map((item) => (
+                            <Link
+                                key={item.key}
+                                href={item.href}
+                                onClick={() => setMenuOpen(false)}
+                                className={`flex items-center h-12 text-sm font-medium border-b border-slate/10 last:border-b-0 transition-colors ${
+                                    currentPage === item.key
+                                        ? 'text-ember'
+                                        : 'text-slate hover:text-dark'
+                                }`}
+                            >
+                                {item.name}
+                            </Link>
+                        ))}
+
+                        {/* Pied du menu : badge (xs) + déconnexion */}
+                        <div className="flex items-center justify-between py-3 border-t border-slate/10">
+                            {/* Badge online sur xs (caché sur sm+ car déjà dans la barre) */}
+                            <div className={`flex sm:hidden items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
+                                isOnline ? 'bg-mint/10 text-mint' : 'bg-ruby/10 text-ruby'
+                            }`}>
+                                <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-mint' : 'bg-ruby'}`} />
+                                {isOnline ? 'En ligne' : 'Hors ligne'}
+                            </div>
+                            <Link
+                                href="/logout"
+                                method="post"
+                                as="button"
+                                className="flex items-center justify-center h-11 px-5 bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark rounded-xl text-sm font-medium transition-colors ml-auto"
+                            >
+                                Déconnexion
+                            </Link>
+                        </div>
+                    </nav>
+                </div>
+            )}
         </header>
     );
 }

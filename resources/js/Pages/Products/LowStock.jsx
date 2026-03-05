@@ -3,73 +3,87 @@ import Header from '../../Components/Header';
 
 export default function LowStock({ lowStockProducts }) {
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+        <div className="min-h-screen bg-snow">
             <Header currentPage="products" />
 
-            <main style={{ padding: '32px 24px', maxWidth: '1400px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+            <main className="p-4 lg:p-6 max-w-5xl mx-auto">
+                {/* En-tête */}
+                <div className="flex items-start justify-between gap-4 mb-6">
                     <div>
-                        <h2 style={{ fontSize: '28px', fontWeight: '600', color: '#2C3E50', marginBottom: '4px' }}>Alertes stock</h2>
-                        <p style={{ color: '#6C757D', fontSize: '14px' }}>{lowStockProducts.length} produit{lowStockProducts.length > 1 ? 's' : ''} en stock bas</p>
+                        <h2 className="text-2xl font-bold text-dark">Alertes stock</h2>
+                        <p className="text-slate text-sm mt-1">
+                            {lowStockProducts.length} produit{lowStockProducts.length > 1 ? 's' : ''} en stock bas
+                        </p>
                     </div>
-                    <Link href="/products" style={{ padding: '10px 20px', backgroundColor: '#F8F9FA', color: '#495057', fontWeight: '500', borderRadius: '6px', textDecoration: 'none', display: 'inline-block', fontSize: '14px', border: '1px solid #DEE2E6' }}>
+                    <Link
+                        href="/products"
+                        className="shrink-0 h-11 px-5 flex items-center bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark border border-slate/20 rounded-xl text-sm font-medium transition-colors"
+                    >
                         Tous les produits
                     </Link>
                 </div>
 
                 {lowStockProducts.length === 0 ? (
-                    <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '64px', textAlign: 'center', border: '1px solid #DEE2E6' }}>
-                        <p style={{ fontSize: '48px', marginBottom: '16px', filter: 'grayscale(100%)' }}>✅</p>
-                        <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50', marginBottom: '8px' }}>Aucune alerte stock</h3>
-                        <p style={{ color: '#6C757D', marginBottom: '24px', fontSize: '14px' }}>Tous vos produits ont un stock suffisant</p>
+                    <div className="bg-white rounded-2xl border border-slate/20 p-12 text-center">
+                        <p className="text-5xl mb-4">✅</p>
+                        <h3 className="text-lg font-semibold text-dark mb-2">Aucune alerte stock</h3>
+                        <p className="text-slate text-sm">Tous vos produits ont un stock suffisant</p>
                     </div>
                 ) : (
-                    <div>
-                        <div style={{ backgroundColor: '#FFF5F5', border: '1px solid #FED7D7', borderRadius: '8px', padding: '16px', marginBottom: '24px' }}>
-                            <p style={{ color: '#C53030', fontSize: '14px' }}>
-                                ⚠️ Ces produits ont atteint ou dépassé leur seuil d'alerte. Pensez à les réapprovisionner.
+                    <div className="space-y-3">
+                        {/* Bannière d'avertissement */}
+                        <div className="flex items-start gap-3 p-4 bg-ruby/5 border border-ruby/30 rounded-xl text-sm mb-5">
+                            <span className="text-ruby text-lg leading-none mt-0.5">⚠</span>
+                            <p className="text-dark">
+                                Ces produits ont atteint ou dépassé leur seuil d'alerte. Pensez à les réapprovisionner.
                             </p>
                         </div>
 
-                        <div style={{ display: 'grid', gap: '16px' }}>
-                            {lowStockProducts.map((product) => (
-                                <div key={product.id_produit} style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '24px', border: product.stock_actuel === 0 ? '2px solid #C53030' : '1px solid #DEE2E6' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                                                <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50' }}>{product.nom}</h3>
-                                                {product.stock_actuel === 0 && (
-                                                    <span style={{ padding: '4px 12px', backgroundColor: '#C53030', borderRadius: '4px', color: '#FFFFFF', fontSize: '12px', fontWeight: '600' }}>
+                        {lowStockProducts.map((product) => {
+                            const rupture = product.stock_actuel === 0;
+                            return (
+                                <div
+                                    key={product.id_produit}
+                                    className={`bg-white rounded-2xl p-5 border shadow-sm ${
+                                        rupture ? 'border-ruby/40 border-2' : 'border-slate/20'
+                                    }`}
+                                >
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-3 mb-2 flex-wrap">
+                                                <h3 className="text-base font-semibold text-dark">{product.nom}</h3>
+                                                {rupture && (
+                                                    <span className="px-2.5 py-1 bg-ruby text-white rounded-full text-xs font-bold">
                                                         RUPTURE
                                                     </span>
                                                 )}
                                             </div>
-                                            <div style={{ display: 'flex', gap: '16px', fontSize: '13px', color: '#6C757D', marginBottom: '16px' }}>
+                                            <div className="flex flex-wrap gap-4 text-sm text-slate mb-4">
                                                 <span>💰 {product.prix_base}€</span>
                                                 <span>🏷️ {product.categorie}</span>
                                                 {product.matiere && <span>🔧 {product.matiere}</span>}
                                             </div>
-                                            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                                                <div style={{ padding: '12px 16px', backgroundColor: '#FFF5F5', borderRadius: '6px', border: '1px solid #FED7D7' }}>
-                                                    <span style={{ fontSize: '11px', color: '#C53030', fontWeight: '500', display: 'block' }}>Stock actuel</span>
-                                                    <div style={{ fontSize: '24px', fontWeight: '600', color: '#C53030' }}>{product.stock_actuel}</div>
+                                            <div className="flex gap-3">
+                                                <div className="px-4 py-2.5 bg-ruby/5 border border-ruby/20 rounded-xl">
+                                                    <p className="text-xs text-ruby font-semibold uppercase tracking-widest mb-0.5">Stock actuel</p>
+                                                    <p className="text-2xl font-bold text-ruby">{product.stock_actuel}</p>
                                                 </div>
-                                                <div style={{ padding: '12px 16px', backgroundColor: '#F8F9FA', borderRadius: '6px', border: '1px solid #DEE2E6' }}>
-                                                    <span style={{ fontSize: '11px', color: '#6C757D', fontWeight: '500', display: 'block' }}>Stock minimum</span>
-                                                    <div style={{ fontSize: '24px', fontWeight: '600', color: '#495057' }}>{product.stock_minimum}</div>
+                                                <div className="px-4 py-2.5 bg-snow border border-slate/20 rounded-xl">
+                                                    <p className="text-xs text-slate font-semibold uppercase tracking-widest mb-0.5">Stock minimum</p>
+                                                    <p className="text-2xl font-bold text-dark">{product.stock_minimum}</p>
                                                 </div>
                                             </div>
                                         </div>
-                                        <Link href={'/products/' + product.id_produit + '/edit'} style={{ padding: '10px 20px', backgroundColor: '#343A40', color: '#FFFFFF', fontWeight: '500', borderRadius: '6px', textDecoration: 'none', fontSize: '14px', transition: 'all 0.2s' }}
-                                            onMouseEnter={(e) => e.target.style.backgroundColor = '#23272B'}
-                                            onMouseLeave={(e) => e.target.style.backgroundColor = '#343A40'}
+                                        <Link
+                                            href={`/products/${product.id_produit}/edit`}
+                                            className="shrink-0 h-9 px-4 flex items-center bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark border border-slate/20 rounded-xl text-sm font-medium transition-colors"
                                         >
                                             ✏️ Modifier stock
                                         </Link>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            );
+                        })}
                     </div>
                 )}
             </main>

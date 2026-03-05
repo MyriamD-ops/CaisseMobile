@@ -1,72 +1,78 @@
 import { Link } from '@inertiajs/react';
+import Header from '../../Components/Header';
 
 export default function Show({ sale }) {
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FA', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
-            <header style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #DEE2E6', padding: '16px 24px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Link href="/" style={{ fontSize: '20px', fontWeight: '600', color: '#2C3E50', textDecoration: 'none' }}>CaisseMobile</Link>
-                    <Link href="/logout" method="post" as="button" style={{ padding: '8px 16px', backgroundColor: '#F8F9FA', border: '1px solid #DEE2E6', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', color: '#495057' }}>Déconnexion</Link>
-                </div>
-            </header>
+        <div className="min-h-screen bg-snow">
+            <Header currentPage="sales" />
 
-            <main style={{ padding: '32px 24px' }}>
-                <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '40px', border: '1px solid #DEE2E6', textAlign: 'center' }}>
-                        <div style={{ fontSize: '64px', marginBottom: '16px', filter: 'grayscale(100%)' }}>✓</div>
-                        <h2 style={{ fontSize: '28px', fontWeight: '600', color: '#2C3E50', marginBottom: '8px' }}>Vente enregistrée !</h2>
-                        <p style={{ color: '#6C757D', fontSize: '15px', marginBottom: '32px' }}>Numéro de vente : <strong>{sale.numero_vente}</strong></p>
+            <main className="p-4 lg:p-6 max-w-2xl mx-auto">
+                <div className="bg-white rounded-2xl border border-slate/20 shadow-sm p-6 lg:p-8 text-center">
+                    {/* Icône succès */}
+                    <div className="w-16 h-16 rounded-full bg-mint/10 border border-mint/20 flex items-center justify-center text-3xl mx-auto mb-4">
+                        ✓
+                    </div>
+                    <h2 className="text-2xl font-bold text-dark mb-1">Vente enregistrée !</h2>
+                    <p className="text-slate text-sm mb-6">
+                        Numéro de vente : <span className="font-semibold text-dark">{sale.numero_vente}</span>
+                    </p>
 
-                        <div style={{ backgroundColor: '#F8F9FA', borderRadius: '8px', padding: '24px', marginBottom: '24px', textAlign: 'left' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid #DEE2E6' }}>
-                                <span style={{ color: '#6C757D', fontSize: '14px' }}>Date</span>
-                                <span style={{ fontWeight: '500', fontSize: '14px', color: '#2C3E50' }}>
-                                    {new Date(sale.created_at).toLocaleDateString('fr-FR', { 
-                                        day: '2-digit', 
-                                        month: '2-digit', 
-                                        year: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit'
+                    {/* Récapitulatif */}
+                    <div className="bg-snow rounded-xl border border-slate/20 p-5 mb-6 text-left">
+                        <div className="divide-y divide-slate/10">
+                            <div className="flex justify-between items-center py-2.5">
+                                <span className="text-sm text-slate">Date</span>
+                                <span className="text-sm font-medium text-dark">
+                                    {new Date(sale.created_at).toLocaleDateString('fr-FR', {
+                                        day: '2-digit', month: '2-digit', year: 'numeric',
+                                        hour: '2-digit', minute: '2-digit',
                                     })}
                                 </span>
                             </div>
-
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid #DEE2E6' }}>
-                                <span style={{ color: '#6C757D', fontSize: '14px' }}>Vendeur</span>
-                                <span style={{ fontWeight: '500', fontSize: '14px', color: '#2C3E50' }}>{sale.utilisateur.username}</span>
+                            <div className="flex justify-between items-center py-2.5">
+                                <span className="text-sm text-slate">Vendeur</span>
+                                <span className="text-sm font-medium text-dark">{sale.utilisateur.username}</span>
                             </div>
-
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid #DEE2E6' }}>
-                                <span style={{ color: '#6C757D', fontSize: '14px' }}>Paiement</span>
-                                <span style={{ fontWeight: '500', fontSize: '14px', color: '#2C3E50' }}>{sale.moyen_paiement}</span>
+                            <div className="flex justify-between items-center py-2.5">
+                                <span className="text-sm text-slate">Paiement</span>
+                                <span className="text-sm font-medium text-dark">{sale.moyen_paiement}</span>
                             </div>
+                        </div>
 
-                            <div style={{ marginTop: '16px' }}>
-                                <h3 style={{ fontSize: '14px', fontWeight: '600', color: '#2C3E50', marginBottom: '12px' }}>Articles</h3>
+                        {/* Articles */}
+                        <div className="mt-4 pt-4 border-t border-slate/10">
+                            <p className="text-xs font-semibold text-dark uppercase tracking-widest mb-3">Articles</p>
+                            <div className="space-y-2">
                                 {sale.lignes.map((ligne, index) => (
-                                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '14px' }}>
-                                        <span style={{ color: '#495057' }}>
-                                            {ligne.produit.nom} × {ligne.quantite}
-                                        </span>
-                                        <span style={{ fontWeight: '500', color: '#2C3E50' }}>{ligne.sous_total}€</span>
+                                    <div key={index} className="flex justify-between items-center text-sm">
+                                        <span className="text-slate">{ligne.produit.nom} × {ligne.quantite}</span>
+                                        <span className="font-medium text-dark">{ligne.sous_total}€</span>
                                     </div>
                                 ))}
                             </div>
-
-                            <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '2px solid #DEE2E6', display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ fontSize: '18px', fontWeight: '600', color: '#2C3E50' }}>Total</span>
-                                <span style={{ fontSize: '24px', fontWeight: '600', color: '#343A40' }}>{sale.montant_total}€</span>
-                            </div>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '12px' }}>
-                            <Link href="/sales/create" style={{ flex: 1, padding: '12px', backgroundColor: '#343A40', color: '#FFFFFF', fontWeight: '600', borderRadius: '6px', textDecoration: 'none', textAlign: 'center', fontSize: '14px' }}>
-                                Nouvelle vente
-                            </Link>
-                            <Link href="/" style={{ flex: 1, padding: '12px', backgroundColor: '#F8F9FA', color: '#495057', fontWeight: '600', borderRadius: '6px', border: '1px solid #DEE2E6', textDecoration: 'none', textAlign: 'center', fontSize: '14px' }}>
-                                Retour au Dashboard
-                            </Link>
+                        {/* Total */}
+                        <div className="mt-4 pt-4 border-t-2 border-slate/20 flex justify-between items-center">
+                            <span className="text-base font-semibold text-dark">Total</span>
+                            <span className="text-2xl font-bold text-ember">{sale.montant_total}€</span>
                         </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex gap-3">
+                        <Link
+                            href="/sales/create"
+                            className="flex-1 h-11 flex items-center justify-center bg-linear-to-r from-ember to-ember-dim hover:brightness-90 text-white font-bold rounded-xl text-sm transition-all"
+                        >
+                            Nouvelle vente
+                        </Link>
+                        <Link
+                            href="/"
+                            className="flex-1 h-11 flex items-center justify-center bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark border border-slate/20 rounded-xl text-sm font-medium transition-colors"
+                        >
+                            Dashboard
+                        </Link>
                     </div>
                 </div>
             </main>

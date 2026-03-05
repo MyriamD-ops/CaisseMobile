@@ -1,20 +1,10 @@
 export default function Welcome() {
     return (
-        <div style={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#fef2f2',
-            fontFamily: 'system-ui'
-        }}>
-            <div style={{ textAlign: 'center' }}>
-                <h1 style={{ fontSize: '48px', color: '#be123c', marginBottom: '16px' }}>
-                    🎉 Inertia.js fonctionne !
-                </h1>
-                <p style={{ color: '#666', fontSize: '18px' }}>
-                    React + Inertia + Laravel = Success!
-                </p>
+        <div className="min-h-screen bg-snow flex items-center justify-center">
+            <div className="text-center">
+                <h1 className="text-5xl mb-4">🎉</h1>
+                <p className="text-xl font-semibold text-dark mb-2">Inertia.js fonctionne !</p>
+                <p className="text-slate">React + Inertia + Laravel = Success!</p>
             </div>
         </div>
     );
