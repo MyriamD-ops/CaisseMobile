@@ -68,12 +68,12 @@ export default function Index({ evenements }) {
                                 key={event.id_evenement}
                                 className="bg-white rounded-2xl border border-slate/20 p-5 hover:border-slate/40 hover:shadow-sm transition-all"
                             >
-                                <div className="flex justify-between items-start gap-4">
+                                <div className="flex flex-col gap-4">
                                     <div className="flex-1 min-w-0">
                                         {/* Nom + statut */}
-                                        <div className="flex items-center gap-3 mb-2 flex-wrap">
+                                        <div className="flex items-start gap-3 mb-2 flex-wrap">
                                             <Link href={`/events/${event.id_evenement}/admin`}>
-                                                <h3 className="text-base font-semibold text-dark hover:text-ember transition-colors">
+                                                <h3 className="text-base font-bold text-dark hover:text-ember transition-colors">
                                                     {event.nom}
                                                 </h3>
                                             </Link>
@@ -94,16 +94,16 @@ export default function Index({ evenements }) {
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="flex gap-2 shrink-0">
+                                    <div className="flex flex-col sm:flex-row gap-2">
                                         <Link
                                             href={`/events/${event.id_evenement}/edit`}
-                                            className="h-9 px-4 flex items-center bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark rounded-xl text-sm font-medium transition-colors"
+                                            className="flex items-center justify-center min-h-11 px-4 bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark rounded-xl text-sm font-medium transition-colors sm:w-auto w-full"
                                         >
                                             ✏️ Modifier
                                         </Link>
                                         <button
                                             onClick={() => handleDelete(event.id_evenement, event.nom)}
-                                            className="h-9 px-4 flex items-center bg-ruby/10 hover:bg-ruby/20 text-ruby rounded-xl text-sm font-medium transition-colors border border-ruby/20"
+                                            className="flex items-center justify-center min-h-11 px-4 bg-ruby/10 hover:bg-ruby/20 text-ruby rounded-xl text-sm font-medium transition-colors border border-ruby/20 sm:w-auto w-full"
                                         >
                                             🗑️ Supprimer
                                         </button>

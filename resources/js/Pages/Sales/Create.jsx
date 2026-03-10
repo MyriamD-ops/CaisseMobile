@@ -344,21 +344,19 @@ export default function Create({ products: serverProducts }) {
                         {/* Barre de recherche */}
                         <div className="p-4 border-b border-slate/20 shrink-0">
                             <h2 className="text-base font-semibold text-dark mb-3">Produits</h2>
-                            <div className="flex gap-2">
-                                <input
-                                    type="text"
-                                    placeholder="Rechercher..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="flex-1 h-11 px-4 bg-snow border border-slate/30 rounded-xl text-dark text-sm placeholder:text-slate/40 focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors"
-                                />
-                                <button
-                                    onClick={() => setShowScanner(true)}
-                                    className="h-11 px-4 bg-mint/10 text-mint border border-mint/30 rounded-xl text-sm font-medium hover:bg-mint/20 transition-colors whitespace-nowrap shrink-0"
-                                >
-                                    📷 Scanner
-                                </button>
-                            </div>
+                            <input
+                                type="text"
+                                placeholder="Rechercher..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full h-11 px-4 bg-snow border border-slate/30 rounded-xl text-dark text-sm placeholder:text-slate/40 focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors mb-2"
+                            />
+                            <button
+                                onClick={() => setShowScanner(true)}
+                                className="w-full h-11 bg-mint/10 text-mint border border-mint/30 rounded-xl text-sm font-medium hover:bg-mint/20 transition-colors flex items-center justify-center gap-2"
+                            >
+                                📷 Scanner un produit
+                            </button>
                         </div>
 
                         {/* Grille produits */}
