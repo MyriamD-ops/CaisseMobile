@@ -1,7 +1,7 @@
 import { Link } from '@inertiajs/react';
 import Header from '../Components/Header';
 
-export default function Dashboard({ auth }) {
+export default function Dashboard({ auth, stats = {} }) {
     return (
         <div className="relative min-h-screen bg-snow">
             {/* Éléments décoratifs flous (blobs) */}
@@ -25,10 +25,10 @@ export default function Dashboard({ auth }) {
                 {/* Cartes statistiques */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
                     {[
-                        { title: 'Produits',       value: '247',    icon: '📦', accent: false },
-                        { title: 'Stock Bas',       value: '8',      icon: '⚠️', accent: true  },
-                        { title: 'Ventes du jour',  value: '23',     icon: '🛒', accent: false },
-                        { title: 'Montant du jour', value: '1 447€', icon: '💰', accent: false },
+                        { title: 'Produits',       value: stats.totalProduits ?? '—',                                          icon: '📦', accent: false },
+                        { title: 'Stock Bas',       value: stats.stockBas ?? '—',                                              icon: '⚠️', accent: true  },
+                        { title: 'Ventes du jour',  value: stats.ventesJour ?? '—',                                            icon: '🛒', accent: false },
+                        { title: 'Montant du jour', value: stats.montantJour != null ? `${stats.montantJour.toFixed(2)} €` : '—', icon: '💰', accent: false },
                     ].map((card, index) => (
                         <div
                             key={index}

@@ -25,7 +25,14 @@ Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::middleware('auth')->group(function () {
     // Dashboard
     Route::get('/', function (ResponseFactory $inertia) {
-        return $inertia->render('Dashboard');
+        return $inertia->render('Dashboard', [
+            'stats' => [
+                'totalProduits' => \App\Models\Produit::where('actif', true)->count(),
+                'stockBas'      => \App\Models\Produit::whereColumn('stock_actuel', '<=', 'stock_minimum')->count(),
+                'ventesJour'    => \App\Models\Vente::whereDate('date_vente', today())->count(),
+                'montantJour'   => (float) \App\Models\Vente::whereDate('date_vente', today())->sum('montant_total'),
+            ]
+        ]);
     })->name('dashboard');
     
     // API pour mode hors ligne

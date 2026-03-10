@@ -185,7 +185,7 @@ export default function Create({ products: serverProducts }) {
 
     // ── JSX du contenu panier (sidebar desktop + bottom sheet mobile) ──────────
     const renderCartContent = (onClose) => (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col flex-1 min-h-0">
             {/* En-tête panier */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-slate/20 shrink-0">
                 <h2 className="font-semibold text-dark">
@@ -431,7 +431,7 @@ export default function Create({ products: serverProducts }) {
                         onClick={() => setShowCart(false)}
                     />
                     {/* Sheet */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[85vh] flex flex-col border-t border-slate/20">
+                    <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[85vh] flex flex-col border-t border-slate/20 overflow-hidden">
                         {/* Poignée visuelle */}
                         <div className="flex justify-center pt-3 pb-1 shrink-0">
                             <div className="w-10 h-1 bg-slate/20 rounded-full" />

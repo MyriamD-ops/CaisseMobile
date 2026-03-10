@@ -1,7 +1,7 @@
 import { Link } from '@inertiajs/react';
 import Header from '../../Components/Header';
 
-export default function LowStock({ lowStockProducts }) {
+export default function LowStock({ lowStockProducts = [] }) {
     return (
         <div className="min-h-screen bg-snow">
             <Header currentPage="products" />
