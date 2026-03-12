@@ -32,9 +32,13 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
+          debug: true
           script: |
             set -e
+            echo "Connecté en tant que : $(whoami)"
+            echo "Répertoire courant : $(pwd)"
             cd ${{ secrets.VPS_PATH }}
+            echo "Dans : $(pwd)"
 
             echo "▶ Git pull..."
             git pull origin main
