@@ -31,7 +31,9 @@ export default function Show({ sale }) {
                             </div>
                             <div className="flex justify-between items-center py-2.5">
                                 <span className="text-sm text-slate">Vendeur</span>
-                                <span className="text-sm font-medium text-dark">{sale.utilisateur.username}</span>
+                                <span className="text-sm font-medium text-dark">
+                                    {sale.utilisateur?.username ?? sale.utilisateur?.name ?? '—'}
+                                </span>
                             </div>
                             <div className="flex justify-between items-center py-2.5">
                                 <span className="text-sm text-slate">Paiement</span>
@@ -43,9 +45,11 @@ export default function Show({ sale }) {
                         <div className="mt-4 pt-4 border-t border-slate/10">
                             <p className="text-xs font-semibold text-dark uppercase tracking-widest mb-3">Articles</p>
                             <div className="space-y-2">
-                                {sale.lignes.map((ligne, index) => (
+                                {(sale.lignes ?? []).map((ligne, index) => (
                                     <div key={index} className="flex justify-between items-center text-sm">
-                                        <span className="text-slate">{ligne.produit.nom} × {ligne.quantite}</span>
+                                        <span className="text-slate">
+                                            {ligne.produit?.nom ?? `Produit #${ligne.id_produit}`} × {ligne.quantite}
+                                        </span>
                                         <span className="font-medium text-dark">{ligne.sous_total}€</span>
                                     </div>
                                 ))}

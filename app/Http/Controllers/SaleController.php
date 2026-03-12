@@ -75,13 +75,18 @@ class SaleController extends Controller
             
             \Log::info('Transaction commit OK');
 
-            return redirect()->route('sales.show', $vente->id_vente)
+            return redirect()->route('sales.index')
                 ->with('success', 'Vente enregistrée avec succès !');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Erreur vente:', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-            return back()->withErrors(['error' => 'Erreur lors de l\'enregistrement de la vente.']);
+            \Log::error('Erreur vente:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->withErrors([
+                'error' => 'Erreur lors de l\'enregistrement de la vente : ' . $e->getMessage()
+            ]);
         }
     }
 

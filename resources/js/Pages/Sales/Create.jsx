@@ -1,4 +1,4 @@
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import Header from '../../Components/Header';
 import QRScanner from '../../Components/QRScanner';
@@ -7,6 +7,7 @@ import { saveVenteLocal, getProduitsLocal, syncProduits } from '../../utils/sync
 
 export default function Create({ products: serverProducts }) {
     const isOnline = useOnlineStatus();
+    const { errors } = usePage().props;
     const [products, setProducts] = useState(serverProducts);
     const [cart, setCart] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -23,6 +24,13 @@ export default function Create({ products: serverProducts }) {
         setNotification({ type, message });
         setTimeout(() => setNotification(null), 4000);
     };
+
+    // Afficher les erreurs renvoyées par back()->withErrors() côté serveur
+    useEffect(() => {
+        if (errors?.error) {
+            notify('error', errors.error);
+        }
+    }, [errors]);
 
     // ── Logique métier inchangée ────────────────────────────────────────────────
 
@@ -168,13 +176,15 @@ export default function Create({ products: serverProducts }) {
 
         router.post('/sales', formData, {
             onSuccess: () => {
-                setCart([]);
-                setShowCart(false);
-                setProcessing(false);
+                // La navigation vers sales.index est automatique (redirect côté serveur).
+                // Les setState ici sont sur un composant démonté — pas de mise à jour.
             },
-            onError: (errors) => {
-                console.error('Erreurs:', errors);
-                notify('error', "Erreur lors de l'enregistrement");
+            onError: (errs) => {
+                console.error('Erreurs de validation:', errs);
+                // Les erreurs de back()->withErrors() sont lues via useEffect(errors)
+                // Les erreurs de validation standard (422) arrivent ici
+                const msg = errs?.error ?? errs?.items ?? "Erreur lors de l'enregistrement";
+                notify('error', Array.isArray(msg) ? msg[0] : msg);
                 setProcessing(false);
             },
             onFinish: () => {
