@@ -35,11 +35,26 @@ jobs:
             public/build \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/htdocs/srv1442975.hstgr.cloud/public/
 
-      - name: Deploy PHP files (app / routes / config / views)
+      - name: Deploy PHP files via SCP
         run: |
           scp -r -P 22 -i ~/.ssh/id_ed25519 \
-            app \
-            routes \
-            config \
-            resources/views \
+            app/ \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/htdocs/srv1442975.hstgr.cloud/
+
+          scp -r -P 22 -i ~/.ssh/id_ed25519 \
+            routes/ \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/htdocs/srv1442975.hstgr.cloud/
+
+          scp -r -P 22 -i ~/.ssh/id_ed25519 \
+            resources/views/ \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/htdocs/srv1442975.hstgr.cloud/resources/
+
+          scp -r -P 22 -i ~/.ssh/id_ed25519 \
+            config/ \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/htdocs/srv1442975.hstgr.cloud/
+
+      - name: Clear Laravel cache
+        run: |
+          ssh -p 22 -i ~/.ssh/id_ed25519 \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+            "cd ~/htdocs/srv1442975.hstgr.cloud && php artisan optimize"
