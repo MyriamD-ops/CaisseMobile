@@ -19,13 +19,15 @@ jobs:
           npm ci
           npm run build
 
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p 22 ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
       - name: Deploy via SCP
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          source: "public/build/*"
-          target: ${{ secrets.VPS_PATH }}/public/build/
-          strip_components: 2
+        run: |
+          scp -r -P 22 -i ~/.ssh/id_ed25519 \
+            public/build/* \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/public/build/
