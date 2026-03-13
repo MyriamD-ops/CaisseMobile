@@ -1,5 +1,4 @@
 name: Deploy CaisseMobile
-
 on:
   push:
     branches: [main]
@@ -8,10 +7,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
@@ -25,8 +24,8 @@ jobs:
         with:
           username: ${{ secrets.VPS_USER }}
           server: ${{ secrets.VPS_HOST }}
-          port: 65002
+          port: 22
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           local_path: './public/build/*'
           remote_path: ${{ secrets.VPS_PATH }}/public/build/
-          delete_remote_files_first: true
+          delete_remote_files: true
