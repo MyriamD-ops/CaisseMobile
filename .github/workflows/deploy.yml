@@ -19,13 +19,13 @@ jobs:
           npm ci
           npm run build
 
-      - name: Deploy via SFTP
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      - name: Deploy via SCP
+        uses: appleboy/scp-action@v0.1.7
         with:
+          host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          server: ${{ secrets.VPS_HOST }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          local_path: './public/build/*'
-          remote_path: ${{ secrets.VPS_PATH }}/public/build/
-          delete_remote_files: true
+          source: "public/build/*"
+          target: ${{ secrets.VPS_PATH }}/public/build/
+          strip_components: 2
