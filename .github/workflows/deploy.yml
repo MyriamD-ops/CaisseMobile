@@ -60,6 +60,12 @@ jobs:
             resources/views/. \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/views/
 
+      - name: Upload diagnostic script
+        run: |
+          scp -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
+            diagnostic.php \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/
+
       - name: Upload update_user script
         run: |
           scp -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
@@ -80,6 +86,13 @@ jobs:
           cp -rf $TMP/views/.   $APP/resources/views/
 
           cd $APP && php artisan optimize
+
+          if [ -f "$TMP/diagnostic.php" ]; then
+            cp $TMP/diagnostic.php $APP/diagnostic.php
+            echo "=== DIAGNOSTIC ==="
+            php $APP/diagnostic.php
+            rm -f $APP/diagnostic.php
+          fi
 
           if [ -f "$TMP/update_user.php" ]; then
             cp $TMP/update_user.php $APP/update_user.php
