@@ -135,6 +135,7 @@ export default function Create({ products: serverProducts }) {
             return;
         }
 
+        console.log('🛒 handleSubmit — isOnline:', isOnline);
         setProcessing(true);
 
         const venteData = {

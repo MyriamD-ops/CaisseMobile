@@ -34,44 +34,44 @@ jobs:
         run: |
           ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
-            "rm -rf ~/deploy_tmp && mkdir -p ~/deploy_tmp/build ~/deploy_tmp/app ~/deploy_tmp/routes ~/deploy_tmp/config ~/deploy_tmp/views"
+            "rm -rf /home/user/deploy_tmp && mkdir -p /home/user/deploy_tmp/build /home/user/deploy_tmp/app /home/user/deploy_tmp/routes /home/user/deploy_tmp/config /home/user/deploy_tmp/views"
 
       - name: Upload build assets
         run: |
           scp -r -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
             public/build/. \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/deploy_tmp/build/
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/build/
 
       - name: Upload PHP files
         run: |
           scp -r -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
             app/. \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/deploy_tmp/app/
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/app/
 
           scp -r -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
             routes/. \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/deploy_tmp/routes/
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/routes/
 
           scp -r -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
             config/. \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/deploy_tmp/config/
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/config/
 
           scp -r -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
             resources/views/. \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/deploy_tmp/views/
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/views/
 
       - name: Upload update_user script
         run: |
           scp -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
             update_user.php \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/deploy_tmp/
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/
 
       - name: Deploy to app and clear cache
         run: |
           ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
-          APP=/home/$USER/htdocs/srv1442975.hstgr.cloud
-          TMP=~/deploy_tmp
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'ENDSSH'
+          APP=/home/user/htdocs/srv1442975.hstgr.cloud
+          TMP=/home/user/deploy_tmp
 
           cp -rf $TMP/build/.   $APP/public/build/
           cp -rf $TMP/app/.     $APP/app/
@@ -84,9 +84,9 @@ jobs:
           if [ -f "$TMP/update_user.php" ]; then
             cp $TMP/update_user.php $APP/update_user.php
             php $APP/update_user.php && rm -f $APP/update_user.php
-            echo "Script update_user exécuté et supprimé"
+            echo "=== update_user exécuté et supprimé ==="
           fi
 
-          rm -rf ~/deploy_tmp
+          rm -rf /home/user/deploy_tmp
           echo "=== Deploy OK ==="
-          EOF
+          ENDSSH
