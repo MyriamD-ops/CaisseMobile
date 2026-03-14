@@ -101,12 +101,19 @@ class SaleController extends Controller
 
     public function index(ResponseFactory $inertia)
     {
-        $sales = Vente::with('utilisateur')
-            ->latest()
-            ->paginate(20);
+        try {
+            $sales = Vente::with('utilisateur')
+                ->latest('date_vente')
+                ->paginate(20);
 
-        return $inertia->render('Sales/Index', [
-            'sales' => $sales
-        ]);
+            return $inertia->render('Sales/Index', [
+                'sales' => $sales
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Erreur sales.index: ' . $e->getMessage());
+            return $inertia->render('Sales/Index', [
+                'sales' => ['data' => [], 'links' => []]
+            ]);
+        }
     }
 }

@@ -43,7 +43,7 @@ class Vente extends Model
 
     public function utilisateur(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_utilisateur', 'id');
+        return $this->belongsTo(User::class, 'id_utilisateur');
     }
 
     public function evenement(): BelongsTo
