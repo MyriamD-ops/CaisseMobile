@@ -26,9 +26,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p 22 -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
-          head -1 ~/.ssh/id_rsa
-          echo "Longueur clé: $(wc -c < ~/.ssh/id_rsa) octets"
-
 
       - name: Prepare temp folders on VPS
         run: |
@@ -60,18 +57,6 @@ jobs:
             resources/views/. \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/views/
 
-      - name: Upload diagnostic script
-        run: |
-          scp -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
-            diagnostic.php \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/
-
-      - name: Upload update_user script
-        run: |
-          scp -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
-            update_user.php \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/
-
       - name: Deploy to app and clear cache
         run: |
           ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
@@ -86,20 +71,6 @@ jobs:
           cp -rf $TMP/views/.   $APP/resources/views/
 
           cd $APP && php artisan optimize
-
-          if [ -f "$TMP/diagnostic.php" ]; then
-            cp $TMP/diagnostic.php $APP/diagnostic.php
-            echo "=== DIAGNOSTIC ==="
-            php $APP/diagnostic.php
-            rm -f $APP/diagnostic.php
-          fi
-
-          if [ -f "$TMP/update_user.php" ]; then
-            cp $TMP/update_user.php $APP/update_user.php
-            php $APP/update_user.php && rm -f $APP/update_user.php
-            echo "=== update_user exécuté et supprimé ==="
-          fi
-
           rm -rf /home/user/deploy_tmp
           echo "=== Deploy OK ==="
           ENDSSH
