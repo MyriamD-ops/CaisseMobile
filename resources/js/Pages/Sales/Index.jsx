@@ -134,7 +134,7 @@ export default function Index({ sales }) {
                                     <div className="flex flex-wrap gap-4 text-sm text-slate">
                                         <span>📅 {new Date(sale.date_vente).toLocaleDateString('fr-FR')} à {new Date(sale.date_vente).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
                                         <span>👤 {sale.utilisateur?.username || 'N/A'}</span>
-                                        <span>💳 {sale.mode_paiement}</span>
+                                        <span>💳 {sale.moyen_paiement}</span>
                                         <span className="font-semibold text-dark">💰 {parseFloat(sale.montant_total).toFixed(2)}€</span>
                                     </div>
                                 </div>
