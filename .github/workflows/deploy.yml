@@ -26,7 +26,8 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p 22 -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
-          echo "Clé SSH installée"
+          head -1 ~/.ssh/id_rsa
+          echo "Longueur clé: $(wc -c < ~/.ssh/id_rsa) octets"
 
 
       - name: Prepare temp folders on VPS
