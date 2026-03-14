@@ -1,8 +1,30 @@
-import { Link } from '@inertiajs/react';
+import { useState } from 'react';
+import { Link, usePage } from '@inertiajs/react';
 import { QRCodeSVG } from 'qrcode.react';
 import Header from '../../Components/Header';
 
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    let currentY = y;
+    for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+            ctx.fillText(line.trim(), x, currentY);
+            line = words[n] + ' ';
+            currentY += lineHeight;
+        } else {
+            line = testLine;
+        }
+    }
+    ctx.fillText(line.trim(), x, currentY);
+    return currentY;
+}
+
 export default function Show({ evenement }) {
+    const { auth } = usePage().props;
+    const [generating, setGenerating] = useState(false);
+
     const downloadQR = () => {
         const svg = document.getElementById('qr-code-event');
         const svgData = new XMLSerializer().serializeToString(svg);
@@ -22,6 +44,105 @@ export default function Show({ evenement }) {
         };
 
         img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+    };
+
+    const generateFlyer = () => {
+        setGenerating(true);
+
+        const SIZE = 1080;
+        const canvas = document.createElement('canvas');
+        canvas.width = SIZE;
+        canvas.height = SIZE;
+        const ctx = canvas.getContext('2d');
+
+        // --- Fond ---
+        ctx.fillStyle = '#3A3F43';
+        ctx.fillRect(0, 0, SIZE, SIZE);
+
+        // --- Bande orange haut ---
+        ctx.fillStyle = '#DC5F00';
+        ctx.fillRect(0, 0, SIZE, 10);
+
+        // --- Nom "3D Ami" ---
+        ctx.fillStyle = '#DC5F00';
+        ctx.font = 'bold 100px Georgia, serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('3D Ami', SIZE / 2, 175);
+
+        // --- Sous-titre ---
+        ctx.fillStyle = '#C8CDD2';
+        ctx.font = '32px Arial, sans-serif';
+        ctx.fillText('Agence de Modélisation et d\'Impression', SIZE / 2, 225);
+
+        // --- Séparateur 1 ---
+        ctx.strokeStyle = '#DC5F00';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(80, 265);
+        ctx.lineTo(SIZE - 80, 265);
+        ctx.stroke();
+
+        // --- Nom de l'événement ---
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 72px Arial, sans-serif';
+        const lastY = wrapText(ctx, evenement.nom, SIZE / 2, 370, 920, 85);
+
+        // --- Date ---
+        const opts = { day: 'numeric', month: 'long', year: 'numeric' };
+        const dateDebut = new Date(evenement.date_debut).toLocaleDateString('fr-FR', opts);
+        const dateFin   = new Date(evenement.date_fin).toLocaleDateString('fr-FR', opts);
+        const dateStr   = evenement.date_debut === evenement.date_fin
+            ? dateDebut
+            : `Du ${dateDebut} au ${dateFin}`;
+
+        const dateY = lastY + 90;
+        ctx.fillStyle = '#DC5F00';
+        ctx.font = 'bold 38px Arial, sans-serif';
+        ctx.fillText(dateStr, SIZE / 2, dateY);
+
+        // --- Lieu ---
+        if (evenement.lieu) {
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = '34px Arial, sans-serif';
+            ctx.fillText(evenement.lieu, SIZE / 2, dateY + 60);
+        }
+
+        // --- Séparateur 2 ---
+        const sep2Y = Math.max(dateY + 130, 750);
+        ctx.strokeStyle = '#DC5F00';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(80, sep2Y);
+        ctx.lineTo(SIZE - 80, sep2Y);
+        ctx.stroke();
+
+        // --- Instagram ---
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 40px Arial, sans-serif';
+        ctx.fillText('@nath.ami3d972', SIZE / 2, sep2Y + 75);
+
+        // --- Téléphone ---
+        ctx.fillStyle = '#C8CDD2';
+        ctx.font = '36px Arial, sans-serif';
+        ctx.fillText('06 96 80 29 73', SIZE / 2, sep2Y + 130);
+
+        // --- Artisanat Martinik ---
+        ctx.fillStyle = '#DC5F00';
+        ctx.font = 'bold 30px Arial, sans-serif';
+        ctx.fillText('Artisanat Martinik', SIZE / 2, SIZE - 50);
+
+        // --- Bande orange bas ---
+        ctx.fillStyle = '#DC5F00';
+        ctx.fillRect(0, SIZE - 10, SIZE, 10);
+
+        // --- Téléchargement ---
+        const slug = evenement.nom.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        const link = document.createElement('a');
+        link.download = `flyer-${slug}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        setGenerating(false);
     };
 
     const eventUrl = window.location.origin + '/events/' + evenement.code_unique;
@@ -70,13 +191,23 @@ export default function Show({ evenement }) {
                             <p className="text-xs text-slate font-mono break-all">{eventUrl}</p>
                         </div>
 
-                        <div className="mt-5">
+                        <div className="mt-5 flex flex-col gap-3">
                             <Link
                                 href={`/events/${evenement.id_evenement}/edit`}
                                 className="w-full h-11 flex items-center justify-center bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark border border-slate/20 rounded-xl text-sm font-medium transition-colors"
                             >
                                 ✏️ Modifier l'événement
                             </Link>
+
+                            {auth?.user && (
+                                <button
+                                    onClick={generateFlyer}
+                                    disabled={generating}
+                                    className="w-full h-11 flex items-center justify-center bg-ember hover:bg-ember/90 disabled:opacity-60 text-white rounded-xl text-sm font-medium transition-colors"
+                                >
+                                    {generating ? '⏳ Génération...' : '📸 Générer flyer Instagram'}
+                                </button>
+                            )}
                         </div>
                     </div>
 
