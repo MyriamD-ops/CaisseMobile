@@ -129,7 +129,7 @@ export default function Create({ products: serverProducts }) {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        if (e && e.preventDefault) e.preventDefault();
         if (cart.length === 0) {
             notify('error', 'Le panier est vide !');
             return;
