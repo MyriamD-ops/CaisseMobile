@@ -76,13 +76,13 @@ export default function Dashboard({ auth, stats = {} }) {
                             <span className="font-bold text-lg">Ajouter produit</span>
                         </Link>
 
-                        {/* Alertes stock */}
+                        {/* Nouvel événement */}
                         <Link
-                            href="/products/low-stock"
+                            href="/events/create"
                             className="bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-slate/30 p-6 flex flex-col items-center gap-3 text-dark hover:bg-white hover:border-ember hover:shadow-lg transition-all duration-300"
                         >
-                            <span className="text-4xl">⚠️</span>
-                            <span className="font-bold text-lg">Alertes stock</span>
+                            <span className="text-4xl">📅</span>
+                            <span className="font-bold text-lg">Nouvel événement</span>
                         </Link>
                     </div>
                 </div>

@@ -11,7 +11,9 @@ export default function Create({ products: serverProducts }) {
     const [products, setProducts] = useState(serverProducts);
     const [cart, setCart] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [moyenPaiement, setMoyenPaiement] = useState('Espèces');
+    const MOYENS_PAIEMENT = ['Espèces', 'Carte bancaire', 'Chèque', 'Virement'];
+    const [selectedMoyens, setSelectedMoyens] = useState(['Espèces']);
+    const [montantsPartiels, setMontantsPartiels] = useState({});
     const [processing, setProcessing] = useState(false);
     const [showScanner, setShowScanner] = useState(false);
 
@@ -19,6 +21,21 @@ export default function Create({ products: serverProducts }) {
     const [showCart, setShowCart] = useState(false);
     const [notification, setNotification] = useState(null);
     const [showClearConfirm, setShowClearConfirm] = useState(false);
+
+    const toggleMoyen = (moyen) => {
+        setSelectedMoyens(prev => {
+            if (prev.includes(moyen)) {
+                if (prev.length === 1) return prev; // au moins un obligatoire
+                setMontantsPartiels(mp => { const n = { ...mp }; delete n[moyen]; return n; });
+                return prev.filter(m => m !== moyen);
+            }
+            return [...prev, moyen];
+        });
+    };
+
+    const totalPartiels = selectedMoyens.reduce((s, m) => s + (parseFloat(montantsPartiels[m]) || 0), 0);
+    const resteAPayer = Math.max(0, total - totalPartiels).toFixed(2);
+    const montantsValides = selectedMoyens.length === 1 || Math.abs(totalPartiels - total) < 0.01;
 
     const notify = (type, message) => {
         setNotification({ type, message });
@@ -146,7 +163,7 @@ export default function Create({ products: serverProducts }) {
                 prix_unitaire: item.prix_unitaire,
                 sous_total: item.prix_unitaire * item.quantite,
             })),
-            mode_paiement: moyenPaiement,
+            mode_paiement: selectedMoyens.join(', '),
             montant_total: total,
             date_vente: new Date().toISOString(),
         };
@@ -172,7 +189,7 @@ export default function Create({ products: serverProducts }) {
                 quantite: item.quantite,
                 prix_unitaire: item.prix_unitaire,
             })),
-            moyen_paiement: moyenPaiement,
+            moyen_paiement: selectedMoyens.length === 1 ? selectedMoyens[0] : selectedMoyens,
         };
 
         router.post('/sales', formData, {
@@ -292,20 +309,57 @@ export default function Create({ products: serverProducts }) {
                         <span className="text-2xl font-bold text-dark">{total.toFixed(2)}€</span>
                     </div>
 
-                    <select
-                        value={moyenPaiement}
-                        onChange={(e) => setMoyenPaiement(e.target.value)}
-                        className="w-full h-11 px-3 bg-white border border-slate/40 rounded-xl text-dark text-sm focus:outline-none focus:border-ember focus:ring-2 focus:ring-ember/15 transition-colors"
-                    >
-                        <option value="Espèces">Espèces</option>
-                        <option value="Carte bancaire">Carte bancaire</option>
-                        <option value="Chèque">Chèque</option>
-                        <option value="Virement">Virement</option>
-                    </select>
+                    {/* Boutons de sélection du moyen de paiement */}
+                    <div className="grid grid-cols-2 gap-2">
+                        {MOYENS_PAIEMENT.map(moyen => (
+                            <button
+                                key={moyen}
+                                type="button"
+                                onClick={() => toggleMoyen(moyen)}
+                                className={`h-10 rounded-xl text-xs font-medium border transition-all ${
+                                    selectedMoyens.includes(moyen)
+                                        ? 'bg-ember text-white border-ember shadow-sm'
+                                        : 'bg-white text-slate border-slate/30 hover:border-ember/50'
+                                }`}
+                            >
+                                {moyen}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Montants partiels (si plusieurs moyens) */}
+                    {selectedMoyens.length > 1 && (
+                        <div className="space-y-2 p-3 bg-snow rounded-xl border border-slate/20">
+                            <p className="text-xs font-semibold text-slate uppercase tracking-wider">
+                                Répartition — Total : {total.toFixed(2)}€
+                            </p>
+                            {selectedMoyens.map((moyen, i) => (
+                                <div key={moyen} className="flex items-center gap-2">
+                                    <span className="text-xs text-dark flex-1 truncate">{moyen}</span>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        placeholder={i === selectedMoyens.length - 1 ? resteAPayer : '0.00'}
+                                        value={montantsPartiels[moyen] ?? ''}
+                                        onChange={e => setMontantsPartiels(mp => ({ ...mp, [moyen]: e.target.value }))}
+                                        className="w-24 h-8 px-2 text-right text-sm bg-white border border-slate/30 rounded-lg focus:outline-none focus:border-ember text-dark"
+                                    />
+                                    <span className="text-xs text-slate">€</span>
+                                </div>
+                            ))}
+                            <p className={`text-xs font-medium ${Math.abs(totalPartiels - total) < 0.01 ? 'text-mint' : 'text-ruby'}`}>
+                                {Math.abs(totalPartiels - total) < 0.01
+                                    ? '✓ Répartition correcte'
+                                    : `Reste à répartir : ${resteAPayer}€`
+                                }
+                            </p>
+                        </div>
+                    )}
 
                     <button
                         onClick={handleSubmit}
-                        disabled={processing}
+                        disabled={processing || !montantsValides}
                         className="w-full h-12 bg-linear-to-r from-ember to-ember-dim hover:brightness-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm shadow-ember/20"
                     >
                         {processing && (

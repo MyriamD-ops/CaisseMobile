@@ -26,13 +26,25 @@ class SaleController extends Controller
         \Log::info('=== DEBUT STORE VENTE ===');
         \Log::info('Request data:', $request->all());
         
-        $validated = $request->validate([
-            'items' => 'required|array|min:1',
+        $request->validate([
+            'items'              => 'required|array|min:1',
             'items.*.id_produit' => 'required|exists:produits,id_produit',
-            'items.*.quantite' => 'required|integer|min:1',
+            'items.*.quantite'   => 'required|integer|min:1',
             'items.*.prix_unitaire' => 'required|numeric|min:0',
-            'moyen_paiement' => 'required|in:Espèces,Carte bancaire,Chèque,Virement',
+            'moyen_paiement'     => 'required',
         ]);
+
+        $allowed = ['Espèces', 'Carte bancaire', 'Chèque', 'Virement'];
+        $raw = $request->input('moyen_paiement');
+        $moyens = is_array($raw) ? $raw : [$raw];
+        foreach ($moyens as $m) {
+            if (!in_array($m, $allowed)) {
+                return back()->withErrors(['moyen_paiement' => "Moyen de paiement invalide : $m"]);
+            }
+        }
+
+        $validated = $request->only(['items']);
+        $validated['moyen_paiement'] = implode(', ', $moyens);
         
         \Log::info('Validation OK:', $validated);
 
