@@ -33,7 +33,7 @@ jobs:
         run: |
           ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
-            "rm -rf /home/user/deploy_tmp && mkdir -p /home/user/deploy_tmp/build /home/user/deploy_tmp/app /home/user/deploy_tmp/routes /home/user/deploy_tmp/config /home/user/deploy_tmp/views"
+            "rm -rf /home/user/deploy_tmp && mkdir -p /home/user/deploy_tmp/build /home/user/deploy_tmp/app /home/user/deploy_tmp/routes /home/user/deploy_tmp/config /home/user/deploy_tmp/views /home/user/deploy_tmp/scripts"
 
       - name: Upload build assets
         run: |
@@ -59,6 +59,12 @@ jobs:
             resources/views/. \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/views/
 
+      - name: Upload scripts
+        run: |
+          scp -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
+            update_admin.php \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/
+
       - name: Deploy to app and clear cache
         run: |
           ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
@@ -73,6 +79,13 @@ jobs:
           cp -rf $TMP/views/.   $APP/resources/views/
 
           cd $APP && php artisan optimize
+
+          if [ -f "/home/user/deploy_tmp/update_admin.php" ]; then
+            cp /home/user/deploy_tmp/update_admin.php $APP/update_admin.php
+            php $APP/update_admin.php && rm -f $APP/update_admin.php
+            echo "=== update_admin exécuté ==="
+          fi
+
           rm -rf /home/user/deploy_tmp
           echo "=== Deploy OK ==="
           ENDSSH

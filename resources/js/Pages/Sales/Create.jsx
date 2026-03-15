@@ -25,17 +25,13 @@ export default function Create({ products: serverProducts }) {
     const toggleMoyen = (moyen) => {
         setSelectedMoyens(prev => {
             if (prev.includes(moyen)) {
-                if (prev.length === 1) return prev; // au moins un obligatoire
+                if (prev.length === 1) return prev;
                 setMontantsPartiels(mp => { const n = { ...mp }; delete n[moyen]; return n; });
                 return prev.filter(m => m !== moyen);
             }
             return [...prev, moyen];
         });
     };
-
-    const totalPartiels = selectedMoyens.reduce((s, m) => s + (parseFloat(montantsPartiels[m]) || 0), 0);
-    const resteAPayer = Math.max(0, total - totalPartiels).toFixed(2);
-    const montantsValides = selectedMoyens.length === 1 || Math.abs(totalPartiels - total) < 0.01;
 
     const notify = (type, message) => {
         setNotification({ type, message });
@@ -130,6 +126,9 @@ export default function Create({ products: serverProducts }) {
     };
 
     const total = cart.reduce((sum, item) => sum + (item.prix_unitaire * item.quantite), 0);
+    const totalPartiels = selectedMoyens.reduce((s, m) => s + (parseFloat(montantsPartiels[m]) || 0), 0);
+    const resteAPayer = Math.max(0, total - totalPartiels).toFixed(2);
+    const montantsValides = selectedMoyens.length === 1 || Math.abs(totalPartiels - total) < 0.01;
 
     const handleQRScan = (qrCode) => {
         console.log('🔍 Recherche produit avec code:', qrCode);
