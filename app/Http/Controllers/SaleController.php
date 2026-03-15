@@ -7,6 +7,9 @@ use App\Models\Produit;
 use Illuminate\Http\Request;
 use Inertia\ResponseFactory;
 use Illuminate\Support\Facades\DB;
+use Vonage\Client;
+use Vonage\Client\Credentials\Basic;
+use Vonage\SMS\Message\SMS;
 
 class SaleController extends Controller
 {
@@ -99,6 +102,55 @@ class SaleController extends Controller
             return back()->withErrors([
                 'error' => 'Erreur lors de l\'enregistrement de la vente : ' . $e->getMessage()
             ]);
+        }
+    }
+
+    public function sendSmsReceipt(Request $request, Vente $sale)
+    {
+        $request->validate([
+            'telephone' => 'required|string',
+        ]);
+
+        // Formatage E.164 (FR uniquement)
+        $raw = preg_replace('/[\s\-\.]/', '', $request->input('telephone'));
+        if (preg_match('/^0([67]\d{8})$/', $raw, $m)) {
+            $phone = '+33' . $m[1];
+        } elseif (preg_match('/^\+33[67]\d{8}$/', $raw)) {
+            $phone = $raw;
+        } else {
+            return response()->json(['error' => 'Numéro de téléphone invalide. Utilisez un 06 ou 07 français.'], 422);
+        }
+
+        $montant   = number_format((float) $sale->montant_total, 2, ',', ' ');
+        $paiement  = $sale->moyen_paiement;
+        $numero    = $sale->numero_vente ?? $sale->id_vente;
+
+        $message = "🖨 3D Ami\nAgence de Modélisation et d'Impression\n"
+                 . "--------------------------------\n"
+                 . "Vente #{$numero}\n"
+                 . "Total : {$montant}€\n"
+                 . "Paiement : {$paiement}\n"
+                 . "--------------------------------\n"
+                 . "📸 @nath.ami3d972\n"
+                 . "📞 06 96 80 29 73\n"
+                 . "Merci de votre achat !";
+
+        // Mode test local
+        if (env('VONAGE_API_KEY') === 'test_key') {
+            \Log::info('SMS simulé', ['to' => $phone, 'message' => $message]);
+            return response()->json(['success' => true, 'message' => 'SMS simulé (mode test)']);
+        }
+
+        // Production : envoi réel via Vonage
+        try {
+            $credentials = new Basic(env('VONAGE_API_KEY'), env('VONAGE_API_SECRET'));
+            $client      = new Client($credentials);
+            $client->sms()->send(new SMS($phone, env('VONAGE_FROM'), $message));
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            \Log::error('Erreur envoi SMS Vonage', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Échec de l\'envoi : ' . $e->getMessage()], 500);
         }
     }
 
