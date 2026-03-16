@@ -1,29 +1,62 @@
 import { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import { QRCodeSVG } from 'qrcode.react';
+import html2canvas from 'html2canvas';
 import Header from '../../Components/Header';
+import { TEMPLATES } from '../../flyers/templates';
 
-function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-    const words = text.split(' ');
-    let line = '';
-    let currentY = y;
-    for (let n = 0; n < words.length; n++) {
-        const testLine = line + words[n] + ' ';
-        if (ctx.measureText(testLine).width > maxWidth && n > 0) {
-            ctx.fillText(line.trim(), x, currentY);
-            line = words[n] + ' ';
-            currentY += lineHeight;
-        } else {
-            line = testLine;
-        }
-    }
-    ctx.fillText(line.trim(), x, currentY);
-    return currentY;
+// ─── Modal de sélection de template ──────────────────────────────────────────
+function FlyerTemplateModal({ onGenerate, onClose }) {
+    const [selected, setSelected] = useState('prestige');
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark/50 backdrop-blur-sm px-4">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+                <h3 className="text-lg font-bold text-dark mb-5">Choisir un template</h3>
+
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                    {TEMPLATES.map((tpl) => (
+                        <button
+                            key={tpl.id}
+                            onClick={() => setSelected(tpl.id)}
+                            style={{ backgroundColor: tpl.previewBg, color: tpl.previewText }}
+                            className={`h-24 rounded-xl flex flex-col items-center justify-center gap-2 transition-all border-2 ${
+                                selected === tpl.id
+                                    ? 'border-ember scale-105 shadow-md'
+                                    : 'border-transparent opacity-80 hover:opacity-100'
+                            }`}
+                        >
+                            <span className="text-2xl leading-none">{tpl.preview}</span>
+                            <span className="text-sm font-semibold">{tpl.label}</span>
+                        </button>
+                    ))}
+                </div>
+
+                <div className="flex gap-3">
+                    <button
+                        onClick={() => onGenerate(selected)}
+                        className="flex-1 h-11 flex items-center justify-center bg-ember hover:brightness-90 text-white font-bold rounded-xl text-sm transition-all"
+                    >
+                        📸 Générer
+                    </button>
+                    <button
+                        onClick={onClose}
+                        className="flex-1 h-11 flex items-center justify-center bg-slate/10 hover:bg-slate/20 text-slate hover:text-dark border border-slate/20 rounded-xl text-sm font-medium transition-colors"
+                    >
+                        Annuler
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
 }
 
+// ─── Page principale ──────────────────────────────────────────────────────────
 export default function Show({ evenement }) {
     const { auth } = usePage().props;
-    const [generating, setGenerating] = useState(false);
+    const [generating, setGenerating]       = useState(false);
+    const [showModal, setShowModal]         = useState(false);
+    const [flyerError, setFlyerError]       = useState('');
 
     const downloadQR = () => {
         const svg = document.getElementById('qr-code-event');
@@ -46,103 +79,45 @@ export default function Show({ evenement }) {
         img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
     };
 
-    const generateFlyer = () => {
+    const generateFlyer = async (templateId) => {
+        setShowModal(false);
         setGenerating(true);
+        setFlyerError('');
 
-        const SIZE = 1080;
-        const canvas = document.createElement('canvas');
-        canvas.width = SIZE;
-        canvas.height = SIZE;
-        const ctx = canvas.getContext('2d');
+        const template = TEMPLATES.find((t) => t.id === templateId);
+        const html = template.generateHTML(evenement);
 
-        // --- Fond ---
-        ctx.fillStyle = '#3A3F43';
-        ctx.fillRect(0, 0, SIZE, SIZE);
+        const container = document.createElement('div');
+        container.style.cssText =
+            'position:fixed;left:-9999px;top:0;width:1080px;height:1080px;overflow:hidden;';
+        container.innerHTML = html;
+        document.body.appendChild(container);
 
-        // --- Bande orange haut ---
-        ctx.fillStyle = '#DC5F00';
-        ctx.fillRect(0, 0, SIZE, 10);
+        try {
+            const canvas = await html2canvas(container, {
+                scale: 1,
+                width: 1080,
+                height: 1080,
+                useCORS: true,
+                allowTaint: false,
+                logging: false,
+            });
 
-        // --- Nom "3D Ami" ---
-        ctx.fillStyle = '#DC5F00';
-        ctx.font = 'bold 100px Georgia, serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('3D Ami', SIZE / 2, 175);
-
-        // --- Sous-titre ---
-        ctx.fillStyle = '#C8CDD2';
-        ctx.font = '32px Arial, sans-serif';
-        ctx.fillText('Agence de Modélisation et d\'Impression', SIZE / 2, 225);
-
-        // --- Séparateur 1 ---
-        ctx.strokeStyle = '#DC5F00';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(80, 265);
-        ctx.lineTo(SIZE - 80, 265);
-        ctx.stroke();
-
-        // --- Nom de l'événement ---
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 72px Arial, sans-serif';
-        const lastY = wrapText(ctx, evenement.nom, SIZE / 2, 370, 920, 85);
-
-        // --- Date ---
-        const opts = { day: 'numeric', month: 'long', year: 'numeric' };
-        const dateDebut = new Date(evenement.date_debut).toLocaleDateString('fr-FR', opts);
-        const dateFin   = new Date(evenement.date_fin).toLocaleDateString('fr-FR', opts);
-        const dateStr   = evenement.date_debut === evenement.date_fin
-            ? dateDebut
-            : `Du ${dateDebut} au ${dateFin}`;
-
-        const dateY = lastY + 90;
-        ctx.fillStyle = '#DC5F00';
-        ctx.font = 'bold 38px Arial, sans-serif';
-        ctx.fillText(dateStr, SIZE / 2, dateY);
-
-        // --- Lieu ---
-        if (evenement.lieu) {
-            ctx.fillStyle = '#FFFFFF';
-            ctx.font = '34px Arial, sans-serif';
-            ctx.fillText(evenement.lieu, SIZE / 2, dateY + 60);
+            const slug = evenement.nom
+                .toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^a-z0-9-]/g, '');
+            const link = document.createElement('a');
+            link.download = `flyer-${slug}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        } catch (err) {
+            console.error('Erreur génération flyer:', err);
+            setFlyerError('Erreur lors de la génération du flyer.');
+        } finally {
+            document.body.removeChild(container);
+            setGenerating(false);
         }
-
-        // --- Séparateur 2 ---
-        const sep2Y = Math.max(dateY + 130, 750);
-        ctx.strokeStyle = '#DC5F00';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(80, sep2Y);
-        ctx.lineTo(SIZE - 80, sep2Y);
-        ctx.stroke();
-
-        // --- Instagram ---
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 40px Arial, sans-serif';
-        ctx.fillText('@nath.ami3d972', SIZE / 2, sep2Y + 75);
-
-        // --- Téléphone ---
-        ctx.fillStyle = '#C8CDD2';
-        ctx.font = '36px Arial, sans-serif';
-        ctx.fillText('06 96 80 29 73', SIZE / 2, sep2Y + 130);
-
-        // --- Artisanat Martinik ---
-        ctx.fillStyle = '#DC5F00';
-        ctx.font = 'bold 30px Arial, sans-serif';
-        ctx.fillText('Artisanat Martinik', SIZE / 2, SIZE - 50);
-
-        // --- Bande orange bas ---
-        ctx.fillStyle = '#DC5F00';
-        ctx.fillRect(0, SIZE - 10, SIZE, 10);
-
-        // --- Téléchargement ---
-        const slug = evenement.nom.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-        const link = document.createElement('a');
-        link.download = `flyer-${slug}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-
-        setGenerating(false);
     };
 
     const eventUrl = window.location.origin + '/events/' + evenement.code_unique;
@@ -201,12 +176,24 @@ export default function Show({ evenement }) {
 
                             {auth?.user && (
                                 <button
-                                    onClick={generateFlyer}
+                                    onClick={() => setShowModal(true)}
                                     disabled={generating}
                                     className="w-full h-11 flex items-center justify-center bg-ember hover:bg-ember/90 disabled:opacity-60 text-white rounded-xl text-sm font-medium transition-colors"
                                 >
-                                    {generating ? '⏳ Génération...' : '📸 Générer flyer Instagram'}
+                                    {generating ? (
+                                        <>
+                                            <svg className="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                                            </svg>
+                                            Génération...
+                                        </>
+                                    ) : '📸 Flyer Instagram'}
                                 </button>
+                            )}
+
+                            {flyerError && (
+                                <p className="text-xs text-red-600 text-center">{flyerError}</p>
                             )}
                         </div>
                     </div>
@@ -244,6 +231,13 @@ export default function Show({ evenement }) {
                     </div>
                 </div>
             </main>
+
+            {showModal && (
+                <FlyerTemplateModal
+                    onGenerate={generateFlyer}
+                    onClose={() => setShowModal(false)}
+                />
+            )}
         </div>
     );
 }
