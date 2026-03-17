@@ -20,210 +20,273 @@ const qrSrc = (ev) => {
 };
 
 // ─── Template 1 : Prestige ───────────────────────────────────────────────────
-// Bicolonne : panel gauche vert foncé avec photo bijoux, panel droit blanc
+// Bicolonne : panel gauche vert #0f2f1f→#1e4a2a avec bijoux.png,
+// panel droit blanc, logo "✧AMI OFFICIEL / AMI 3D / Modélisation•Impression"
 function generatePrestige(ev) {
-    const date  = dateRange(ev);
-    const src   = qrSrc(ev);
+    const date = dateRange(ev);
+    const src  = qrSrc(ev);
 
     const lieuBlock = ev.lieu
-        ? `<div style="display:flex;align-items:center;gap:10px;margin-bottom:28px;">
-               <span style="font-size:16px;">📍</span>
-               <span style="font-size:15px;color:#666C7B;font-family:Arial,sans-serif;">${ev.lieu}</span>
-           </div>`
-        : '<div style="margin-bottom:28px;"></div>';
+        ? `<p style="font-size:14px;color:#666C7B;margin:0 0 28px;font-family:Arial,sans-serif;">🌺 ${ev.lieu}</p>`
+        : `<div style="margin-bottom:28px;"></div>`;
 
-    const qrBlock = src
-        ? `<div style="border:2px solid #EEEEEE;border-radius:10px;padding:12px;display:inline-block;">
-               <img src="${src}" style="width:150px;height:150px;display:block;" crossorigin="anonymous" alt="QR">
-               <p style="font-size:10px;color:#999;text-align:center;margin:5px 0 0;font-family:Arial,sans-serif;">Scanner pour voir le catalogue</p>
+    const qrImg = src
+        ? `<div style="border:2px solid #EEEEEE;border-radius:10px;padding:10px;flex-shrink:0;">
+               <img src="${src}" style="width:110px;height:110px;display:block;" crossorigin="anonymous" alt="QR">
            </div>`
         : '';
 
-    return `<div style="width:1080px;height:1080px;display:flex;font-family:Georgia,serif;overflow:hidden;background:#fff;">
-        <div style="width:400px;min-width:400px;height:1080px;position:relative;overflow:hidden;background:#1C3830;">
-            <img src="/images/bijoux.png" style="width:100%;height:100%;object-fit:cover;" alt="">
-            <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(28,56,48,0.15) 0%,rgba(28,56,48,0.65) 100%);"></div>
-            <div style="position:absolute;bottom:0;left:0;right:0;padding:32px 28px;background:linear-gradient(to top,rgba(28,56,48,0.95),transparent);">
-                <div style="width:32px;height:3px;background:#DC5F00;margin-bottom:10px;"></div>
-                <p style="color:rgba(255,255,255,0.55);font-size:12px;letter-spacing:4px;text-transform:uppercase;margin:0 0 3px;font-family:Arial,sans-serif;">Artisanat</p>
-                <p style="color:#DC5F00;font-size:14px;letter-spacing:5px;text-transform:uppercase;font-weight:bold;margin:0;font-family:Arial,sans-serif;">Martinik</p>
+    return `<div style="width:1080px;height:1080px;display:flex;font-family:Georgia,serif;overflow:hidden;">
+
+        <!-- Panel gauche 45% -->
+        <div style="width:486px;min-width:486px;height:1080px;background:linear-gradient(180deg,#0f2f1f 0%,#1e4a2a 100%);position:relative;overflow:hidden;">
+            <img src="/images/bijoux.png" style="width:100%;height:75%;object-fit:cover;opacity:0.65;display:block;" alt="">
+            <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,47,31,0.25) 50%,rgba(15,47,31,0.95) 100%);"></div>
+            <!-- Citation bas -->
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:44px 38px;text-align:center;">
+                <p style="color:rgba(255,255,255,0.6);font-size:15px;font-style:italic;line-height:1.7;margin:0 0 18px;font-family:Georgia,serif;">"L'élégance naturelle<br>à votre portée"</p>
+                <div style="width:40px;height:1px;background:#DC5F00;margin:0 auto 14px;"></div>
+                <p style="color:#DC5F00;font-size:11px;letter-spacing:5px;text-transform:uppercase;margin:0;font-family:Arial,sans-serif;">ALPINIA • MARTINIQUE</p>
             </div>
         </div>
-        <div style="flex:1;height:1080px;background:#fff;display:flex;flex-direction:column;padding:62px 50px;box-sizing:border-box;">
-            <div style="margin-bottom:5px;">
-                <span style="font-size:62px;font-weight:900;color:#DC5F00;font-family:Georgia,serif;line-height:1;">3D Ami</span>
+
+        <!-- Panel droit 55% -->
+        <div style="flex:1;height:1080px;background:#ffffff;display:flex;flex-direction:column;padding:52px 50px;box-sizing:border-box;">
+
+            <!-- Logo — original -->
+            <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:10px;">
+                <img src="/images/logo.jpg" style="width:70px;height:70px;object-fit:contain;flex-shrink:0;" alt="Logo AMI 3D">
+                <div>
+                    <p style="font-size:9px;color:#888;letter-spacing:6px;text-transform:uppercase;margin:0 0 3px;font-family:Arial,sans-serif;">OFFICIEL</p>
+                    <p style="font-size:20px;font-weight:700;color:#3A3F43;letter-spacing:1px;margin:0 0 2px;font-family:Arial,sans-serif;">AMI 3D</p>
+                    <p style="font-size:11px;color:#aaa;letter-spacing:2px;margin:0;font-family:Arial,sans-serif;">Modélisation•Impression</p>
+                </div>
             </div>
-            <p style="font-size:11px;color:#666C7B;letter-spacing:3px;text-transform:uppercase;margin:0 0 46px;font-family:Arial,sans-serif;">Agence de Modélisation et d'Impression</p>
-            <div style="width:44px;height:4px;background:#DC5F00;margin-bottom:38px;border-radius:2px;"></div>
-            <h2 style="font-size:36px;font-weight:700;color:#3A3F43;line-height:1.25;margin:0 0 26px;word-wrap:break-word;overflow-wrap:break-word;">${ev.nom}</h2>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-                <span style="font-size:16px;">📅</span>
-                <span style="font-size:16px;color:#DC5F00;font-weight:600;font-family:Arial,sans-serif;">${date}</span>
+
+            <div style="width:44px;height:3px;background:#DC5F00;margin-bottom:32px;border-radius:2px;"></div>
+
+            <!-- Section événement — original -->
+            <div style="background:#f8f8f8;border-left:4px solid #DC5F00;padding:26px 30px;border-radius:0 14px 14px 0;margin-bottom:22px;">
+                <h2 style="font-size:32px;font-weight:700;color:#3A3F43;line-height:1.25;margin:0 0 14px;word-wrap:break-word;overflow-wrap:break-word;font-family:Georgia,serif;">${ev.nom}</h2>
+                <p style="font-size:16px;color:#DC5F00;font-weight:600;margin:0;font-family:Arial,sans-serif;">${date}</p>
             </div>
+
+            <!-- Adresse -->
             ${lieuBlock}
-            <div style="margin-bottom:auto;">
-                ${qrBlock}
+
+            <!-- QR + Contact — original -->
+            <div style="display:flex;align-items:center;gap:22px;margin-bottom:auto;">
+                ${qrImg}
+                <div>
+                    <p style="font-size:14px;font-weight:700;color:#3A3F43;margin:0 0 5px;font-family:Arial,sans-serif;">@nath.ami3d972</p>
+                    <p style="font-size:13px;color:#666C7B;margin:0;font-family:Arial,sans-serif;">☎ 06 96 80 29 73</p>
+                </div>
             </div>
-            <div style="padding-top:28px;border-top:1px solid #EEEEEE;margin-top:auto;">
-                <p style="font-size:15px;font-weight:700;color:#3A3F43;margin:0 0 3px;font-family:Arial,sans-serif;">@nath.ami3d972</p>
-                <p style="font-size:13px;color:#666C7B;margin:0;font-family:Arial,sans-serif;">06 96 80 29 73</p>
+
+            <!-- Footer — original -->
+            <div style="margin-top:32px;padding-top:20px;border-top:1px solid #EEEEEE;display:flex;align-items:center;">
+                <p style="font-size:11px;color:#DC5F00;letter-spacing:2px;text-transform:uppercase;margin:0;font-family:Arial,sans-serif;">Qualité Antillaise</p>
             </div>
         </div>
     </div>`;
 }
 
 // ─── Template 2 : Alpinia ────────────────────────────────────────────────────
-// Bicolonne : panel gauche violet profond avec photo, panel droit crème
-// Signature visuelle "Excellence 3D", titre plus imposant
+// Bicolonne : panel gauche vert #1a3f2c→#2a5a3a avec bijoux.png,
+// panel droit crème, "EXCELLENCE 3D / AMI 3D. / Agence de Modélisation..."
 function generateAlpinia(ev) {
     const date = dateRange(ev);
     const src  = qrSrc(ev);
 
     const lieuBlock = ev.lieu
-        ? `<p style="font-size:14px;color:#8B7355;font-family:Arial,sans-serif;margin:0 0 24px;">📍 ${ev.lieu}</p>`
-        : '';
+        ? `<p style="font-size:18px;color:#666C7B;margin:0 0 20px;font-family:Arial,sans-serif;">🌿 ${ev.lieu}</p>`
+        : `<div style="margin-bottom:20px;"></div>`;
 
-    const qrBlock = src
-        ? `<div style="margin:20px 0;padding:12px;background:#fff;border-radius:10px;border:1px solid #E8E0D0;display:inline-block;">
-               <img src="${src}" style="width:130px;height:130px;display:block;" crossorigin="anonymous" alt="QR">
-               <p style="font-size:10px;color:#999;text-align:center;margin:6px 0 0;font-family:Arial,sans-serif;">Scanner le catalogue</p>
+    const qrImg = src
+        ? `<div style="border:1px solid #e8e0d0;border-radius:12px;padding:14px;flex-shrink:0;display:flex;align-items:center;">
+               <img src="${src}" style="width:220px;height:220px;display:block;" crossorigin="anonymous" alt="QR">
            </div>`
         : '';
 
-    return `<div style="width:1080px;height:1080px;display:flex;font-family:Georgia,serif;overflow:hidden;background:#FEFDF6;">
-        <div style="width:410px;min-width:410px;height:1080px;position:relative;overflow:hidden;background:#2B1F42;">
-            <img src="/images/bijoux.png" style="width:100%;height:100%;object-fit:cover;mix-blend-mode:luminosity;opacity:0.55;" alt="">
-            <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(43,31,66,0.25),rgba(43,31,66,0.80));"></div>
-            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
-                <p style="color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:6px;text-transform:uppercase;margin:0 0 14px;font-family:Arial,sans-serif;">Excellence</p>
-                <p style="color:#DC5F00;font-size:56px;font-weight:900;line-height:1;margin:0;text-shadow:0 2px 20px rgba(0,0,0,0.5);">3D</p>
-                <p style="color:#fff;font-size:44px;font-weight:400;line-height:1;margin:0 0 16px;font-family:Georgia,serif;">Ami</p>
-                <div style="width:40px;height:2px;background:#DC5F00;margin:0 auto;"></div>
-            </div>
-            <div style="position:absolute;bottom:32px;left:0;right:0;text-align:center;">
-                <p style="color:rgba(255,255,255,0.45);font-size:11px;letter-spacing:4px;text-transform:uppercase;margin:0;font-family:Arial,sans-serif;">Artisanat Martinik</p>
+    return `<div style="width:1080px;height:1080px;display:flex;font-family:Georgia,serif;overflow:hidden;">
+
+        <!-- Panel gauche 45% -->
+        <div style="width:486px;min-width:486px;height:1080px;background:linear-gradient(180deg,#1a3f2c 0%,#2a5a3a 100%);position:relative;overflow:hidden;">
+            <img src="/images/bijoux.png" style="width:100%;height:75%;object-fit:cover;opacity:0.55;mix-blend-mode:multiply;display:block;" alt="">
+            <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,63,44,0.35) 45%,rgba(26,63,44,0.95) 100%);"></div>
+            <!-- Citation bas -->
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:44px 38px;text-align:center;">
+                <p style="color:rgba(255,255,255,0.6);font-size:15px;font-style:italic;line-height:1.7;margin:0 0 18px;font-family:Georgia,serif;">"La beauté des Antilles<br>sublimée en 3D"</p>
+                <div style="width:40px;height:1px;background:#DC5F00;margin:0 auto 14px;"></div>
+                <p style="color:#DC5F00;font-size:11px;letter-spacing:5px;text-transform:uppercase;margin:0;font-family:Arial,sans-serif;">✧ FLEUR D'ALPINIA ✧</p>
             </div>
         </div>
-        <div style="flex:1;height:1080px;background:#FEFDF6;display:flex;flex-direction:column;justify-content:center;padding:64px 52px;box-sizing:border-box;position:relative;">
+
+        <!-- Panel droit 55% -->
+        <div style="flex:1;height:1080px;background:#FEFDF6;display:flex;flex-direction:column;padding:52px 50px;box-sizing:border-box;position:relative;">
             <div style="position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(to right,#DC5F00,#FF8C42);"></div>
-            <p style="font-size:12px;color:#DC5F00;letter-spacing:5px;text-transform:uppercase;margin:0 0 18px;font-family:Arial,sans-serif;">Événement</p>
-            <h1 style="font-size:46px;font-weight:700;color:#2B1F42;line-height:1.2;margin:0 0 24px;word-wrap:break-word;overflow-wrap:break-word;font-family:Georgia,serif;">${ev.nom}</h1>
-            <div style="width:56px;height:3px;background:#DC5F00;margin-bottom:26px;border-radius:2px;"></div>
-            <p style="font-size:18px;color:#DC5F00;font-weight:600;margin:0 0 14px;font-family:Arial,sans-serif;">📅 ${date}</p>
-            ${lieuBlock}
-            ${qrBlock}
-            <div style="margin-top:auto;padding-top:28px;border-top:1px solid rgba(43,31,66,0.12);">
-                <p style="font-size:15px;font-weight:700;color:#2B1F42;margin:0 0 3px;font-family:Arial,sans-serif;">@nath.ami3d972</p>
-                <p style="font-size:13px;color:#8B7355;margin:0;font-family:Arial,sans-serif;">06 96 80 29 73</p>
+
+            <!-- Logo — style noir/gris, taille augmentée -->
+            <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:10px;">
+                <img src="/images/logo.jpg" style="width:90px;height:90px;object-fit:contain;flex-shrink:0;" alt="Logo AMI 3D">
+                <div>
+                    <p style="font-size:13px;color:#888;letter-spacing:6px;text-transform:uppercase;margin:0 0 4px;font-family:Arial,sans-serif;">OFFICIEL</p>
+                    <p style="font-size:28px;font-weight:700;color:#3A3F43;letter-spacing:1px;margin:0 0 4px;font-family:Arial,sans-serif;">AMI 3D</p>
+                    <p style="font-size:16px;color:#aaa;letter-spacing:2px;margin:0;font-family:Arial,sans-serif;">Modélisation•Impression</p>
+                </div>
             </div>
+
+            <div style="width:44px;height:3px;background:#DC5F00;margin-bottom:100px;border-radius:2px;"></div>
+            <div style="background:#f8f8f8;border-left:6px solid #DC5F00;border-radius:0 14px 14px 0;padding:36px 40px;margin-bottom:28px;">
+                <h2 style="font-size:42px;font-weight:700;color:#3A3F43;line-height:1.25;margin:0 0 18px;word-wrap:break-word;overflow-wrap:break-word;font-family:Georgia,serif;">${ev.nom}</h2>
+                <p style="font-size:20px;color:#DC5F00;font-weight:600;margin:0;font-family:Arial,sans-serif;">✦ ${date}</p>
+            </div>
+
+            <!-- QR + Colonne droite : adresse en haut, contact en bas -->
+            <div style="display:flex;align-items:flex-end;gap:28px;margin-top:auto;">
+                ${qrImg}
+                <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;align-self:stretch;">
+                    <div>
+                        <p style="font-size:18px;color:#666C7B;margin:0;font-family:Arial,sans-serif;">🌿 ${ev.lieu || ''}</p>
+                    </div>
+                    <div>
+                        <p style="font-size:18px;font-weight:700;color:#3A3F43;margin:0 0 8px;font-family:Arial,sans-serif;">@nath.ami3d972</p>
+                        <p style="font-size:16px;color:#666C7B;margin:0;font-family:Arial,sans-serif;">📞 06 96 80 29 73</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="margin-top:32px;padding-top:20px;border-top:1px solid rgba(42,90,58,0.15);display:flex;align-items:center;">
+                <p style="font-size:13px;color:#2a5a3a;letter-spacing:2px;text-transform:uppercase;margin:0;font-family:Arial,sans-serif;">Impression locale</p>
+            </div>
+
             <div style="position:absolute;bottom:0;left:0;right:0;height:5px;background:linear-gradient(to right,#DC5F00,#FF8C42);"></div>
         </div>
     </div>`;
 }
 
 // ─── Template 3 : Simple ─────────────────────────────────────────────────────
-// Fond blanc, centré, typographie Urban, header sombre, cards de données
+// Carte 3D Ami : fond #eeeeee, carte blanche border-radius:40px,
+// header "AMI 3D" 120px, section événement, photo + QR, footer
 function generateSimple(ev) {
     const date = dateRange(ev);
     const src  = qrSrc(ev);
 
-    const lieuCard = ev.lieu
-        ? `<div style="background:#EEEEEE;border-radius:16px;padding:20px 32px;min-width:180px;flex:1;">
-               <p style="font-size:11px;color:#666C7B;letter-spacing:3px;text-transform:uppercase;margin:0 0 6px;font-family:Arial,sans-serif;">Lieu</p>
-               <p style="font-size:18px;font-weight:700;color:#3A3F43;margin:0;font-family:Arial,sans-serif;">${ev.lieu}</p>
-           </div>`
+    const lieuLine = ev.lieu
+        ? `<p style="font-size:20px;color:#666C7B;margin:10px 0 0;font-family:Arial,sans-serif;">📍 ${ev.lieu}</p>`
         : '';
 
     const qrBlock = src
-        ? `<div style="padding:14px;background:#EEEEEE;border-radius:12px;display:inline-block;margin-top:32px;">
-               <img src="${src}" style="width:120px;height:120px;display:block;margin:0 auto;" crossorigin="anonymous" alt="QR">
-               <p style="font-size:10px;color:#666C7B;text-align:center;margin:8px 0 0;font-family:Arial,sans-serif;">Scanner pour voir le catalogue</p>
-           </div>`
-        : '';
+        ? `<img src="${src}" style="width:180px;height:180px;display:block;margin:0 auto 14px;" crossorigin="anonymous" alt="QR">
+           <p style="font-size:14px;font-weight:700;color:#3A3F43;text-align:center;margin:0;letter-spacing:1px;font-family:Arial,sans-serif;">Scannez-moi !</p>`
+        : `<p style="font-size:13px;color:#666C7B;text-align:center;margin:0;font-family:Arial,sans-serif;">Pas de QR disponible</p>`;
 
-    return `<div style="width:1080px;height:1080px;background:#fff;font-family:Arial,sans-serif;overflow:hidden;box-sizing:border-box;display:flex;flex-direction:column;">
-        <div style="background:#3A3F43;padding:32px 60px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
-            <span style="font-size:54px;font-weight:900;color:#DC5F00;font-family:Georgia,serif;line-height:1;">3D Ami</span>
-            <div style="text-align:right;">
-                <p style="color:rgba(255,255,255,0.5);font-size:11px;letter-spacing:3px;text-transform:uppercase;margin:0 0 2px;">Agence de Modélisation</p>
-                <p style="color:rgba(255,255,255,0.5);font-size:11px;letter-spacing:3px;text-transform:uppercase;margin:0;">et d'Impression</p>
+    return `<div style="width:1080px;height:1080px;background:#eeeeee;padding:40px;box-sizing:border-box;font-family:Arial,sans-serif;">
+        <div style="width:100%;height:100%;background:#ffffff;border-radius:40px;padding:30px 50px 50px;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;">
+
+            <!-- Header centré — "3D AMI" remonté, sous-titre plus bas et lisible -->
+            <div style="text-align:center;margin-bottom:10px;flex-shrink:0;">
+                <img src="/images/logo.jpg" style="width:100px;height:100px;object-fit:contain;margin-bottom:16px;" alt="Logo AMI 3D">
+                <p style="font-size:120px;font-weight:900;color:#3A3F43;line-height:0.9;margin:0 0 48px;font-family:Georgia,serif;">AMI 3D</p>
+                <p style="font-size:18px;color:#666C7B;letter-spacing:5px;text-transform:uppercase;margin:0 0 16px;font-family:Arial,sans-serif;">Modélisation &amp; Impression 3D</p>
+                <div style="width:80px;height:4px;background:#DC5F00;margin:0 auto;border-radius:2px;"></div>
             </div>
-        </div>
-        <div style="height:6px;background:#DC5F00;flex-shrink:0;"></div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 60px;box-sizing:border-box;text-align:center;">
-            <p style="font-size:13px;color:#DC5F00;letter-spacing:5px;text-transform:uppercase;margin:0 0 22px;">Événement à venir</p>
-            <h1 style="font-size:52px;font-weight:900;color:#3A3F43;line-height:1.2;margin:0 0 36px;max-width:900px;word-wrap:break-word;overflow-wrap:break-word;">${ev.nom}</h1>
-            <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;max-width:800px;">
-                <div style="background:#3A3F43;border-radius:16px;padding:20px 32px;flex:1;min-width:180px;">
-                    <p style="font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:3px;text-transform:uppercase;margin:0 0 6px;">Date</p>
-                    <p style="font-size:18px;font-weight:700;color:#DC5F00;margin:0;">${date}</p>
+
+            <!-- Section événement — espace agrandi avant le nom -->
+            <div style="text-align:center;margin-top:32px;margin-bottom:24px;flex-shrink:0;">
+                <h2 style="font-size:64px;font-weight:900;color:#3A3F43;line-height:1.1;margin:0 0 14px;word-wrap:break-word;overflow-wrap:break-word;">${ev.nom}</h2>
+                <p style="font-size:24px;color:#DC5F00;font-weight:700;margin:0;">${date}</p>
+                ${lieuLine}
+            </div>
+
+            <!-- Section media : photo réduite + QR agrandi -->
+            <div style="flex:1;display:flex;gap:20px;min-height:0;">
+                <!-- Zone photo — réduite -->
+                <div style="flex:1;border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(135deg,#d8d8d8,#b8b8b8);">
+                    <img src="/images/bijoux.png" style="width:100%;height:100%;object-fit:cover;display:block;" alt="">
+                    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(58,63,67,0.25),transparent);"></div>
                 </div>
-                ${lieuCard}
+                <!-- QR code — plus grand -->
+                <div style="flex:1.4;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#EEEEEE;border-radius:20px;padding:24px;box-sizing:border-box;">
+                    ${qrBlock}
+                </div>
             </div>
-            ${qrBlock}
-        </div>
-        <div style="background:#EEEEEE;padding:24px 60px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
-            <div>
-                <p style="font-size:16px;font-weight:700;color:#3A3F43;margin:0 0 2px;">@nath.ami3d972</p>
-                <p style="font-size:14px;color:#666C7B;margin:0;">06 96 80 29 73</p>
+
+            <!-- Footer -->
+            <div style="margin-top:24px;padding-top:20px;border-top:2px solid #EEEEEE;display:flex;align-items:center;flex-shrink:0;">
+                <p style="font-size:15px;color:#666C7B;margin:0;">@nath.ami3d972 &nbsp;•&nbsp; 📞 06 96 80 29 73</p>
             </div>
-            <p style="font-size:13px;color:#DC5F00;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0;">Artisanat Martinik</p>
         </div>
     </div>`;
 }
 
 // ─── Template 4 : Géo ────────────────────────────────────────────────────────
-// Fond blanc, bande orange diagonale en haut-droite, card dark au centre
+// Fond blanc, bande orange diagonale, titre "3D AMI" 100px,
+// event-box border-radius:80px 20px 80px 20px, address-box, photo + QR grille
 function generateGeo(ev) {
     const date = dateRange(ev);
     const src  = qrSrc(ev);
 
-    const qrBlock = src
-        ? `<div style="text-align:center;flex-shrink:0;">
-               <img src="${src}" style="width:140px;height:140px;display:block;margin:0 auto;border-radius:8px;" crossorigin="anonymous" alt="QR">
-               <p style="font-size:10px;color:rgba(255,255,255,0.45);text-align:center;margin:8px 0 0;font-family:Arial,sans-serif;">Scanner le catalogue</p>
+    const qrTopRight = src
+        ? `<div style="background:#fff;border-radius:12px;padding:10px;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,0.15);">
+               <img src="${src}" style="width:100px;height:100px;display:block;" crossorigin="anonymous" alt="QR">
            </div>`
         : '';
 
-    const lieuBlock = ev.lieu
-        ? `<p style="font-size:14px;color:rgba(255,255,255,0.55);margin:10px 0 0;font-family:Arial,sans-serif;">📍 ${ev.lieu}</p>`
+    const addressBox = ev.lieu
+        ? `<p style="font-size:17px;color:#DC5F00;font-weight:700;margin:50px 0 0;text-align:center;font-family:Arial,sans-serif;">📍 ${ev.lieu}</p>`
         : '';
 
-    return `<div style="width:1080px;height:1080px;background:#fff;font-family:Arial,sans-serif;overflow:hidden;position:relative;">
-        <div style="position:absolute;top:-150px;right:-120px;width:620px;height:760px;background:#DC5F00;transform:rotate(15deg);z-index:0;"></div>
-        <div style="position:relative;z-index:1;width:100%;height:100%;display:flex;flex-direction:column;">
-            <div style="padding:52px 60px 0;flex-shrink:0;">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                    <div style="line-height:1;">
-                        <span style="font-size:84px;font-weight:900;color:#fff;font-family:Georgia,serif;text-shadow:0 4px 20px rgba(0,0,0,0.25);">3D</span>
-                        <span style="font-size:84px;font-weight:400;color:#fff;font-family:Georgia,serif;text-shadow:0 4px 20px rgba(0,0,0,0.25);"> Ami</span>
-                    </div>
-                    <div style="text-align:right;padding-top:16px;">
-                        <p style="font-size:12px;color:rgba(255,255,255,0.75);letter-spacing:3px;text-transform:uppercase;margin:0 0 3px;">Agence de</p>
-                        <p style="font-size:12px;color:rgba(255,255,255,0.75);letter-spacing:3px;text-transform:uppercase;margin:0;">Modélisation &amp; Impression</p>
-                    </div>
-                </div>
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:32px 60px;">
-                <div style="background:#3A3F43;border-radius:24px;padding:48px;box-shadow:0 24px 64px rgba(0,0,0,0.18);">
-                    <p style="font-size:12px;color:#DC5F00;letter-spacing:4px;text-transform:uppercase;margin:0 0 16px;">Événement</p>
-                    <h1 style="font-size:46px;font-weight:900;color:#fff;line-height:1.2;margin:0 0 32px;word-wrap:break-word;overflow-wrap:break-word;">${ev.nom}</h1>
-                    <div style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;">
-                        <div style="flex:1;min-width:220px;">
-                            <p style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:3px;text-transform:uppercase;margin:0 0 6px;">Date</p>
-                            <p style="font-size:18px;font-weight:700;color:#DC5F00;margin:0;">${date}</p>
-                            ${lieuBlock}
-                        </div>
-                        ${qrBlock}
+    const qrBottomRight = src
+        ? `<img src="${src}" style="width:180px;height:180px;display:block;" crossorigin="anonymous" alt="QR">
+           <p style="font-size:11px;color:#666C7B;margin:0;text-align:center;font-family:Arial,sans-serif;">Scanner le catalogue</p>`
+        : '';
+
+    return `<div style="width:1080px;height:1080px;background:#ffffff;font-family:Arial,sans-serif;overflow:hidden;position:relative;">
+
+        <!-- Bande orange diagonale -->
+        <div style="position:absolute;top:-200px;right:-150px;width:620px;height:760px;background:#DC5F00;transform:rotate(15deg);z-index:0;"></div>
+
+        <!-- Contenu -->
+        <div style="position:relative;z-index:1;width:100%;height:100%;display:flex;flex-direction:column;padding:52px 60px;box-sizing:border-box;">
+
+            <!-- Header : logo au plus haut, éléments sous lui -->
+            <div style="display:flex;justify-content:flex-start;align-items:flex-start;margin-bottom:0;flex-shrink:0;">
+                <div style="display:flex;align-items:flex-start;gap:24px;">
+                    <img src="/images/logo.jpg" style="width:80px;height:80px;object-fit:contain;flex-shrink:0;" alt="Logo AMI 3D">
+                    <div>
+                        <p style="font-size:100px;font-weight:900;color:#3A3F43;font-family:Georgia,serif;line-height:1;margin:0 0 48px;text-shadow:0 2px 8px rgba(255,255,255,0.8);">AMI 3D</p>
+                        <p style="font-size:14px;color:#DC5F00;letter-spacing:3px;text-transform:uppercase;margin:0;font-weight:700;">Modélisation &amp; Impression</p>
                     </div>
                 </div>
             </div>
-            <div style="padding:0 60px 48px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
-                <div>
-                    <p style="font-size:16px;font-weight:700;color:#3A3F43;margin:0 0 2px;">@nath.ami3d972</p>
-                    <p style="font-size:14px;color:#666C7B;margin:0;">06 96 80 29 73</p>
+
+            <!-- Event box centrée entre "Modélisation" et la card grise — même espace haut/bas -->
+            <div style="flex:1;display:flex;align-items:center;min-height:0;">
+                <div style="background:#3A3F43;border-radius:80px 20px 80px 20px;padding:42px 52px;width:100%;box-sizing:border-box;">
+                    <h1 style="font-size:50px;font-weight:900;color:#ffffff;line-height:1.2;margin:0 0 18px;word-wrap:break-word;overflow-wrap:break-word;">${ev.nom}</h1>
+                    <p style="font-size:20px;color:#DC5F00;font-weight:700;margin:0;">${date}</p>
                 </div>
-                <p style="font-size:13px;color:#DC5F00;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:0;">Artisanat Martinik</p>
+            </div>
+
+            <!-- Card grise réduite -->
+            <div style="flex:1;min-height:0;background:#EEEEEE;border-radius:20px;padding:12px;box-sizing:border-box;display:flex;gap:12px;align-items:stretch;">
+                <!-- Photo -->
+                <div style="flex:1;border-radius:14px;overflow:hidden;">
+                    <img src="/images/bijoux.png" style="width:100%;height:100%;object-fit:cover;display:block;" alt="">
+                </div>
+                <!-- Moitié droite : QR → adresse → contact -->
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;">
+                    <div style="background:#ffffff;border-radius:14px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;box-sizing:border-box;">
+                        ${qrBottomRight}
+                        ${addressBox}
+                    </div>
+                    <div style="text-align:center;width:100%;">
+                        <p style="font-size:13px;font-weight:700;color:#3A3F43;margin:0 0 2px;">@nath.ami3d972</p>
+                        <p style="font-size:12px;color:#666C7B;margin:0;">☎ 06 96 80 29 73</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>`;
