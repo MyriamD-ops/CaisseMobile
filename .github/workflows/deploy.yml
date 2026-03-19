@@ -92,6 +92,14 @@ jobs:
 
           cd $APP && php artisan optimize
 
+          # Purge OPcache PHP
+          php -r "opcache_reset();" 2>/dev/null || true
+
+          # Redémarre PHP-FPM pour forcer le rechargement
+          sudo systemctl reload php8.4-fpm 2>/dev/null || \
+          sudo systemctl reload php-fpm 2>/dev/null || \
+          kill -USR2 $(cat /var/run/php/php8.4-fpm.pid 2>/dev/null) 2>/dev/null || true
+
           if [ -f "/home/user/deploy_tmp/update_admin.php" ]; then
             cp /home/user/deploy_tmp/update_admin.php $APP/update_admin.php
             php $APP/update_admin.php && rm -f $APP/update_admin.php
