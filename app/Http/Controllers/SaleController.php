@@ -125,7 +125,7 @@ class SaleController extends Controller
         $paiement  = $sale->moyen_paiement;
         $numero    = $sale->numero_vente ?? $sale->id_vente;
 
-        $message = "🖨 3D Ami\nAgence de Modélisation et d'Impression\n"
+        $message = "🖨 AMI 3D\nAgence de Modélisation et d'Impression\n"
                  . "--------------------------------\n"
                  . "Vente #{$numero}\n"
                  . "Total : {$montant}€\n"

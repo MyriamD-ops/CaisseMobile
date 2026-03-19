@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/sales', [SaleController::class, 'store'])->name('sales.store');
     Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
     Route::get('/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
+    Route::post('/sales/{sale}/sms', [SaleController::class, 'sendSmsReceipt'])->name('sales.sms');
     
     // Événements (Admin) - AVANT la route publique
     Route::get('/events', [EvenementController::class, 'index'])->name('events.index');
