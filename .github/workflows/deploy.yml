@@ -80,6 +80,9 @@ jobs:
           APP=/home/user/htdocs/srv1442975.hstgr.cloud
           TMP=/home/user/deploy_tmp
 
+          # Vider public/build avant de copier les nouveaux assets
+          rm -rf $APP/public/build
+          mkdir -p $APP/public/build
           cp -rf $TMP/build/.   $APP/public/build/
           mkdir -p $APP/public/images
           cp -rf $TMP/images/.  $APP/public/images/
