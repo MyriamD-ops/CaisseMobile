@@ -54,6 +54,23 @@ class SaleController extends Controller
         DB::beginTransaction();
         
         try {
+            // Vérifier le stock avant toute modification
+            foreach ($validated['items'] as $item) {
+                $produit = Produit::find($item['id_produit']);
+                if (!$produit) {
+                    DB::rollBack();
+                    return back()->withErrors(['error' => "Produit introuvable."]);
+                }
+                if ($produit->stock_actuel <= 0) {
+                    DB::rollBack();
+                    return back()->withErrors(['error' => "Le produit \"{$produit->nom}\" est en rupture de stock."]);
+                }
+                if ($produit->stock_actuel < $item['quantite']) {
+                    DB::rollBack();
+                    return back()->withErrors(['error' => "Stock insuffisant pour \"{$produit->nom}\" (disponible : {$produit->stock_actuel})."]);
+                }
+            }
+
             // Créer la vente
             $vente = Vente::create([
                 'id_utilisateur' => auth()->id(),
@@ -79,9 +96,10 @@ class SaleController extends Controller
                     'remise' => 0,
                 ]);
 
-                // Décrémenter le stock
+                // Décrémenter le stock sans jamais descendre sous 0
                 $produit = Produit::find($item['id_produit']);
-                $produit->decrement('stock_actuel', $item['quantite']);
+                $nouveauStock = max(0, $produit->stock_actuel - $item['quantite']);
+                $produit->update(['stock_actuel' => $nouveauStock]);
                 
                 \Log::info('Stock mis à jour pour produit:', ['id' => $item['id_produit']]);
             }

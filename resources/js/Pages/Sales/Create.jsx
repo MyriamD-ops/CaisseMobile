@@ -84,6 +84,10 @@ export default function Create({ products: serverProducts }) {
     );
 
     const addToCart = (product) => {
+        if (product.stock_actuel <= 0) {
+            notify('error', `"${product.nom}" est en rupture de stock`);
+            return;
+        }
         const existing = cart.find(item => item.id_produit === product.id_produit);
         if (existing) {
             if (existing.quantite < product.stock_actuel) {
