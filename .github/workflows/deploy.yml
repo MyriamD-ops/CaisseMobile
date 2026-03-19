@@ -83,6 +83,7 @@ jobs:
           TMP=/home/user/deploy_tmp
 
           cp -rf $TMP/build/.   $APP/public/build/
+          mkdir -p $APP/public/images
           cp -rf $TMP/images/.  $APP/public/images/
           cp -rf $TMP/app/.     $APP/app/
           cp -rf $TMP/routes/.  $APP/routes/
