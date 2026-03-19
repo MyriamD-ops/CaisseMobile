@@ -33,7 +33,7 @@ jobs:
         run: |
           ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
-            "rm -rf /home/user/deploy_tmp && mkdir -p /home/user/deploy_tmp/build /home/user/deploy_tmp/images /home/user/deploy_tmp/app /home/user/deploy_tmp/routes /home/user/deploy_tmp/config /home/user/deploy_tmp/views /home/user/deploy_tmp/scripts"
+            "rm -rf /home/user/deploy_tmp && mkdir -p /home/user/deploy_tmp/build && mkdir -p /home/user/deploy_tmp/images && mkdir -p /home/user/deploy_tmp/app && mkdir -p /home/user/deploy_tmp/routes && mkdir -p /home/user/deploy_tmp/config && mkdir -p /home/user/deploy_tmp/views"
 
       - name: Upload build assets
         run: |
