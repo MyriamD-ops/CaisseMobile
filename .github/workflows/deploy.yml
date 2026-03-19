@@ -33,7 +33,7 @@ jobs:
         run: |
           ssh -p 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
-            "rm -rf /home/user/deploy_tmp && mkdir -p /home/user/deploy_tmp/build /home/user/deploy_tmp/app /home/user/deploy_tmp/routes /home/user/deploy_tmp/config /home/user/deploy_tmp/views /home/user/deploy_tmp/scripts"
+            "rm -rf /home/user/deploy_tmp && mkdir -p /home/user/deploy_tmp/build /home/user/deploy_tmp/images /home/user/deploy_tmp/app /home/user/deploy_tmp/routes /home/user/deploy_tmp/config /home/user/deploy_tmp/views /home/user/deploy_tmp/scripts"
 
       - name: Upload build assets
         run: |
@@ -59,11 +59,21 @@ jobs:
             resources/views/. \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/views/
 
+      - name: Upload images
+        run: |
+          scp -r -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
+            public/images/. \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/images/
+
       - name: Upload scripts
         run: |
-          scp -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
-            update_admin.php \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/
+          if [ -f update_admin.php ]; then
+            scp -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
+              update_admin.php \
+              ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/
+          else
+            echo "Pas de update_admin.php, step ignoré"
+          fi
 
       - name: Deploy to app and clear cache
         run: |
@@ -73,6 +83,7 @@ jobs:
           TMP=/home/user/deploy_tmp
 
           cp -rf $TMP/build/.   $APP/public/build/
+          cp -rf $TMP/images/.  $APP/public/images/
           cp -rf $TMP/app/.     $APP/app/
           cp -rf $TMP/routes/.  $APP/routes/
           cp -rf $TMP/config/.  $APP/config/
