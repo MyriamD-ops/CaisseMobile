@@ -13,7 +13,7 @@ export default defineConfig({
         react(),
     ],
     build: {
-        manifest: true,
+        manifest: 'manifest.json',
         outDir: 'public/build',
     }
 });
