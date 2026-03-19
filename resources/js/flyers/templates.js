@@ -40,8 +40,8 @@ function generatePrestige(ev) {
 
         <!-- Panel gauche 45% -->
         <div style="width:486px;min-width:486px;height:1080px;background:linear-gradient(180deg,#0f2f1f 0%,#1e4a2a 100%);position:relative;overflow:hidden;">
-            <img src="/images/bijoux.png" style="width:100%;height:75%;object-fit:cover;opacity:0.65;display:block;" alt="">
-            <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,47,31,0.25) 50%,rgba(15,47,31,0.95) 100%);"></div>
+            <img src="/images/modele.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="">
+            <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,47,31,0.10) 50%,rgba(15,47,31,0.85) 100%);"></div>
             <!-- Citation bas -->
             <div style="position:absolute;bottom:0;left:0;right:0;padding:44px 38px;text-align:center;">
                 <p style="color:rgba(255,255,255,0.6);font-size:15px;font-style:italic;line-height:1.7;margin:0 0 18px;font-family:Georgia,serif;">"L'élégance naturelle<br>à votre portée"</p>
@@ -54,12 +54,12 @@ function generatePrestige(ev) {
         <div style="flex:1;height:1080px;background:#ffffff;display:flex;flex-direction:column;padding:52px 50px;box-sizing:border-box;">
 
             <!-- Logo — original -->
-            <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:10px;">
-                <img src="/images/logo.jpg" style="width:70px;height:70px;object-fit:contain;flex-shrink:0;" alt="Logo AMI 3D">
+            <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:10px;">
+                <img src="/images/logo.jpg" style="width:140px;height:140px;object-fit:contain;flex-shrink:0;" alt="Logo AMI 3D">
                 <div>
-                    <p style="font-size:9px;color:#888;letter-spacing:6px;text-transform:uppercase;margin:0 0 3px;font-family:Arial,sans-serif;">OFFICIEL</p>
-                    <p style="font-size:20px;font-weight:700;color:#3A3F43;letter-spacing:1px;margin:0 0 2px;font-family:Arial,sans-serif;">AMI 3D</p>
-                    <p style="font-size:11px;color:#aaa;letter-spacing:2px;margin:0;font-family:Arial,sans-serif;">Modélisation•Impression</p>
+                    <p style="font-size:12px;color:#888;letter-spacing:6px;text-transform:uppercase;margin:0 0 4px;font-family:Arial,sans-serif;">OFFICIEL</p>
+                    <p style="font-size:24px;font-weight:700;color:#3A3F43;letter-spacing:1px;margin:0 0 4px;font-family:Arial,sans-serif;">AMI 3D</p>
+                    <p style="font-size:14px;color:#aaa;letter-spacing:2px;margin:0;font-family:Arial,sans-serif;">Modélisation•Impression</p>
                 </div>
             </div>
 
@@ -112,8 +112,8 @@ function generateAlpinia(ev) {
 
         <!-- Panel gauche 45% -->
         <div style="width:486px;min-width:486px;height:1080px;background:linear-gradient(180deg,#1a3f2c 0%,#2a5a3a 100%);position:relative;overflow:hidden;">
-            <img src="/images/bijoux.png" style="width:100%;height:75%;object-fit:cover;opacity:0.55;mix-blend-mode:multiply;display:block;" alt="">
-            <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,63,44,0.35) 45%,rgba(26,63,44,0.95) 100%);"></div>
+            <img src="/images/modele.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="">
+            <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,63,44,0.15) 45%,rgba(26,63,44,0.85) 100%);"></div>
             <!-- Citation bas -->
             <div style="position:absolute;bottom:0;left:0;right:0;padding:44px 38px;text-align:center;">
                 <p style="color:rgba(255,255,255,0.6);font-size:15px;font-style:italic;line-height:1.7;margin:0 0 18px;font-family:Georgia,serif;">"La beauté des Antilles<br>sublimée en 3D"</p>
@@ -128,7 +128,7 @@ function generateAlpinia(ev) {
 
             <!-- Logo — style noir/gris, taille augmentée -->
             <div style="display:flex;align-items:flex-start;gap:20px;margin-bottom:10px;">
-                <img src="/images/logo.jpg" style="width:90px;height:90px;object-fit:contain;flex-shrink:0;" alt="Logo AMI 3D">
+                <img src="/images/logo.jpg" style="width:180px;height:180px;object-fit:contain;flex-shrink:0;" alt="Logo AMI 3D">
                 <div>
                     <p style="font-size:13px;color:#888;letter-spacing:6px;text-transform:uppercase;margin:0 0 4px;font-family:Arial,sans-serif;">OFFICIEL</p>
                     <p style="font-size:28px;font-weight:700;color:#3A3F43;letter-spacing:1px;margin:0 0 4px;font-family:Arial,sans-serif;">AMI 3D</p>
@@ -187,7 +187,7 @@ function generateSimple(ev) {
 
             <!-- Header centré — "3D AMI" remonté, sous-titre plus bas et lisible -->
             <div style="text-align:center;margin-bottom:10px;flex-shrink:0;">
-                <img src="/images/logo.jpg" style="width:100px;height:100px;object-fit:contain;margin-bottom:16px;" alt="Logo AMI 3D">
+                <img src="/images/logo.jpg" style="width:200px;height:200px;object-fit:contain;margin-bottom:16px;" alt="Logo AMI 3D">
                 <p style="font-size:120px;font-weight:900;color:#3A3F43;line-height:0.9;margin:0 0 48px;font-family:Georgia,serif;">AMI 3D</p>
                 <p style="font-size:18px;color:#666C7B;letter-spacing:5px;text-transform:uppercase;margin:0 0 16px;font-family:Arial,sans-serif;">Modélisation &amp; Impression 3D</p>
                 <div style="width:80px;height:4px;background:#DC5F00;margin:0 auto;border-radius:2px;"></div>
@@ -202,10 +202,10 @@ function generateSimple(ev) {
 
             <!-- Section media : photo réduite + QR agrandi -->
             <div style="flex:1;display:flex;gap:20px;min-height:0;">
-                <!-- Zone photo — réduite -->
-                <div style="flex:1;border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(135deg,#d8d8d8,#b8b8b8);">
-                    <img src="/images/bijoux.png" style="width:100%;height:100%;object-fit:cover;display:block;" alt="">
-                    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(58,63,67,0.25),transparent);"></div>
+                <!-- Zone photo — portrait avec objet-position top -->
+                <div style="flex:1;border-radius:20px;overflow:hidden;position:relative;">
+                    <img src="/images/modele.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="">
+                    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(58,63,67,0.20),transparent);"></div>
                 </div>
                 <!-- QR code — plus grand -->
                 <div style="flex:1.4;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#EEEEEE;border-radius:20px;padding:24px;box-sizing:border-box;">
@@ -254,7 +254,7 @@ function generateGeo(ev) {
             <!-- Header : logo au plus haut, éléments sous lui -->
             <div style="display:flex;justify-content:flex-start;align-items:flex-start;margin-bottom:0;flex-shrink:0;">
                 <div style="display:flex;align-items:flex-start;gap:24px;">
-                    <img src="/images/logo.jpg" style="width:80px;height:80px;object-fit:contain;flex-shrink:0;" alt="Logo AMI 3D">
+                    <img src="/images/logo.jpg" style="width:160px;height:160px;object-fit:contain;flex-shrink:0;" alt="Logo AMI 3D">
                     <div>
                         <p style="font-size:100px;font-weight:900;color:#3A3F43;font-family:Georgia,serif;line-height:1;margin:0 0 48px;text-shadow:0 2px 8px rgba(255,255,255,0.8);">AMI 3D</p>
                         <p style="font-size:14px;color:#DC5F00;letter-spacing:3px;text-transform:uppercase;margin:0;font-weight:700;">Modélisation &amp; Impression</p>
@@ -272,9 +272,9 @@ function generateGeo(ev) {
 
             <!-- Card grise réduite -->
             <div style="flex:1;min-height:0;background:#EEEEEE;border-radius:20px;padding:12px;box-sizing:border-box;display:flex;gap:12px;align-items:stretch;">
-                <!-- Photo -->
+                <!-- Photo portrait -->
                 <div style="flex:1;border-radius:14px;overflow:hidden;">
-                    <img src="/images/bijoux.png" style="width:100%;height:100%;object-fit:cover;display:block;" alt="">
+                    <img src="/images/modele.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="">
                 </div>
                 <!-- Moitié droite : QR → adresse → contact -->
                 <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;">
