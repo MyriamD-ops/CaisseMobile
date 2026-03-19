@@ -67,12 +67,10 @@ jobs:
 
       - name: Upload scripts
         run: |
-          if [ -f update_admin.php ]; then
+          if [ -f fix_production.php ]; then
             scp -P 22 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
-              update_admin.php \
+              fix_production.php \
               ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/home/user/deploy_tmp/
-          else
-            echo "Pas de update_admin.php, step ignoré"
           fi
 
       - name: Deploy to app and clear cache
@@ -100,10 +98,10 @@ jobs:
           sudo systemctl reload php-fpm 2>/dev/null || \
           kill -USR2 $(cat /var/run/php/php8.4-fpm.pid 2>/dev/null) 2>/dev/null || true
 
-          if [ -f "/home/user/deploy_tmp/update_admin.php" ]; then
-            cp /home/user/deploy_tmp/update_admin.php $APP/update_admin.php
-            php $APP/update_admin.php && rm -f $APP/update_admin.php
-            echo "=== update_admin exécuté ==="
+          if [ -f "/home/user/deploy_tmp/fix_production.php" ]; then
+            cp /home/user/deploy_tmp/fix_production.php $APP/fix_production.php
+            php $APP/fix_production.php && rm -f $APP/fix_production.php
+            echo "=== fix_production exécuté ==="
           fi
 
           rm -rf /home/user/deploy_tmp
