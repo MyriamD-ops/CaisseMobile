@@ -341,11 +341,10 @@ export default function Create({ products: serverProducts }) {
                         );
                     })
                 )}
-            </div>
 
             {/* Pied panier */}
             {cart.length > 0 && (
-                <div className="p-4 border-t border-slate/20 space-y-3 shrink-0">
+                <div className="p-4 border-t border-slate/20 space-y-3">
                     {/* Sous-total */}
                     <div className="flex justify-between items-center">
                         <span className="text-slate text-sm">Sous-total</span>
@@ -441,6 +440,7 @@ export default function Create({ products: serverProducts }) {
                     </button>
                 </div>
             )}
+            </div>
         </div>
     );
 
