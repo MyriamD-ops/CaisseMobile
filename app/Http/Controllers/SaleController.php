@@ -47,7 +47,16 @@ class SaleController extends Controller
         }
 
         $validated = $request->only(['items']);
-        $validated['moyen_paiement'] = implode(', ', $moyens);
+        
+        // Formater le moyen de paiement avec ventilation si fournie
+        $ventilation = $request->input('ventilation');
+        if ($ventilation && is_array($ventilation) && count($moyens) > 1) {
+            $validated['moyen_paiement'] = collect($moyens)
+                ->map(fn($m) => $m . ' (' . number_format((float)($ventilation[$m] ?? 0), 2, ',', '') . '€)')
+                ->implode(', ');
+        } else {
+            $validated['moyen_paiement'] = implode(', ', $moyens);
+        }
         
         \Log::info('Validation OK:', $validated);
 

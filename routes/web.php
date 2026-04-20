@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\EvenementController;
+use App\Http\Controllers\StatsController;
 
 // Preview Design System (accessible sans auth)
 Route::get('/ui', function (ResponseFactory $inertia) {
@@ -51,6 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
     Route::get('/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
     Route::post('/sales/{sale}/sms', [SaleController::class, 'sendSmsReceipt'])->name('sales.sms');
+    
+    // Statistiques
+    Route::get('/stats', [StatsController::class, 'index'])->name('stats.index');
     
     // Événements (Admin) - AVANT la route publique
     Route::get('/events', [EvenementController::class, 'index'])->name('events.index');
