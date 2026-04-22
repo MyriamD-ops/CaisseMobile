@@ -29,3 +29,10 @@ Thumbs.db
 deploy_*.tar.gz
 deploy_*.zip
 deploy/
+docs/conception.md
+docs/conception.pdf
+docs/structure-et-code.md
+docs/structure-et-code.pdf
+caissemobile-local/
+build
+vite
