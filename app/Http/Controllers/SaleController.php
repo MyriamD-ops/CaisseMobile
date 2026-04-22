@@ -207,4 +207,35 @@ class SaleController extends Controller
             ]);
         }
     }
+
+    public function export()
+    {
+        $ventes = Vente::with(['lignes.produit', 'utilisateur'])
+            ->latest('date_vente')
+            ->get();
+
+        $csv = "\xEF\xBB\xBF"; // BOM UTF-8 pour Excel
+        $csv .= "Numéro;Date;Vendeur;Produits;Quantité totale;Moyen de paiement;Montant total\n";
+
+        foreach ($ventes as $vente) {
+            $produits = $vente->lignes->map(fn($l) => ($l->produit->nom ?? 'Supprimé') . ' x' . $l->quantite)->implode(' | ');
+            $qteTotale = $vente->lignes->sum('quantite');
+            $csv .= implode(';', [
+                $vente->numero_vente ?? $vente->id_vente,
+                $vente->date_vente->format('d/m/Y H:i'),
+                $vente->utilisateur->username ?? '-',
+                '"' . str_replace('"', '""', $produits) . '"',
+                $qteTotale,
+                '"' . ($vente->moyen_paiement ?? '-') . '"',
+                number_format((float) $vente->montant_total, 2, ',', ''),
+            ]) . "\n";
+        }
+
+        $filename = 'ventes_' . now()->format('Y-m-d') . '.csv';
+
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
+        ]);
+    }
 }

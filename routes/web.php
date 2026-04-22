@@ -44,9 +44,11 @@ Route::middleware('auth')->group(function () {
     
     // Produits
     Route::get('/products/low-stock', [ProductController::class, 'lowStock'])->name('products.lowStock');
+    Route::get('/products/export', [ProductController::class, 'export'])->name('products.export');
     Route::resource('products', ProductController::class);
     
     // Ventes
+    Route::get('/sales/export', [SaleController::class, 'export'])->name('sales.export');
     Route::get('/sales/create', [SaleController::class, 'create'])->name('sales.create');
     Route::post('/sales', [SaleController::class, 'store'])->name('sales.store');
     Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');

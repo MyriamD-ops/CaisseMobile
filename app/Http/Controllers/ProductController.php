@@ -142,4 +142,32 @@ class ProductController extends Controller
             'products' => $products
         ]);
     }
+
+    public function export()
+    {
+        $produits = Produit::orderBy('nom')->get();
+
+        $csv = "\xEF\xBB\xBF"; // BOM UTF-8 pour Excel
+        $csv .= "Nom;Catégorie;Matière;Prix (€);Stock actuel;Stock minimum;Code-barres;Actif\n";
+
+        foreach ($produits as $p) {
+            $csv .= implode(';', [
+                '"' . str_replace('"', '""', $p->nom) . '"',
+                '"' . str_replace('"', '""', $p->categorie ?? '') . '"',
+                '"' . str_replace('"', '""', $p->matiere ?? '') . '"',
+                number_format((float) $p->prix_base, 2, ',', ''),
+                $p->stock_actuel,
+                $p->stock_minimum,
+                $p->code_barres ?? '',
+                $p->actif ? 'Oui' : 'Non',
+            ]) . "\n";
+        }
+
+        $filename = 'produits_' . now()->format('Y-m-d') . '.csv';
+
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
+        ]);
+    }
 }
