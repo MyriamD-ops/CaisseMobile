@@ -33,19 +33,19 @@ export default function Index({ evenements }) {
             <main className="p-4 lg:p-6 max-w-7xl mx-auto">
 
                 {/* En-tête */}
-                <div className="flex items-start justify-between gap-4 mb-6">
-                    <div>
+                <div className="mb-6">
+                    <div className="flex items-center justify-between gap-3 mb-1">
                         <h2 className="text-2xl font-bold text-dark">Événements</h2>
-                        <p className="text-slate text-sm mt-1">
-                            {evenements.length} événement{evenements.length > 1 ? 's' : ''}
-                        </p>
+                        <Link
+                            href="/events/create"
+                            className="shrink-0 h-9 px-3 flex items-center justify-center bg-ember hover:bg-ember-dim text-white font-bold rounded-xl text-sm transition-colors whitespace-nowrap"
+                        >
+                            + Nouveau
+                        </Link>
                     </div>
-                    <Link
-                        href="/events/create"
-                        className="shrink-0 flex items-center justify-center h-11 px-5 bg-ember hover:bg-ember-dim text-white font-bold rounded-xl text-sm transition-colors"
-                    >
-                        + Nouvel événement
-                    </Link>
+                    <p className="text-slate text-sm">
+                        {evenements.length} événement{evenements.length > 1 ? 's' : ''}
+                    </p>
                 </div>
 
                 {/* État vide */}

@@ -344,7 +344,7 @@ export default function Create({ products: serverProducts }) {
 
             {/* Pied panier */}
             {cart.length > 0 && (
-                <div className="p-4 border-t border-slate/20 space-y-3">
+                <div className="p-4 border-t border-slate/20 space-y-3 overflow-y-auto max-h-[55vh]">
                     {/* Sous-total */}
                     <div className="flex justify-between items-center">
                         <span className="text-slate text-sm">Sous-total</span>
