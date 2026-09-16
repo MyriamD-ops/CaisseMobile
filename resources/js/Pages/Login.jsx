@@ -39,7 +39,7 @@ export default function Login() {
                 <div className="text-center mb-8">
                     <div className="text-6xl mb-3 drop-shadow-lg">💎</div>
                     <h1 className="text-4xl font-bold text-dark tracking-tight">
-                        CaisseMobile
+                        Caisse Connect
                     </h1>
                     <p className="text-slate text-sm mt-1">Point de vente artisanal</p>
                 </div>
@@ -124,7 +124,7 @@ export default function Login() {
 
                 {/* Version */}
                 <p className="text-center mt-6 text-xs text-slate/60">
-                    CaisseMobile · Version 1.0
+                    Caisse Connect · Version 1.0
                 </p>
             </div>
         </div>

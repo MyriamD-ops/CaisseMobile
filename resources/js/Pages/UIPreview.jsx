@@ -54,7 +54,7 @@ export default function UIPreview() {
                         Palette Urban
                     </h1>
                     <p className="text-slate mt-2 text-sm">
-                        Prévisualisation des composants avant intégration — CaisseMobile
+                        Prévisualisation des composants avant intégration — Caisse Connect
                     </p>
                 </div>
 
@@ -542,7 +542,7 @@ export default function UIPreview() {
                                     </button>
                                 </div>
                             </Card>
-                            <p className="text-center mt-4 text-xs text-slate/60">CaisseMobile · Version 1.0</p>
+                            <p className="text-center mt-4 text-xs text-slate/60">Caisse Connect · Version 1.0</p>
                         </div>
                     </div>
                 </Section>
