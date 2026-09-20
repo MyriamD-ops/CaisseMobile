@@ -156,6 +156,10 @@ export default function Create({ products: serverProducts }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Guard contre les double soumissions
+        if (processing) return;
+
         if (cart.length === 0) { notify('error', 'Le panier est vide !'); return; }
         if (!ventilationValide) { notify('error', `La ventilation (${totalVentile.toFixed(2)}€) ne correspond pas au total (${total.toFixed(2)}€)`); return; }
         setProcessing(true);
