@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Vente;
 use App\Models\Produit;
+use App\Http\Requests\StoreSaleRequest;
+use App\Http\Requests\SendSmsReceiptRequest;
 use Illuminate\Http\Request;
 use Inertia\ResponseFactory;
 use Illuminate\Support\Facades\DB;
@@ -24,18 +26,10 @@ class SaleController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreSaleRequest $request)
     {
         \Log::info('=== DEBUT STORE VENTE ===');
         \Log::info('Request data:', $request->all());
-        
-        $request->validate([
-            'items'              => 'required|array|min:1',
-            'items.*.id_produit' => 'required|exists:produits,id_produit',
-            'items.*.quantite'   => 'required|integer|min:1',
-            'items.*.prix_unitaire' => 'required|numeric|min:0',
-            'moyen_paiement'     => 'required',
-        ]);
 
         $allowed = ['Espèces', 'Carte bancaire', 'Chèque', 'Virement'];
         $raw = $request->input('moyen_paiement');
@@ -132,12 +126,8 @@ class SaleController extends Controller
         }
     }
 
-    public function sendSmsReceipt(Request $request, Vente $sale)
+    public function sendSmsReceipt(SendSmsReceiptRequest $request, Vente $sale)
     {
-        $request->validate([
-            'telephone' => 'required|string',
-        ]);
-
         // Formatage E.164 (FR uniquement)
         $raw = preg_replace('/[\s\-\.]/', '', $request->input('telephone'));
         if (preg_match('/^0([67]\d{8})$/', $raw, $m)) {

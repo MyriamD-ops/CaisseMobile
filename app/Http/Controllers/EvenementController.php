@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Evenement;
 use App\Models\Produit;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreEvenementRequest;
+use App\Http\Requests\UpdateEvenementRequest;
 use Inertia\ResponseFactory;
 use Illuminate\Support\Str;
 
@@ -36,18 +37,9 @@ class EvenementController extends Controller
     }
 
     // Enregistrement
-    public function store(Request $request)
+    public function store(StoreEvenementRequest $request)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'lieu' => 'nullable|string|max:255',
-            'date_debut' => 'required|date',
-            'date_fin' => 'required|date|after_or_equal:date_debut',
-            'description' => 'nullable|string',
-            'produits' => 'nullable|array',
-            'produits.*.id' => 'required|exists:produits,id_produit',
-            'produits.*.stock' => 'required|integer|min:0',
-        ]);
+        $validated = $request->validated();
 
         // Créer l'événement (code_unique généré automatiquement)
         $evenement = Evenement::create([
@@ -88,19 +80,9 @@ class EvenementController extends Controller
     }
 
     // Mise à jour
-    public function update(Request $request, Evenement $evenement)
+    public function update(UpdateEvenementRequest $request, Evenement $evenement)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'lieu' => 'nullable|string|max:255',
-            'date_debut' => 'required|date',
-            'date_fin' => 'required|date|after_or_equal:date_debut',
-            'description' => 'nullable|string',
-            'statut' => 'required|in:planifie,en_cours,termine',
-            'produits' => 'nullable|array',
-            'produits.*.id' => 'required|exists:produits,id_produit',
-            'produits.*.stock' => 'required|integer|min:0',
-        ]);
+        $validated = $request->validated();
 
         $evenement->update([
             'nom' => $validated['nom'],

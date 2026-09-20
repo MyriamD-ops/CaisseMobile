@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produit;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreProduitRequest;
+use App\Http\Requests\UpdateProduitRequest;
 use Inertia\ResponseFactory;
 
 class ProduitController extends Controller
@@ -24,18 +25,9 @@ class ProduitController extends Controller
         return $inertia->render('Produits/Create');
     }
 
-    public function store(Request $request)
+    public function store(StoreProduitRequest $request)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'prix' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'seuil_alerte' => 'nullable|integer|min:0',
-            'categorie' => 'nullable|string|max:100',
-        ]);
-
-        Produit::create($validated);
+        Produit::create($request->validated());
 
         return redirect()->route('produits.index')
             ->with('success', 'Produit créé avec succès !');
@@ -48,18 +40,9 @@ class ProduitController extends Controller
         ]);
     }
 
-    public function update(Request $request, Produit $produit)
+    public function update(UpdateProduitRequest $request, Produit $produit)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'prix' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'seuil_alerte' => 'nullable|integer|min:0',
-            'categorie' => 'nullable|string|max:100',
-        ]);
-
-        $produit->update($validated);
+        $produit->update($request->validated());
 
         return redirect()->route('produits.index')
             ->with('success', 'Produit modifié avec succès !');
